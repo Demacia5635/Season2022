@@ -22,4 +22,10 @@ public final class Constants {
     public static final int LEFT_BACK_PORT = -1; 
     public static final int RIGHT_FRONT_PORT = -1; 
     public static final int RIGHT_BACK_PORT = -1; 
+
+    public static final int GYRO_PORT = -1;
+
+    public static final int ANGLE_KP = -1;
+    public static final int ANGLE_KI = -1;
+    public static final int ANGLE_KD = -1;
 }
