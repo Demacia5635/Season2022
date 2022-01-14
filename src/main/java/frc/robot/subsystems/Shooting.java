@@ -25,7 +25,7 @@ public class Shooting extends SubsystemBase {
   public Shooting() {
     shooter = new WPI_TalonFX(Constants.SHOOTER_PORT);
     shooterAff = new FeedForward(Constants.SHOOTER_KS, Constants.SHOOTER_KV);
-    processor = new Processor(Constants.CAMERA_WIDTH, Constants.CAMERA_HEIGHT);
+    processor = new Processor(Constants.CAMERA_WIDTH_PIXELS, Constants.CAMERA_HEIGHT_PIXELS);
   }
 
   /**

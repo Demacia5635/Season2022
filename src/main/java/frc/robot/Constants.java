@@ -18,8 +18,8 @@ public final class Constants {
     public static final double SHOOTER_PULSE_TO_METER = -1;
     public static final double SHOOTER_KS = -1;
     public static final double SHOOTER_KV = -1;
-    public static final int CAMERA_WIDTH = 640;
-    public static final int CAMERA_HEIGHT = 480;
+    public static final int CAMERA_WIDTH_PIXELS = 640;
+    public static final int CAMERA_HEIGHT_PIXELS = 480;
     public static final double MAX_SHOOT_ANGLE_ERROR = -1;
     public static final double MAX_SHOOT_VELOCITY_ERROR = -1;
 
@@ -29,4 +29,15 @@ public final class Constants {
     public static final double SHOOTING_VELOCITIES_DIFF = -1;
     public static final double MIN_SHOOTING_DISTANCE = -1;
 
+    //vision
+    public static final int MIN_GRAYSCALE_VISION = 255;
+    public static final int MAX_GRAYSCALE_VISION = 255;
+    public static final int KERNEL_SIZE = 5;
+    public static final double MIN_CONTOUR_SIZE = 20;
+    public static final double TOWER_HEIGHT = 2.64;
+    public static final double CAMERA_HEIGHT = -1;
+    public static final int CAMERA_FOV_HEIGHT = -1;
+    public static final double CAMERA_ANGLE = -1;
+    public static final double CAMERA_FOV_WIDTH = 50;
+    public static final double TOWER_RADIUS = 0.61;
 }
