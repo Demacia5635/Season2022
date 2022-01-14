@@ -28,4 +28,11 @@ public final class Constants {
     public static final int ANGLE_KP = -1;
     public static final int ANGLE_KI = -1;
     public static final int ANGLE_KD = -1;
+
+    public static final int STOP_ANGLE = 5;
+
+    public static final int KS = -1;
+    public static final int KV = -1;
+    public static final int KA = -1;
+
 }

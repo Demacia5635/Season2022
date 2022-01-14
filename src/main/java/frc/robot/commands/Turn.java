@@ -16,8 +16,10 @@ public class Turn extends CommandBase {
   private PID pidAngle;
   private double startingDistance;
   private double currentAngle;
-  public Turn(Chassis chassis, double angle) {
+  private boolean toStop;
+  public Turn(Chassis chassis, double angle, boolean toStop) {
     this.chassis = chassis;
+    this.toStop = toStop;
     this.angle = angle;
     pidAngle = new PID(Constants.ANGLE_KP, Constants.ANGLE_KI, Constants.ANGLE_KD);
     addRequirements(chassis);
@@ -35,18 +37,24 @@ public class Turn extends CommandBase {
   @Override
   public void execute() {
     currentAngle = chassis.getAngle();
-    double pPower = pidAngle.calculate(currentAngle);
-    chassis.setPower(pPower, -pPower);
+    double velocityRatio = pidAngle.calculate(currentAngle);
+    chassis.setVelocity(velocityRatio, -velocityRatio);
 
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    chassis.setPower(0, 0);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    if(toStop == true)
+      return chassis.getAngle() >= ((angle + startingDistance)-Constants.STOP_ANGLE);
+    else{
+      return toStop;
+    }
   }
 }
