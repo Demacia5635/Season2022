@@ -13,26 +13,34 @@ import frc.robot.subsystems.Shooting;
 public class Shoot extends CommandBase {
   
   private final Shooting shooting;
-  private final double velocity;
-  private final DoubleSupplier getAngleDiff;
+  private final DoubleSupplier velocityGetter;
+  private final DoubleSupplier angleGetter;
+  private boolean shoot;
 
-  public Shoot(Shooting shooting, DoubleSupplier getAngleDiff, double velocity) {
+  public Shoot(Shooting shooting, DoubleSupplier velocityGetter, DoubleSupplier angleGetter) {
     this.shooting = shooting;
-    this.velocity = velocity;
-    this.getAngleDiff = getAngleDiff;
+    this.velocityGetter = velocityGetter;
+    this.angleGetter = angleGetter;
 
     addRequirements(shooting);
   }
 
   @Override
   public void initialize() {
-    shooting.setShooterVelocity(velocity);
+    shoot = false;
+  }
+
+  public void shoot(){
+    shoot = true;
   }
 
   @Override
   public void execute() {
-    if (Math.abs(shooting.getShooterVelocity() - velocity) <= Constants.MAX_SHOOT_VELOCITY_ERROR && 
-        getAngleDiff.getAsDouble() <= Constants.MAX_SHOOT_ANGLE_ERROR){
+    shooting.setShooterVelocity(velocityGetter.getAsDouble());
+    shooting.setTurnerPower(Math.signum(angleGetter.getAsDouble() - shooting.getTurnerAngle()) * Constants.TURNER_DEFAULT_POWER);
+
+    if (Math.abs(shooting.getShooterVelocity() - velocityGetter.getAsDouble()) <= Constants.MAX_SHOOT_VELOCITY_ERROR && 
+        shoot && Math.abs(angleGetter.getAsDouble() - shooting.getTurnerAngle()) <= Constants.MAX_SHOOT_ANGLE_ERROR){
           
       shooting.openShooterInput();
     }
@@ -41,6 +49,8 @@ public class Shoot extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     shooting.closeShooterInput();
+    shooting.setShooterPower(0);
+    shooting.setTurnerPower(0);
   }
 
   @Override

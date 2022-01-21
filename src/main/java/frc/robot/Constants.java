@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.drive.Vector2d;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -15,29 +17,16 @@ package frc.robot;
 public final class Constants {
     //Shooting
     public static final int SHOOTER_PORT = -1;
+    public static final int TURNER_PORT = -1;
+    public static final int TURNER_GYRO_PORT = -1;
     public static final double SHOOTER_PULSE_TO_METER = -1;
     public static final double SHOOTER_KS = -1;
     public static final double SHOOTER_KV = -1;
-    public static final int CAMERA_WIDTH_PIXELS = 640;
-    public static final int CAMERA_HEIGHT_PIXELS = 480;
+    public static final double TURNER_DEFAULT_POWER = -1;
     public static final double MAX_SHOOT_ANGLE_ERROR = -1;
     public static final double MAX_SHOOT_VELOCITY_ERROR = -1;
 
-    public static final double[] SHOOTING_VELOCITIES = {
-        -1
-    };
+    public static final Vector2d[] SHOOTING_VALUES = null;
     public static final double SHOOTING_VELOCITIES_DIFF = -1;
-    public static final double MIN_SHOOTING_DISTANCE = -1;
-
-    //vision
-    public static final int MIN_GRAYSCALE_VISION = 255;
-    public static final int MAX_GRAYSCALE_VISION = 255;
-    public static final int KERNEL_SIZE = 5;
-    public static final double MIN_CONTOUR_SIZE = 20;
-    public static final double TOWER_HEIGHT = 2.64;
-    public static final double CAMERA_HEIGHT = -1;
-    public static final int CAMERA_FOV_HEIGHT = -1;
-    public static final double CAMERA_ANGLE = -1;
-    public static final double CAMERA_FOV_WIDTH = 50;
-    public static final double TOWER_RADIUS = 0.61;
+    public static final double MIN_SHOOTING_Y = -1;
 }

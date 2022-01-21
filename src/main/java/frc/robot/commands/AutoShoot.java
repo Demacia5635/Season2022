@@ -15,8 +15,6 @@ public class AutoShoot extends CommandBase {
   
   private final Chassis chassis;
   private final Shooting shooting;
-  private double angle;
-  private double distance;
   private Command command;
 
   public AutoShoot(Shooting shooting, Chassis chassis) {
@@ -26,44 +24,39 @@ public class AutoShoot extends CommandBase {
 
   @Override
   public void initialize() {
-    Vector2d temp = shooting.getVision();
-    distance = temp.x;
-    angle = temp.y + chassis.getAngle();
-
-    command = new Turn(chassis, angle).alongWith(new Shoot(shooting, this::getAngleDiff, calculateVelocity(distance)));
+    command = new TurnByVision(chassis, shooting::getVisionX).alongWith(
+        new Shoot(shooting, () -> {return calculateValues(shooting.getVisionY()).x;},
+        () -> {return calculateValues(shooting.getVisionY()).y;}));
   }
 
   /**
-   * calculates the velocity needed to shoot to the target
-   * @param distance the distance to the tower, in meters
-   * @return the wanted velocity in meter/sec if out of range, returns Double.NaN
+   * calculates the velocity and the angle needed to shoot to the target
+   * @param y the y to the tower, in pixels, usually from the vision
+   * @return a Vector2d where x is the velocity in meter/sec and y is the angle if out of range, returns null
    */
-  private double calculateVelocity(double distance){
-    if (distance < Constants.MIN_SHOOTING_DISTANCE){
+  private Vector2d calculateValues(double y){
+    if (y < Constants.MIN_SHOOTING_Y){
       cancel();
-      return Double.NaN;
+      return null;
     }
 
-    for (int i = 0; i < Constants.SHOOTING_VELOCITIES.length; i++) {
-      double currentDistance = Constants.MIN_SHOOTING_DISTANCE + Constants.SHOOTING_VELOCITIES_DIFF * i;
-      if (currentDistance > distance){
-        double slope = (Constants.SHOOTING_VELOCITIES[i] - Constants.SHOOTING_VELOCITIES[i - 1]) /
+    for (int i = 0; i < Constants.SHOOTING_VALUES.length; i++) {
+      double currentY = Constants.MIN_SHOOTING_Y + Constants.SHOOTING_VELOCITIES_DIFF * i;
+      if (currentY > y){
+        double slopeVel = (Constants.SHOOTING_VALUES[i].x - Constants.SHOOTING_VALUES[i - 1].x) /
             Constants.SHOOTING_VELOCITIES_DIFF;
-        return slope * (distance - currentDistance) + Constants.SHOOTING_VELOCITIES[i];
+        
+        double slopeAngle = (Constants.SHOOTING_VALUES[i].y - Constants.SHOOTING_VALUES[i - 1].y) /
+            Constants.SHOOTING_VELOCITIES_DIFF;
+
+        return new Vector2d(slopeVel * (y - currentY) + Constants.SHOOTING_VALUES[i].x,
+            slopeAngle * (y - currentY) + Constants.SHOOTING_VALUES[i].y);
       }
     }
 
     //means that the distance is above the maximum
     cancel();
-    return Double.NaN;
-  }
-
-  /**
-   * calculates the difference between your angle and the desired angle
-   * @return the difference in absolute
-   */
-  private double getAngleDiff(){
-    return Math.abs(angle - chassis.getAngle());
+    return null;
   }
 
   @Override

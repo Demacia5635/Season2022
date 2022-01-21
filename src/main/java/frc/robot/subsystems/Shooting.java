@@ -6,26 +6,31 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.drive.Vector2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.FeedForward;
-import frc.robot.vision.Processor;
 
 public class Shooting extends SubsystemBase {
   /** Creates a new Shooting. */
 
   private final WPI_TalonFX shooter;
   private final FeedForward shooterAff;
-  private final Processor processor;
+  private final WPI_TalonSRX turner;
+  private final PigeonIMU gyro;
 
   public Shooting() {
     shooter = new WPI_TalonFX(Constants.SHOOTER_PORT);
+    turner = new WPI_TalonSRX(Constants.TURNER_PORT);
+    turner.setNeutralMode(NeutralMode.Brake);
     shooterAff = new FeedForward(Constants.SHOOTER_KS, Constants.SHOOTER_KV);
-    processor = new Processor(Constants.CAMERA_WIDTH_PIXELS, Constants.CAMERA_HEIGHT_PIXELS);
+    gyro = new PigeonIMU(Constants.TURNER_GYRO_PORT);
   }
 
   /**
@@ -34,6 +39,14 @@ public class Shooting extends SubsystemBase {
    */
   public void setShooterPower(double power){
     shooter.set(ControlMode.PercentOutput, power);
+  }
+
+  /**
+   * sets the power of the turner
+   * @param power between 1 and -1
+   */
+  public void setTurnerPower(double power){
+    turner.set(ControlMode.PercentOutput, power);
   }
 
   /**
@@ -54,6 +67,14 @@ public class Shooting extends SubsystemBase {
   }
 
   /**
+   * gets the turner angle
+   * @return in degrees
+   */
+  public double getTurnerAngle(){
+    return gyro.getFusedHeading();
+  }
+
+  /**
    * stop feeding cargo to the shooter mechanism
    */
   public void closeShooterInput(){
@@ -68,12 +89,19 @@ public class Shooting extends SubsystemBase {
   }
 
   /**
-   * returns the distance and the angle from the vision process
-   * @return a Vector2d where x=distance, y=angle
+   * gets the x from the vision
+   * @return the x value from vision
    */
-  public Vector2d getVision(){
-    processor.run();
-    return new Vector2d(processor.get("distance"), processor.get("angle"));
+  public double getVisionX(){
+    return SmartDashboard.getNumber("vision_tower_x", Double.NaN);
+  }
+
+  /**
+   * gets the y from the vision
+   * @return the y value from vision
+   */
+  public double getVisionY(){
+    return SmartDashboard.getNumber("vision_tower_y", Double.NaN);
   }
   
   @Override
@@ -84,6 +112,5 @@ public class Shooting extends SubsystemBase {
   @Override
   public void initSendable(SendableBuilder builder) {
     builder.addDoubleProperty("Shooter Velocity", this::getShooterVelocity, this::setShooterVelocity);
-    processor.initSendable(builder);
   }
 }
