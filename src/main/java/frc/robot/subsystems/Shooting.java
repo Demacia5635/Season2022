@@ -78,7 +78,8 @@ public class Shooting extends SubsystemBase {
    * @return in degrees
    */
   public double getTurnerAngle(){
-    return gyro.getFusedHeading();
+    //TODO : check gyro
+    return -1;
   }
 
   /**

@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.drive.Vector2d;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    //TODO : set constants
     //Shooting
     public static final int SHOOTER_PORT_MAIN = -1;
     public static final int SHOOTER_PORT_SECONDARY = -1;
