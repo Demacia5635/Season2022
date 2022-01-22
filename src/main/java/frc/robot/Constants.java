@@ -16,9 +16,12 @@ import edu.wpi.first.wpilibj.drive.Vector2d;
  */
 public final class Constants {
     //Shooting
-    public static final int SHOOTER_PORT = -1;
+    public static final int SHOOTER_PORT_MAIN = -1;
+    public static final int SHOOTER_PORT_SECONDARY = -1;
     public static final int TURNER_PORT = -1;
     public static final int TURNER_GYRO_PORT = -1;
+    public static final int INPUT_WHEEL_PORT = -1;
+    public static final double INPUT_WHEEL_POWER = -1;
     public static final double SHOOTER_PULSE_TO_METER = -1;
     public static final double SHOOTER_KS = -1;
     public static final double SHOOTER_KV = -1;

@@ -7,7 +7,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
@@ -20,17 +21,23 @@ import frc.robot.utils.FeedForward;
 public class Shooting extends SubsystemBase {
   /** Creates a new Shooting. */
 
-  private final WPI_TalonFX shooter;
+  private final TalonFX shooterMain;
+  private final TalonFX shooterSecondary;
   private final FeedForward shooterAff;
+  private final TalonSRX inputWheel;
   private final WPI_TalonSRX turner;
   private final PigeonIMU gyro;
 
   public Shooting() {
-    shooter = new WPI_TalonFX(Constants.SHOOTER_PORT);
+    shooterMain = new TalonFX(Constants.SHOOTER_PORT_MAIN);
     turner = new WPI_TalonSRX(Constants.TURNER_PORT);
     turner.setNeutralMode(NeutralMode.Brake);
     shooterAff = new FeedForward(Constants.SHOOTER_KS, Constants.SHOOTER_KV);
     gyro = new PigeonIMU(Constants.TURNER_GYRO_PORT);
+    shooterSecondary = new TalonFX(Constants.SHOOTER_PORT_SECONDARY);
+    inputWheel = new TalonSRX(Constants.INPUT_WHEEL_PORT);
+    shooterSecondary.setInverted(true);
+    shooterSecondary.follow(shooterMain);
   }
 
   /**
@@ -38,7 +45,7 @@ public class Shooting extends SubsystemBase {
    * @param power between 1 and -1
    */
   public void setShooterPower(double power){
-    shooter.set(ControlMode.PercentOutput, power);
+    shooterMain.set(ControlMode.PercentOutput, power);
   }
 
   /**
@@ -54,7 +61,7 @@ public class Shooting extends SubsystemBase {
    * @param velocity in meter/sec
    */
   public void setShooterVelocity(double velocity){
-    shooter.set(ControlMode.Velocity, velocity * 10 / Constants.SHOOTER_PULSE_TO_METER, 
+    shooterMain.set(ControlMode.Velocity, velocity * 10 / Constants.SHOOTER_PULSE_TO_METER, 
         DemandType.ArbitraryFeedForward, shooterAff.get(velocity));
   }
 
@@ -63,7 +70,7 @@ public class Shooting extends SubsystemBase {
    * @return in meter/sec
    */
   public double getShooterVelocity(){
-    return shooter.getSelectedSensorPosition() * Constants.SHOOTER_PULSE_TO_METER / 10;
+    return shooterMain.getSelectedSensorPosition() * Constants.SHOOTER_PULSE_TO_METER / 10;
   }
 
   /**
@@ -78,14 +85,14 @@ public class Shooting extends SubsystemBase {
    * stop feeding cargo to the shooter mechanism
    */
   public void closeShooterInput(){
-    //TODO : add implementation
+    inputWheel.set(ControlMode.PercentOutput, 0);
   }
 
   /**
    * feed cargo to the shooter mechanism
    */
   public void openShooterInput(){
-    //TODO : add implementation
+    inputWheel.set(ControlMode.PercentOutput, Constants.INPUT_WHEEL_POWER);
   }
 
   /**
