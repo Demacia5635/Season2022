@@ -9,7 +9,6 @@ import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -25,12 +24,12 @@ public class Shooting extends SubsystemBase {
   private final TalonFX shooterSecondary;
   private final FeedForward shooterAff;
   private final TalonSRX inputWheel;
-  private final WPI_TalonSRX turner;
+  private final TalonSRX turner;
   private final PigeonIMU gyro;
 
   public Shooting() {
     shooterMain = new TalonFX(Constants.SHOOTER_PORT_MAIN);
-    turner = new WPI_TalonSRX(Constants.TURNER_PORT);
+    turner = new TalonSRX(Constants.TURNER_PORT);
     turner.setNeutralMode(NeutralMode.Brake);
     shooterAff = new FeedForward(Constants.SHOOTER_KS, Constants.SHOOTER_KV);
     gyro = new PigeonIMU(Constants.TURNER_GYRO_PORT);
