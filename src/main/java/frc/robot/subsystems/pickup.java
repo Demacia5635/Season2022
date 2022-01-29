@@ -4,14 +4,34 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-public class BallIntake extends SubsystemBase {
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+
+public class pickup extends SubsystemBase {
+
+  WPI_TalonSRX midLeft =  new WPI_TalonSRX(Constants.midLeft);
+  WPI_TalonSRX midRight = new WPI_TalonSRX(Constants.midRight);
+  private double power;
+
   /** Creates a new BallIntake. */
-  public BallIntake() {}
+  public pickup() {
+
+
+
+    
+  }
 
   @Override
   public void periodic() {
+
+    public void setPower(double power){
+       setPower(power);
+
+    }
     // This method will be called once per scheduler run
+  
+    
   }
 }
