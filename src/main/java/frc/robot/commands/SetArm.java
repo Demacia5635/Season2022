@@ -4,9 +4,6 @@
 
 package frc.robot.commands;
 
-import com.ctre.phoenix.CANifier.PinValues;
-
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Pickup;
@@ -36,15 +33,14 @@ public class SetArm extends CommandBase {
     switch(destination){
       
       case UP:
-            target = Constants.PULSES_AT_THE_TOP;
-            velocity = Constants.ARM_UP_Velocity;
-            break;
+        target = Constants.TOP_ARM_ANGLE;
+        velocity = Constants.ARM_UP_VELOCITY;
+        break;
 
       case DOWN:
-                target = Constants.PULSES_AT_THE_BOTTOM;
-                velocity = Constants.ARM_DOWN_Velocity;
-                break;
-
+        target = Constants.BOTTOM_ARM_ANGLE;
+        velocity = Constants.ARM_DOWN_VELOCITY;
+        break;
     }
   }
   // Called every time the scheduler runs while the command is scheduled.
@@ -56,15 +52,12 @@ public class SetArm extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    pickup.setVelocity(0);
+    pickup.setPower(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(target > pickup.getArmSelectedSensorPosition() - 5 && target < pickup.getArmSelectedSensorPosition() + 5){
-      return true;
-    }
-    return false;
+    return Math.abs(target - pickup.getAngle()) < Constants.ARM_ANGLE_TOLERANCE;
   }
 }

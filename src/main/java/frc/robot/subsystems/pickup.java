@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -23,29 +24,38 @@ public class Pickup extends SubsystemBase {
 
     armFeedforward = new ArmFeedforward(Constants.KS, Constants.KCOS, Constants.KV);
     
-    arm.setSelectedSensorPosition(Constants.PULSES_AT_THE_TOP);
+    arm.setSelectedSensorPosition(Constants.TOP_ARM_ANGLE * Constants.ARM_PULSES_PER_ROTATION / 360);
   }
 
+  /**
+   * Sets the power of the intake.
+   */
   public void setPower(double power){
     intake.set(ControlMode.PercentOutput, power);
   }
+  
+  /**
+   * Sets the velocity of the arm
+   * @param velocity The velocity to set the arm to in rad/s
+   */
   public void setVelocity(double velocity){
-    arm.set(ControlMode.PercentOutput, armFeedforward.calculate(degreesToRadians(getDegreeOfArm()), velocity));
-  }
-  public double degreesToRadians(double degree){
-    return degree * (Math.PI / 180);
+    arm.set(ControlMode.PercentOutput, armFeedforward.calculate(Math.toRadians(getAngle()), velocity));
   }
 
-  public double getArmSelectedSensorPosition(){
-    return arm.getSelectedSensorPosition();
-  }
-
-  public double getDegreeOfArm(){
-    return getArmSelectedSensorPosition() * ( 360 / Constants.ENCODER_PULSES);
+  /**
+   * Returns the current angle of the arm in degrees.
+   */
+  public double getAngle(){
+    return arm.getSelectedSensorPosition() * ( 360 / Constants.ARM_PULSES_PER_ROTATION);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+      builder.addDoubleProperty("Angle", this::getAngle, null);
   }
 }
