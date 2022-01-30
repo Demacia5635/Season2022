@@ -6,6 +6,9 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.subsystems.Pickup;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -15,9 +18,15 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+  private final XboxController controller;
+  private final JoystickButton aButton;
+  private final Pickup pickup;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    controller = new XboxController(0);
+    aButton = new JoystickButton(controller, 1);
+    pickup = new Pickup();
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -27,8 +36,12 @@ public class RobotContainer {
    * instantiating a {@link edu.wpi.first.wpilibj.GenericHID} or one of its subclasses ({@link
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+   * A button main -> pickup balls
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    aButton.whenHeld(new StartEndCommand(() -> {pickup.setPower(Constants.PICKUP_POWER);},
+        () -> {pickup.setPower(0);}, pickup));
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
