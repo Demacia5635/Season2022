@@ -2,19 +2,22 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.comends;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.Chassis;
 
-public class controler extends CommandBase {
-  /** Creates a new controler. */
-  private Chassis chassis;
-  private XboxController controller;
-  public controler(Chassis chassis, XboxController controller) {
+public class Drive extends CommandBase {
+
+  private final Chassis chassis;
+  private final XboxController controller;
+
+  public Drive(Chassis chassis, XboxController controller) {
     this.chassis = chassis;
     this.controller = controller;
+
     addRequirements(chassis);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -25,20 +28,28 @@ public class controler extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() { 
-    //xboxcontroler wey with inputY
-    chassis.leftpower(1/**inputX*/);
+  public void execute() {
+    double value = deadband(controller.getRightTriggerAxis() - controller.getLeftTriggerAxis());
+    double angle = deadband(controller.getLeftX());
+    double lPower, rPower;
 
-    //xboxcontroler wey with inputx
-    chassis.rightpower(1/**inputX*/);
-    
+    lPower = scalePower(value + angle);
+    rPower = scalePower(value - angle);
+    chassis.setPower(lPower, rPower);
+  }
+
+  private double deadband(double value){
+    return Math.abs(value) > Constants.CONTROLLER_DEADBAND ? value : 0;
+  }
+
+  private double scalePower(double power){
+    return power * power * power;
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    chassis.leftpower(0);
-    chassis.rightpower(0);
+    chassis.setPower(0, 0);
   }
 
   // Returns true when the command should end.

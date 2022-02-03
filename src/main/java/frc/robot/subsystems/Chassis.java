@@ -10,12 +10,17 @@ import frc.robot.utils.GroupOfMotors;
 
 public class Chassis extends SubsystemBase{
   /** Creates a new Chassis. */
+  private final GroupOfMotors leftMotors;
+  private final GroupOfMotors rightMotors;
 
-  public void leftpower(double power) {// between 1 and -1
-    new GroupOfMotors(Constants.LEFT_FRONT_PORT);
+  public Chassis(){
+    leftMotors = new GroupOfMotors(Constants.LEFT_FRONT_PORT, Constants.LEFT_BACK_PORT);
+    rightMotors = new GroupOfMotors(Constants.RIGHT_FRONT_PORT, Constants.RIGHT_BACK_PORT);
   }
-  public void rightpower(double power) {// between 1 and -1
-    new GroupOfMotors(Constants.RIGHT_FRONT_PORT);
+
+  public void setPower(double lPower, double rPower){
+    leftMotors.setPower(lPower);
+    rightMotors.setPower(rPower);
   }
   @Override
   public void periodic() {

@@ -22,6 +22,6 @@ public final class Constants {
     public static final int LEFT_BACK_PORT = -1; 
     public static final int RIGHT_FRONT_PORT = -1; 
     public static final int RIGHT_BACK_PORT = -1; 
-
+    public static final double CONTROLLER_DEADBAND = 0.1;
     
 }

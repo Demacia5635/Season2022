@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.Drive;
 import frc.robot.subsystems.Chassis;
 
 /**
@@ -19,9 +20,12 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   private final Chassis chassis;
+  private final XboxController mainController;
 
   public RobotContainer() {
     chassis = new Chassis();
+    mainController = new XboxController(0);
+    chassis.setDefaultCommand(new Drive(chassis, mainController));
     // Configure the button bindings
     configureButtonBindings();
   }
