@@ -7,8 +7,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -20,21 +20,21 @@ import frc.robot.utils.FeedForward;
 public class Shooting extends SubsystemBase {
   /** Creates a new Shooting. */
 
-  private final TalonFX shooterMain;
-  private final TalonFX shooterSecondary;
+  private final WPI_TalonFX shooterMain;
+  private final WPI_TalonFX shooterSecondary;
   private final FeedForward shooterAff;
-  private final TalonSRX inputWheel;
-  private final TalonSRX turner;
+  private final WPI_TalonSRX inputWheel;
+  private final WPI_TalonSRX turner;
   private final PigeonIMU gyro;
 
   public Shooting() {
-    shooterMain = new TalonFX(Constants.SHOOTER_PORT_MAIN);
-    turner = new TalonSRX(Constants.TURNER_PORT);
+    shooterMain = new WPI_TalonFX(Constants.SHOOTER_PORT_MAIN);
+    turner = new WPI_TalonSRX(Constants.TURNER_PORT);
     turner.setNeutralMode(NeutralMode.Brake);
     shooterAff = new FeedForward(Constants.SHOOTER_KS, Constants.SHOOTER_KV);
     gyro = new PigeonIMU(Constants.TURNER_GYRO_PORT);
-    shooterSecondary = new TalonFX(Constants.SHOOTER_PORT_SECONDARY);
-    inputWheel = new TalonSRX(Constants.INPUT_WHEEL_PORT);
+    shooterSecondary = new WPI_TalonFX(Constants.SHOOTER_PORT_SECONDARY);
+    inputWheel = new WPI_TalonSRX(Constants.INPUT_WHEEL_PORT);
     shooterSecondary.setInverted(true);
     shooterSecondary.follow(shooterMain);
   }
