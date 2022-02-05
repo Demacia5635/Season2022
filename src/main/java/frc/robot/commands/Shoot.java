@@ -15,7 +15,6 @@ public class Shoot extends CommandBase {
   private final Shooting shooting;
   private final DoubleSupplier velocityGetter;
   private final DoubleSupplier angleGetter;
-  private boolean shoot;
 
   public Shoot(Shooting shooting, DoubleSupplier velocityGetter, DoubleSupplier angleGetter) {
     this.shooting = shooting;
@@ -26,13 +25,7 @@ public class Shoot extends CommandBase {
   }
 
   @Override
-  public void initialize() {
-    shoot = false;
-  }
-
-  public void shoot(){
-    shoot = true;
-  }
+  public void initialize() {}
 
   @Override
   public void execute() {
@@ -40,7 +33,7 @@ public class Shoot extends CommandBase {
     shooting.setTurnerPower(Math.signum(angleGetter.getAsDouble() - shooting.getTurnerAngle()) * Constants.TURNER_DEFAULT_POWER);
 
     if (Math.abs(shooting.getShooterVelocity() - velocityGetter.getAsDouble()) <= Constants.MAX_SHOOT_VELOCITY_ERROR && 
-        shoot && Math.abs(angleGetter.getAsDouble() - shooting.getTurnerAngle()) <= Constants.MAX_SHOOT_ANGLE_ERROR){
+        Math.abs(angleGetter.getAsDouble() - shooting.getTurnerAngle()) <= Constants.MAX_SHOOT_ANGLE_ERROR){
           
       shooting.openShooterInput();
     }

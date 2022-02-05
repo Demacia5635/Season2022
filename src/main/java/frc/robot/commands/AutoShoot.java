@@ -7,9 +7,9 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.drive.Vector2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Shooting;
-import frc.robot.subsystems.Chassis;
 import frc.robot.Constants;
+import frc.robot.subsystems.Chassis;
+import frc.robot.subsystems.Shooting;
 
 public class AutoShoot extends CommandBase {
   
