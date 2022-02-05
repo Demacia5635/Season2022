@@ -24,6 +24,10 @@ public class Shoot extends CommandBase {
     addRequirements(shooting);
   }
 
+  public Shoot(Shooting shooting, double velocity, double angle) {
+    this(shooting, () -> {return velocity;}, () -> {return angle;});
+  }
+
   @Override
   public void initialize() {}
 
