@@ -44,6 +44,8 @@ public final class Constants {
     public static final double MAX_VELOCITY_AUTO = -1;
     public static final double MAX_ACCELERATION_AUTO = -1;
 
+    public static final double MAX_MOVE_POWER = 0.6;
+
     public static final double RAMSETE_B = 2;
     public static final double RAMSETE_ZETA = 0.7;
 }
