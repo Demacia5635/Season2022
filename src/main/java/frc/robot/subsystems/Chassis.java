@@ -119,7 +119,7 @@ public class Chassis extends SubsystemBase{
    */
   public void resetOdometry(Pose2d pose) {
     resetEncoders();
-    odometry.resetPosition(pose, Rotation2d.fromDegrees(getFusedHeading()));
+    odometry.resetPosition(pose, Rotation2d.fromDegrees(getAngle()));
   }
 
   /**
@@ -222,7 +222,7 @@ public class Chassis extends SubsystemBase{
             // RamseteCommand passes volts to the callback
             this::setVoltage,
             this
-    ).andThen(() -> {setPower(0, 0);}, this);
+        ).andThen(() -> {setPower(0, 0);}, this);
 
     return ramseteCommand;
   }
