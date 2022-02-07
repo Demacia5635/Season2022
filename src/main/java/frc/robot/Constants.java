@@ -98,4 +98,28 @@ public final class Constants {
     public static final double CLIMB_KV = -1;
     public static final double CONTROLLER_DEADBAND = 0.1;
     
+    //Ports
+    public static final int INTAKE_PORT = -1;
+    public static final int ARM_PORT = -1;
+    
+    //Power
+    public static final double PICKUP_POWER = -1;
+
+    //Velocity
+    public static final double ARM_UP_VELOCITY = -1;
+    public static final double ARM_DOWN_VELOCITY = -1;
+
+    //Encoder
+    public static final double ARM_PULSES_PER_ROTATION = -1;
+
+    //Angles
+    public static final double TOP_ARM_ANGLE = -1;
+    public static final double BOTTOM_ARM_ANGLE = -1;
+    public static final double ARM_ANGLE_TOLERANCE = -1;
+    
+    //Arm FeedForward
+    public static final double GRIPPER_KS = -1;
+    public static final double GRIPPER_KCOS = -1;
+    public static final double GRIPPER_KV = -1;
+
 }

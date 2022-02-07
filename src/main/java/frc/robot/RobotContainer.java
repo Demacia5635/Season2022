@@ -6,12 +6,14 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Drive;
 import frc.robot.commands.MoveElevatorAutonomously;
 import frc.robot.commands.OpenShackle;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ElivatorInside;
+import frc.robot.subsystems.Pickup;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -21,6 +23,8 @@ import frc.robot.subsystems.ElivatorInside;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+  private final JoystickButton aButton;
+  private final Pickup pickup;
 
   private final ElivatorInside elivator_Inside;
 
@@ -61,6 +65,9 @@ public class RobotContainer {
 
     mainController = new XboxController(0);
     chassis.setDefaultCommand(new Drive(chassis, mainController));
+    
+    aButton = new JoystickButton(mainController, 1);
+    pickup = new Pickup();
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -70,11 +77,14 @@ public class RobotContainer {
    * instantiating a {@link edu.wpi.first.wpilibj.GenericHID} or one of its subclasses ({@link
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+   * A button main -> pickup balls
    */
   private void configureButtonBindings() {
     trigerForShackle.whileHeld(openShackle);
     step1Button.whenPressed(step1);
     step2Button.whenPressed(step2);
+    aButton.whenHeld(new StartEndCommand(() -> {pickup.setPower(Constants.PICKUP_POWER);},
+        () -> {pickup.setPower(0);}, pickup));
   }
 
   /**
