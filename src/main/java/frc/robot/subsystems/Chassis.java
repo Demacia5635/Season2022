@@ -136,7 +136,7 @@ public class Chassis extends SubsystemBase{
    * @return angle to the ball in degrees
    */
   public double getVisionAngle(){
-    return SmartDashboard.getNumber("ball angle", Double.Nan);
+    return SmartDashboard.getNumber("ball angle", Double.NaN);
   }
 
   /**
@@ -144,7 +144,7 @@ public class Chassis extends SubsystemBase{
    * @return distance to the ball in meters
    */
   public double getVisionDistance(){
-    return SmartDashboard.getNumber("ball distance", Double.Nan);
+    return SmartDashboard.getNumber("ball distance", Double.NaN);
   }
 
   /**
