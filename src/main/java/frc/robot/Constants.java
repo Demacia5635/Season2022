@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.drive.Vector2d;
  */
 public final class Constants {
     //TODO : set constants
-    //Shooting
+    //#region Shooting
     public static final int SHOOTER_PORT_MAIN = -1;
     public static final int SHOOTER_PORT_SECONDARY = -1;
     public static final int TURNER_PORT = -1;
@@ -34,8 +34,9 @@ public final class Constants {
     public static final Vector2d[] SHOOTING_VALUES = null;
     public static final double SHOOTING_VELOCITIES_DIFF = -1;
     public static final double MIN_SHOOTING_Y = -1;
+    //#endregion
 
-    //TODO : finish constants
+    //#region Chassis
     public static final double MAX_VELOCITY = -1;
     public static final double PULSES_PER_METER = -1;
 
@@ -68,6 +69,9 @@ public final class Constants {
 
     public static final double RAMSETE_B = 2;
     public static final double RAMSETE_ZETA = 0.7;
+    //#endregion
+
+    //#region Climb
     //motors
     public static final int TELESCOPIC_MOTOR = -1;
     public static final int SHACKLE_OPENNER = -1;
@@ -86,7 +90,7 @@ public final class Constants {
 
     //distane to move
     public static final double DISTANCE_STEP_1 = -1;
-    public static final double DISTANCE_STEP_2 = -  1;
+    public static final double DISTANCE_STEP_2 = -1;
 
     //PID for climbing
     public static final double CLIMB_KP = -1;
@@ -97,7 +101,9 @@ public final class Constants {
     public static final double CLIMB_KS = -1;
     public static final double CLIMB_KV = -1;
     public static final double CONTROLLER_DEADBAND = 0.1;
+    //#endregion
     
+    //#region Intake
     //Ports
     public static final int INTAKE_PORT = -1;
     public static final int ARM_PORT = -1;
@@ -121,5 +127,5 @@ public final class Constants {
     public static final double GRIPPER_KS = -1;
     public static final double GRIPPER_KCOS = -1;
     public static final double GRIPPER_KV = -1;
-
+    //#endregion
 }
