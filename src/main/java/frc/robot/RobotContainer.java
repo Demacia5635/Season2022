@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Chassis;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -17,7 +18,10 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  private final Chassis chassis;
+
   public RobotContainer() {
+    chassis = new Chassis();
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -36,7 +40,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
     return null;
   }
 }

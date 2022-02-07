@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.drive.Vector2d;
 
 /**
@@ -33,4 +34,38 @@ public final class Constants {
     public static final Vector2d[] SHOOTING_VALUES = null;
     public static final double SHOOTING_VELOCITIES_DIFF = -1;
     public static final double MIN_SHOOTING_Y = -1;
+
+    //TODO : finish constants
+    public static final double MAX_VELOCITY = -1;
+    public static final double PULSES_PER_METER = -1;
+
+    public static final int LEFT_FRONT_PORT = -1; 
+    public static final int LEFT_BACK_PORT = -1; 
+    public static final int RIGHT_FRONT_PORT = -1; 
+    public static final int RIGHT_BACK_PORT = -1; 
+
+    public static final int GYRO_PORT = -1;
+
+    public static final int ANGLE_KP = -1;
+    public static final int ANGLE_KI = -1;
+    public static final int ANGLE_KD = -1;
+
+    public static final int STOP_ANGLE = 5;
+
+    public static final double KS = -1;
+    public static final double KV = -1;
+    public static final double KA = -1;
+    public static final double KP = -1;
+    public static final double TRACK_WIDTH = -1;
+
+    public static final DifferentialDriveKinematics KINEMATICS = new DifferentialDriveKinematics(TRACK_WIDTH);
+
+    public static final double MAX_VELOCITY_AUTO = -1;
+    public static final double MAX_ACCELERATION_AUTO = -1;
+
+    public static final double MOVE_POWER = 0.6;
+    public static final double TURN_POWER = 0.6;
+
+    public static final double RAMSETE_B = 2;
+    public static final double RAMSETE_ZETA = 0.7;
 }

@@ -7,11 +7,17 @@ package frc.robot.commands;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.Chassis;
 
 public class TurnByVision extends CommandBase {
-  /** Creates a new Turn. */
-  public TurnByVision(Chassis chassis, DoubleSupplier getter) {
+  /** Creates a new TurnByViision. */
+  private Chassis chassis;
+  private DoubleSupplier x;
+  public TurnByVision(Chassis chassis, DoubleSupplier x) {
+    this.chassis = chassis;
+    this.x = x;
+    addRequirements(chassis);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -21,15 +27,20 @@ public class TurnByVision extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    double power = Math.signum(x.getAsDouble())*Constants.TURN_POWER;
+    chassis.setPower(-power, power);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    chassis.setPower(0, 0);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return Math.abs(x.getAsDouble()) < 0.1;
   }
 }
