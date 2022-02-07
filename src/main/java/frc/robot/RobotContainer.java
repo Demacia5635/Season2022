@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.Drive;
 import frc.robot.commands.MoveElevatorAutonomously;
 import frc.robot.commands.OpenShackle;
 import frc.robot.subsystems.Chassis;
@@ -23,7 +24,7 @@ public class RobotContainer {
 
   private final ElivatorInside elivator_Inside;
 
-  private final XboxController controller;
+  private final XboxController secondaryController;
 
   private final JoystickButton trigerForShackle;
   
@@ -39,24 +40,27 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   private final Chassis chassis;
+  private final XboxController mainController;
 
   public RobotContainer() {
     chassis = new Chassis();
     
-    controller = new XboxController(Constants.XBOX_CONTROLLER_PORT);
+    secondaryController = new XboxController(1);
     
-    elivator_Inside = new ElivatorInside(controller);
+    elivator_Inside = new ElivatorInside(secondaryController);
 
-    trigerForShackle = new JoystickButton(controller, Constants.TRIGER_FOR_SHACKLE);
+    trigerForShackle = new JoystickButton(secondaryController, Constants.TRIGER_FOR_SHACKLE);
     
     openShackle = new OpenShackle(elivator_Inside);
     
     //Autonomous
     step1 = new MoveElevatorAutonomously(elivator_Inside, Constants.DISTANCE_STEP_1);
     step2 = new MoveElevatorAutonomously(elivator_Inside, Constants.DISTANCE_STEP_2);
-    step1Button = new JoystickButton(controller, Constants.STEP_1_BUTTON);
-    step2Button = new JoystickButton(controller, Constants.STEP_2_BUTTON);
+    step1Button = new JoystickButton(secondaryController, Constants.STEP_1_BUTTON);
+    step2Button = new JoystickButton(secondaryController, Constants.STEP_2_BUTTON);
 
+    mainController = new XboxController(0);
+    chassis.setDefaultCommand(new Drive(chassis, mainController));
     // Configure the button bindings
     configureButtonBindings();
   }

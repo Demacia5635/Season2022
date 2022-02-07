@@ -77,7 +77,6 @@ public final class Constants {
 
     //controller
     public static final int TRIGER_FOR_SHACKLE = -1;
-    public static final int XBOX_CONTROLLER_PORT = 0;
     public static final int STEP_1_BUTTON = -1;
     public static final int STEP_2_BUTTON = -1;
     public static final double JOYSTICK_DEADBAND = 0.1;
@@ -97,4 +96,6 @@ public final class Constants {
     //FeedForward for climbing
     public static final double CLIMB_KS = -1;
     public static final double CLIMB_KV = -1;
+    public static final double CONTROLLER_DEADBAND = 0.1;
+    
 }

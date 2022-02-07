@@ -226,7 +226,7 @@ public class Chassis extends SubsystemBase{
 
     return ramseteCommand;
   }
-
+  
   @Override
   public void periodic() {
     odometry.update(Rotation2d.fromDegrees(getFusedHeading()), left.getDistance(), right.getDistance());
