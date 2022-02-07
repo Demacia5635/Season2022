@@ -18,11 +18,11 @@ import edu.wpi.first.wpilibj.drive.Vector2d;
 public final class Constants {
     //TODO : set constants
     //#region Shooting
-    public static final int SHOOTER_PORT_MAIN = -1;
-    public static final int SHOOTER_PORT_SECONDARY = -1;
-    public static final int TURNER_PORT = -1;
+    public static final int SHOOTER_PORT_MAIN = 5;
+    public static final int SHOOTER_PORT_SECONDARY = 6;
+    public static final int TURNER_PORT = 8;
     public static final int TURNER_GYRO_PORT = -1;
-    public static final int INPUT_WHEEL_PORT = -1;
+    public static final int INPUT_WHEEL_PORT = 9;
     public static final int LIMIT_SWITCH_PORT = -1;
     public static final double INPUT_WHEEL_POWER = -1;
     public static final double SHOOTER_PULSE_TO_METER = -1;
@@ -77,7 +77,7 @@ public final class Constants {
     //#region Climb
     //motors
     public static final int TELESCOPIC_MOTOR = -1;
-    public static final int SHACKLE_OPENNER = -1;
+    public static final int SHACKLE_OPENNER = 11;
     
     //power
     public static final double SHACKLE_OPENNING_MAX_POWER = -1;
@@ -108,8 +108,8 @@ public final class Constants {
     
     //#region Intake
     //Ports
-    public static final int INTAKE_PORT = -1;
-    public static final int ARM_PORT = -1;
+    public static final int INTAKE_PORT = 7;
+    public static final int ARM_PORT = 10;
     
     //Power
     public static final double PICKUP_POWER = -1;
