@@ -8,9 +8,12 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.AutoShoot;
 import frc.robot.commands.Drive;
-import frc.robot.commands.MoveElevatorAutonomously;
 import frc.robot.commands.OpenShackle;
+import frc.robot.commands.SetArm;
+import frc.robot.commands.SetArm.Destination;
+import frc.robot.commands.Shoot;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ElivatorInside;
 import frc.robot.subsystems.Pickup;
@@ -25,21 +28,25 @@ import frc.robot.subsystems.Shooting;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Pickup pickup;
-  private final ElivatorInside elivator_Inside;
+  private final ElivatorInside elivatorInside;
   private final Chassis chassis;
   private final Shooting shooting;
   
   private final XboxController secondaryController;
   private final XboxController mainController;
   
-  private final JoystickButton aButton;
-  private final JoystickButton step1Button;
-  private final JoystickButton step2Button;
-  private final JoystickButton trigerForShackle;
+  private final JoystickButton aButtonMain;
+  private final JoystickButton yButtonMain;
+  private final JoystickButton bButtonMain;
+  private final JoystickButton xButtonMain;
+  private final JoystickButton rightBumperMain;
+
+  private final JoystickButton bButtonSecondary;
   
   private final OpenShackle openShackle;
-  private final MoveElevatorAutonomously step1;
-  private final MoveElevatorAutonomously step2;
+  private final AutoShoot autoShoot;
+  private final SetArm armUp;
+  private final Command intake;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
 
@@ -49,19 +56,22 @@ public class RobotContainer {
 
     chassis = new Chassis();
     pickup = new Pickup();
-    elivator_Inside = new ElivatorInside(secondaryController);
+    elivatorInside = new ElivatorInside(mainController);
     shooting = new Shooting();
 
-    trigerForShackle = new JoystickButton(secondaryController, Constants.TRIGER_FOR_SHACKLE);
-    aButton = new JoystickButton(mainController, 1);
-    step1Button = new JoystickButton(secondaryController, Constants.STEP_1_BUTTON);
-    step2Button = new JoystickButton(secondaryController, Constants.STEP_2_BUTTON);
+    bButtonSecondary = new JoystickButton(secondaryController, 2);
     
-    openShackle = new OpenShackle(elivator_Inside);
-    
-    //Autonomous
-    step1 = new MoveElevatorAutonomously(elivator_Inside, Constants.DISTANCE_STEP_1);
-    step2 = new MoveElevatorAutonomously(elivator_Inside, Constants.DISTANCE_STEP_2);
+    aButtonMain = new JoystickButton(mainController, 1);
+    bButtonMain = new JoystickButton(mainController, 2);
+    yButtonMain = new JoystickButton(mainController, 3);
+    xButtonMain = new JoystickButton(mainController, 4);
+    rightBumperMain = new JoystickButton(mainController, 6);
+
+    openShackle = new OpenShackle(elivatorInside);
+    autoShoot = new AutoShoot(shooting, chassis);
+    armUp = new SetArm(pickup, Destination.UP);
+    intake = new SetArm(pickup, Destination.DOWN).andThen(new StartEndCommand(
+        () -> {pickup.setPower(Constants.PICKUP_POWER);},() -> {pickup.setPower(0);}, pickup));
 
     chassis.setDefaultCommand(new Drive(chassis, mainController));
     
@@ -75,13 +85,22 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    * A button main -> pickup balls
+   * Y buttom main -> arm up
+   * B button main -> shoot
+   * X button main -> vision tracking
+   * right bumper main -> open shackle
+   * B button secondary -> default shoot
    */
   private void configureButtonBindings() {
-    trigerForShackle.whileHeld(openShackle);
-    step1Button.whenPressed(step1);
-    step2Button.whenPressed(step2);
-    aButton.whenHeld(new StartEndCommand(() -> {pickup.setPower(Constants.PICKUP_POWER);},
-        () -> {pickup.setPower(0);}, pickup));
+    aButtonMain.whenHeld(intake);
+      
+    yButtonMain.whenPressed(armUp);
+    
+    bButtonMain.whenHeld(autoShoot);
+
+    rightBumperMain.whileHeld(openShackle);
+
+    bButtonSecondary.whileHeld(new Shoot(shooting, Constants.SHOOTING_DEFAULT_VELOCITY, 0));
   }
 
   /**

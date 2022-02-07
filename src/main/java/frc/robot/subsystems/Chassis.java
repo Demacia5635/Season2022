@@ -25,6 +25,7 @@ import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -128,6 +129,42 @@ public class Chassis extends SubsystemBase{
    */
   public double getAverageEncoderDistance() {
     return (left.getDistance() + right.getDistance()) / 2;
+  }
+
+  /**
+   * returns the angle to the ball
+   * @return angle to the ball in degrees
+   */
+  public double getVisionAngle(){
+    return SmartDashboard.getNumber("ball angle", Double.Nan);
+  }
+
+  /**
+   * returns the distance to the ball
+   * @return distance to the ball in meters
+   */
+  public double getVisionDistance(){
+    return SmartDashboard.getNumber("ball distance", Double.Nan);
+  }
+
+  /**
+   * goes to the ball according to vision
+   * @param velocity the velocity to go at
+   */
+  public void goToBall(double velocity){
+    double angle = getVisionAngle();
+    double distance = getVisionDistance();
+
+    if (angle == 0){
+      setVelocity(velocity, velocity);
+      return;
+    }
+
+    double radius = distance / (2 * Math.sin(Math.toRadians(angle)));
+
+    double k = Constants.TRACK_WIDTH / 2;
+
+    setVelocity(velocity * (1 + (k / radius)), velocity * (1 - (k / radius)));
   }
 
   public void setHeading(double angle) {

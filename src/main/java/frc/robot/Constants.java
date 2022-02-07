@@ -31,6 +31,7 @@ public final class Constants {
     public static final double TURNER_DEFAULT_POWER = -1;
     public static final double MAX_SHOOT_ANGLE_ERROR = -1;
     public static final double MAX_SHOOT_VELOCITY_ERROR = -1;
+    public static final double SHOOTING_DEFAULT_VELOCITY = -1;
 
     public static final Vector2d[] SHOOTING_VALUES = null;
     public static final double SHOOTING_VELOCITIES_DIFF = -1;

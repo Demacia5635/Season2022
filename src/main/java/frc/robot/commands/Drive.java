@@ -31,11 +31,17 @@ public class Drive extends CommandBase {
   public void execute() {
     double value = deadband(controller.getRightTriggerAxis() - controller.getLeftTriggerAxis());
     double angle = deadband(controller.getLeftX());
-    double lPower, rPower;
 
-    lPower = scalePower(value + angle);
-    rPower = scalePower(value - angle);
-    chassis.setPower(lPower, rPower);
+    if (controller.getXButton()){
+      chassis.goToBall(value * Constants.MAX_VELOCITY_AUTO);
+    }
+    else {
+      double lPower, rPower;
+
+      lPower = scalePower(value + angle);
+      rPower = scalePower(value - angle);
+      chassis.setPower(lPower, rPower);
+    }
   }
 
   private double deadband(double value){
