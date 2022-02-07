@@ -42,7 +42,7 @@ public class PID{
         sum_error += error;
         PID = (error * KP) + (sum_error * KI) + ((last_error-error)*KD);
         last_error = error;
-        return Math.min(Math.max(PID,-1),1);
+        return PID;
     }
 }
 

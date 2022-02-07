@@ -68,4 +68,33 @@ public final class Constants {
 
     public static final double RAMSETE_B = 2;
     public static final double RAMSETE_ZETA = 0.7;
+    //motors
+    public static final int TELESCOPIC_MOTOR = -1;
+    public static final int SHACKLE_OPENNER = -1;
+    
+    //power
+    public static final double SHACKLE_OPENNING_MAX_POWER = -1;
+
+    //controller
+    public static final int TRIGER_FOR_SHACKLE = -1;
+    public static final int XBOX_CONTROLLER_PORT = 0;
+    public static final int STEP_1_BUTTON = -1;
+    public static final int STEP_2_BUTTON = -1;
+    public static final double JOYSTICK_DEADBAND = 0.1;
+
+    //elivator
+    public static final double CLIMB_PULSES_PER_METER = -1;
+
+    //distane to move
+    public static final double DISTANCE_STEP_1 = -1;
+    public static final double DISTANCE_STEP_2 = -  1;
+
+    //PID for climbing
+    public static final double CLIMB_KP = -1;
+    public static final double CLIMB_KI = -1;
+    public static final double CLIMB_KD = -1;
+
+    //FeedForward for climbing
+    public static final double CLIMB_KS = -1;
+    public static final double CLIMB_KV = -1;
 }
