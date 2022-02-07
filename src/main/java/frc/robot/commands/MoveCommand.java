@@ -6,8 +6,6 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
-import com.fasterxml.jackson.databind.introspect.ConcreteBeanPropertyBase;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Chassis;
@@ -30,7 +28,7 @@ public class MoveCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double power = Math.signum(y.getAsDouble())*Constants.MAX_MOVE_POWER;
+    double power = Math.signum(y.getAsDouble())*Constants.MOVE_POWER;
     chassis.setPower(power,power);
   }
 

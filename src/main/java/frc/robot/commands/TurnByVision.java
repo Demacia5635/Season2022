@@ -28,7 +28,7 @@ public class TurnByVision extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double power = Math.signum(x.getAsDouble())*Constants.MAX_MOVE_POWER;
+    double power = Math.signum(x.getAsDouble())*Constants.TURN_POWER;
     chassis.setPower(-power, power);
   }
 
