@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -15,14 +14,14 @@ import frc.robot.Constants;
 public class Pickup extends SubsystemBase {
 
   private final WPI_TalonSRX intake, arm;
-  private final ArmFeedforward armFeedforward;
+  //private final ArmFeedforward armFeedforward;
 
   /** Creates a new BallIntake. */
   public Pickup() {
     intake = new WPI_TalonSRX(Constants.INTAKE_PORT);
     arm = new WPI_TalonSRX(Constants.ARM_PORT);
 
-    armFeedforward = new ArmFeedforward(Constants.GRIPPER_KS, Constants.GRIPPER_KCOS, Constants.GRIPPER_KV);
+    //armFeedforward = new ArmFeedforward(Constants.GRIPPER_KS, Constants.GRIPPER_KCOS, Constants.GRIPPER_KV);
     
     arm.setSelectedSensorPosition(Constants.TOP_ARM_ANGLE * Constants.ARM_PULSES_PER_ROTATION / 360);
   }
@@ -33,20 +32,40 @@ public class Pickup extends SubsystemBase {
   public void setPower(double power){
     intake.set(ControlMode.PercentOutput, power);
   }
+
+  /**
+   * the limit switch is pressed when the arm is at the top
+   * @return true if the limit switch is pressed
+   */
+  public boolean getUpperLimit(){
+    return arm.isFwdLimitSwitchClosed() == 1;
+  }
+
+  /**
+   * the limit switch is pressed when the arm is at the bottom
+   * @return true if the limit switch is pressed
+   */
+  public boolean getLowerLimit(){
+    return arm.isRevLimitSwitchClosed() == 1;
+  }
   
   /**
    * Sets the velocity of the arm
    * @param velocity The velocity to set the arm to in rad/s
    */
-  public void setVelocity(double velocity){
+  /*public void setVelocity(double velocity){
     arm.set(ControlMode.PercentOutput, armFeedforward.calculate(Math.toRadians(getAngle()), velocity));
-  }
+  }*/
 
   /**
    * Returns the current angle of the arm in degrees.
    */
-  public double getAngle(){
+  /*public double getAngle(){
     return arm.getSelectedSensorPosition() * ( 360 / Constants.ARM_PULSES_PER_ROTATION);
+  }*/
+
+  public void setArmPower(double power){
+    arm.set(ControlMode.PercentOutput, power);
   }
 
   @Override
@@ -56,6 +75,5 @@ public class Pickup extends SubsystemBase {
 
   @Override
   public void initSendable(SendableBuilder builder) {
-      builder.addDoubleProperty("Angle", this::getAngle, null);
   }
 }

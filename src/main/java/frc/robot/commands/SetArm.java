@@ -13,7 +13,6 @@ public class SetArm extends CommandBase {
   
   private final Pickup pickup;
   private final Destination destination;
-  private double target, velocity;
 
   public enum Destination {
     UP, DOWN
@@ -30,24 +29,11 @@ public class SetArm extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    switch(destination){
-      
-      case UP:
-        target = Constants.TOP_ARM_ANGLE;
-        velocity = Constants.ARM_UP_VELOCITY;
-        break;
-
-      case DOWN:
-        target = Constants.BOTTOM_ARM_ANGLE;
-        velocity = Constants.ARM_DOWN_VELOCITY;
-        break;
-    }
+    pickup.setArmPower(destination == Destination.UP ? Constants.ARM_UP_POWER : Constants.ARM_DOWN_POWER);
   }
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    pickup.setVelocity(velocity);
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
@@ -58,6 +44,6 @@ public class SetArm extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(target - pickup.getAngle()) < Constants.ARM_ANGLE_TOLERANCE;
+    return destination == Destination.UP ? pickup.getUpperLimit() : pickup.getLowerLimit();
   }
 }

@@ -12,6 +12,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -25,6 +26,7 @@ public class Shooting extends SubsystemBase {
   private final FeedForward shooterAff;
   private final WPI_TalonSRX inputWheel;
   private final WPI_TalonSRX turner;
+  private final DigitalInput limitSwitch;
   private final PigeonIMU gyro;
 
   public Shooting() {
@@ -37,6 +39,7 @@ public class Shooting extends SubsystemBase {
     inputWheel = new WPI_TalonSRX(Constants.INPUT_WHEEL_PORT);
     shooterSecondary.setInverted(true);
     shooterSecondary.follow(shooterMain);
+    limitSwitch = new DigitalInput(Constants.LIMIT_SWITCH_PORT);
   }
 
   /**
@@ -52,7 +55,10 @@ public class Shooting extends SubsystemBase {
    * @param power between 1 and -1
    */
   public void setTurnerPower(double power){
-    turner.set(ControlMode.PercentOutput, power);
+    if (getLimitSwitch() && power < 0){
+      turner.set(ControlMode.PercentOutput, 0);
+    }
+    else turner.set(ControlMode.PercentOutput, power);
   }
 
   /**
@@ -77,8 +83,15 @@ public class Shooting extends SubsystemBase {
    * @return in degrees
    */
   public double getTurnerAngle(){
-    //TODO : check gyro
-    return -1;
+    return gyro.getPitch();
+  }
+
+  /**
+   * returns the limit switch state
+   * @return true if the limit switch is closed
+   */
+  public boolean getLimitSwitch(){
+    return limitSwitch.get();
   }
 
   /**
@@ -110,10 +123,16 @@ public class Shooting extends SubsystemBase {
   public double getVisionY(){
     return SmartDashboard.getNumber("vision_tower_y", Double.NaN);
   }
+
+  public double getTurnerPower(){
+    return turner.get();
+  }
   
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    if (getLimitSwitch() && getTurnerPower() < 0){
+      setTurnerPower(0);
+    }
   }
 
   @Override
