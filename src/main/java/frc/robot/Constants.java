@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.drive.Vector2d;
  */
 public final class Constants {
     //TODO : set constants
+
     //#region Shooting
     public static final int SHOOTER_PORT_MAIN = 5;
     public static final int SHOOTER_PORT_SECONDARY = 6;
