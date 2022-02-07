@@ -14,6 +14,7 @@ import frc.robot.commands.OpenShackle;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ElivatorInside;
 import frc.robot.subsystems.Pickup;
+import frc.robot.subsystems.Shooting;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -23,51 +24,47 @@ import frc.robot.subsystems.Pickup;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final JoystickButton aButton;
   private final Pickup pickup;
-
   private final ElivatorInside elivator_Inside;
-
+  private final Chassis chassis;
+  private final Shooting shooting;
+  
   private final XboxController secondaryController;
-
+  private final XboxController mainController;
+  
+  private final JoystickButton aButton;
+  private final JoystickButton step1Button;
+  private final JoystickButton step2Button;
   private final JoystickButton trigerForShackle;
   
-  private final JoystickButton step1Button;
-
-  private final JoystickButton step2Button;
-  
   private final OpenShackle openShackle;
-
   private final MoveElevatorAutonomously step1;
-
   private final MoveElevatorAutonomously step2;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  private final Chassis chassis;
-  private final XboxController mainController;
 
   public RobotContainer() {
-    chassis = new Chassis();
-    
     secondaryController = new XboxController(1);
-    
+    mainController = new XboxController(0);
+
+    chassis = new Chassis();
+    pickup = new Pickup();
     elivator_Inside = new ElivatorInside(secondaryController);
+    shooting = new Shooting();
 
     trigerForShackle = new JoystickButton(secondaryController, Constants.TRIGER_FOR_SHACKLE);
+    aButton = new JoystickButton(mainController, 1);
+    step1Button = new JoystickButton(secondaryController, Constants.STEP_1_BUTTON);
+    step2Button = new JoystickButton(secondaryController, Constants.STEP_2_BUTTON);
     
     openShackle = new OpenShackle(elivator_Inside);
     
     //Autonomous
     step1 = new MoveElevatorAutonomously(elivator_Inside, Constants.DISTANCE_STEP_1);
     step2 = new MoveElevatorAutonomously(elivator_Inside, Constants.DISTANCE_STEP_2);
-    step1Button = new JoystickButton(secondaryController, Constants.STEP_1_BUTTON);
-    step2Button = new JoystickButton(secondaryController, Constants.STEP_2_BUTTON);
 
-    mainController = new XboxController(0);
     chassis.setDefaultCommand(new Drive(chassis, mainController));
     
-    aButton = new JoystickButton(mainController, 1);
-    pickup = new Pickup();
     // Configure the button bindings
     configureButtonBindings();
   }
