@@ -41,6 +41,6 @@ public class TurnByVision extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(x.getAsDouble()) < 0.1;
+    return Math.abs(x.getAsDouble()) < Constants.MAX_ANGLE_ERROR_CHASSIS;
   }
 }

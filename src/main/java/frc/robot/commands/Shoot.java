@@ -15,21 +15,28 @@ public class Shoot extends CommandBase {
   private final Shooting shooting;
   private final DoubleSupplier velocityGetter;
   private final DoubleSupplier angleGetter;
+  private boolean shoot;
 
   public Shoot(Shooting shooting, DoubleSupplier velocityGetter, DoubleSupplier angleGetter) {
     this.shooting = shooting;
     this.velocityGetter = velocityGetter;
     this.angleGetter = angleGetter;
+    shoot = false;
 
     addRequirements(shooting);
   }
 
   public Shoot(Shooting shooting, double velocity, double angle) {
     this(shooting, () -> {return velocity;}, () -> {return angle;});
+    shoot = true;
   }
 
   @Override
   public void initialize() {}
+
+  public void shoot(){
+    shoot = true;
+  }
 
   @Override
   public void execute() {
@@ -37,7 +44,7 @@ public class Shoot extends CommandBase {
     shooting.setTurnerPower(Math.signum(angleGetter.getAsDouble() - shooting.getTurnerAngle()) * Constants.TURNER_DEFAULT_POWER);
 
     if (Math.abs(shooting.getShooterVelocity() - velocityGetter.getAsDouble()) <= Constants.MAX_SHOOT_VELOCITY_ERROR && 
-        Math.abs(angleGetter.getAsDouble() - shooting.getTurnerAngle()) <= Constants.MAX_SHOOT_ANGLE_ERROR){
+        shoot && Math.abs(angleGetter.getAsDouble() - shooting.getTurnerAngle()) <= Constants.MAX_SHOOT_ANGLE_ERROR){
           
       shooting.openShooterInput();
     }

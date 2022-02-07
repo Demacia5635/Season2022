@@ -38,7 +38,6 @@ public class RobotContainer {
   private final JoystickButton aButtonMain;
   private final JoystickButton yButtonMain;
   private final JoystickButton bButtonMain;
-  private final JoystickButton xButtonMain;
   private final JoystickButton rightBumperMain;
 
   private final JoystickButton bButtonSecondary;
@@ -64,7 +63,6 @@ public class RobotContainer {
     aButtonMain = new JoystickButton(mainController, 1);
     bButtonMain = new JoystickButton(mainController, 2);
     yButtonMain = new JoystickButton(mainController, 3);
-    xButtonMain = new JoystickButton(mainController, 4);
     rightBumperMain = new JoystickButton(mainController, 6);
 
     openShackle = new OpenShackle(elivatorInside);

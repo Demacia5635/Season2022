@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.drive.Vector2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Shooting;
@@ -24,9 +25,12 @@ public class AutoShoot extends CommandBase {
 
   @Override
   public void initialize() {
-    command = new TurnByVision(chassis, shooting::getVisionX).alongWith(
-        new Shoot(shooting, () -> {return calculateValues(shooting.getVisionY()).x;},
-        () -> {return calculateValues(shooting.getVisionY()).y;}));
+
+    Shoot shootCommand = new Shoot(shooting, () -> {return calculateValues(shooting.getVisionY()).x;},
+        () -> {return calculateValues(shooting.getVisionY()).y;});
+
+    command = new TurnByVision(chassis, shooting::getVisionX).andThen(
+        new InstantCommand(() -> {shootCommand.shoot();}).alongWith(shootCommand));
   }
 
   /**
