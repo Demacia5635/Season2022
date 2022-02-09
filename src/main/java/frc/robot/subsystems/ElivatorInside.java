@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -18,13 +19,15 @@ public class ElivatorInside extends SubsystemBase {
 
   private final WPI_TalonFX telescopicMotor;
   private final WPI_TalonSRX shackleOpenner;
+  private final MoveElivator command;
 
   public ElivatorInside(XboxController controller) {
     this.telescopicMotor = new WPI_TalonFX(Constants.TELESCOPIC_MOTOR);
     this.shackleOpenner = new WPI_TalonSRX(Constants.SHACKLE_OPENNER);
-    setDefaultCommand(new MoveElivator(this, controller));
+    command = new MoveElivator(this, controller);
+    setDefaultCommand(command);
 
-    telescopicMotor.setSelectedSensorPosition(0);
+    //telescopicMotor.setSelectedSensorPosition(0);
   }
 
   /**
@@ -56,8 +59,17 @@ public class ElivatorInside extends SubsystemBase {
       return getSelectedSensorPosition() / Constants.PULSES_PER_METER;
   }
 
+  public void changeClimbingMode(){
+    command.changeClimbing();
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+      
   }
 }

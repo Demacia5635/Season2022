@@ -44,6 +44,6 @@ public class SetArm extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return destination == Destination.UP ? pickup.getUpperLimit() : pickup.getLowerLimit();
+    return destination == Destination.DOWN ? pickup.isDown() : !pickup.isDown();
   }
 }

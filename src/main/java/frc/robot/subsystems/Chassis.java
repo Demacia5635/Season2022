@@ -23,6 +23,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -49,7 +50,8 @@ public class Chassis extends SubsystemBase{
     gyro.setFusedHeading(0);
     odometry = new DifferentialDriveOdometry(new Rotation2d(0));
 
-    left.invertMotors(true);
+    left.invertMotors(false);
+    right.invertMotors(true);
 
     left.setK_P(Constants.KP);
     right.setK_P(Constants.KP);
@@ -267,5 +269,12 @@ public class Chassis extends SubsystemBase{
   @Override
   public void periodic() {
     odometry.update(Rotation2d.fromDegrees(getFusedHeading()), left.getDistance(), right.getDistance());
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    builder.addDoubleProperty("left encoder", left::getEncoder, null);
+    builder.addDoubleProperty("right encoder", right::getEncoder, null);
+    builder.addDoubleProperty("angle", this::getAngle, null);
   }
 }

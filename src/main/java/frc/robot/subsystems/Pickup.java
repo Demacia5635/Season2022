@@ -17,13 +17,16 @@ public class Pickup extends SubsystemBase {
   //private final ArmFeedforward armFeedforward;
 
   /** Creates a new BallIntake. */
+  private boolean isDown;
+
   public Pickup() {
     intake = new WPI_TalonSRX(Constants.INTAKE_PORT);
     arm = new WPI_TalonSRX(Constants.ARM_PORT);
+    isDown = false;
 
     //armFeedforward = new ArmFeedforward(Constants.GRIPPER_KS, Constants.GRIPPER_KCOS, Constants.GRIPPER_KV);
     
-    arm.setSelectedSensorPosition(Constants.TOP_ARM_ANGLE * Constants.ARM_PULSES_PER_ROTATION / 360);
+    //arm.setSelectedSensorPosition(Constants.TOP_ARM_ANGLE * Constants.ARM_PULSES_PER_ROTATION / 360);
   }
 
   /**
@@ -48,6 +51,10 @@ public class Pickup extends SubsystemBase {
   public boolean getLowerLimit(){
     return arm.isRevLimitSwitchClosed() == 1;
   }
+
+  public boolean isDown(){
+    return isDown;
+  }
   
   /**
    * Sets the velocity of the arm
@@ -70,10 +77,14 @@ public class Pickup extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (getLowerLimit()) isDown = true;
+    if (getUpperLimit()) isDown = false;
     // This method will be called once per scheduler run
   }
 
   @Override
   public void initSendable(SendableBuilder builder) {
+    builder.addBooleanProperty("Lower Limit Switch", this::getLowerLimit, null);
+    builder.addBooleanProperty("Upper Limit Switch", this::getUpperLimit, null);
   }
 }

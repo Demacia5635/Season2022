@@ -36,10 +36,11 @@ public class Drive extends CommandBase {
       chassis.goToBall(value * Constants.MAX_VELOCITY_AUTO);
     }
     else {
-      double lPower, rPower;
 
-      lPower = scalePower(value + angle);
-      rPower = scalePower(value - angle);
+      double lPower = scalePower(value + angle);
+      double rPower = scalePower(value - angle);
+
+
       chassis.setPower(lPower, rPower);
     }
   }

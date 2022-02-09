@@ -20,18 +20,20 @@ public final class Constants {
     //#region Shooting
     public static final int SHOOTER_PORT_MAIN = 5;
     public static final int SHOOTER_PORT_SECONDARY = 6;
-    public static final int TURNER_PORT = 8;
+    public static final int TURNER_PORT = 11;
     public static final int TURNER_GYRO_PORT = 13;
     public static final int INPUT_WHEEL_PORT = 9;
-    public static final int LIMIT_SWITCH_PORT = -1;
-    public static final double INPUT_WHEEL_POWER = -1;
-    public static final double SHOOTER_PULSE_TO_METER = -1;
-    public static final double SHOOTER_KS = -1;
-    public static final double SHOOTER_KV = -1;
-    public static final double TURNER_DEFAULT_POWER = -1;
-    public static final double MAX_SHOOT_ANGLE_ERROR = -1;
-    public static final double MAX_SHOOT_VELOCITY_ERROR = -1;
-    public static final double SHOOTING_DEFAULT_VELOCITY = -1;
+    public static final int LIMIT_SWITCH_PORT = 0;
+    public static final double INPUT_WHEEL_POWER = -0.7;
+    public static final double SHOOTER_PULSE_TO_METER = 0.1 * Math.PI / 2048;
+    public static final double SHOOTER_KS = 0.04;
+    public static final double SHOOTER_KV = 1 / 34.;
+    public static final double SHOOTER_KP = 1 / 1000.;
+    public static final double TURNER_DEFAULT_POWER = -0.15;
+    public static final double MAX_SHOOT_ANGLE_ERROR = 3;
+    public static final double MAX_SHOOT_VELOCITY_ERROR = 1.5;
+    public static final double SHOOTING_DEFAULT_VELOCITY = 20;
+    public static final double SHOOTING_DEFAULT_ANGLE = 0;
     public static final double MAX_ANGLE_ERROR_CHASSIS = -1;
 
     public static final Vector2d[] SHOOTING_VALUES = null;
@@ -41,7 +43,7 @@ public final class Constants {
 
     //#region Chassis
     public static final double MAX_VELOCITY = -1;
-    public static final double PULSES_PER_METER = -1;
+    public static final double PULSES_PER_METER = 1;
 
     public static final int LEFT_FRONT_PORT = 3; 
     public static final int LEFT_BACK_PORT = 4; 
@@ -76,16 +78,13 @@ public final class Constants {
 
     //#region Climb
     //motors
-    public static final int TELESCOPIC_MOTOR = -1;
-    public static final int SHACKLE_OPENNER = 11;
+    public static final int TELESCOPIC_MOTOR = 12;
+    public static final int SHACKLE_OPENNER = 8;
     
     //power
-    public static final double SHACKLE_OPENNING_MAX_POWER = -1;
+    public static final double SHACKLE_OPENNING_MAX_POWER = -0.5;
 
     //controller
-    public static final int TRIGER_FOR_SHACKLE = -1;
-    public static final int STEP_1_BUTTON = -1;
-    public static final int STEP_2_BUTTON = -1;
     public static final double JOYSTICK_DEADBAND = 0.1;
 
     //elivator
@@ -112,23 +111,10 @@ public final class Constants {
     public static final int ARM_PORT = 10;
     
     //Power
-    public static final double PICKUP_POWER = -1;
+    public static final double PICKUP_POWER = 1;
 
     //Velocity
-    public static final double ARM_UP_POWER = -1;
-    public static final double ARM_DOWN_POWER = -1;
-
-    //Encoder
-    public static final double ARM_PULSES_PER_ROTATION = -1;
-
-    //Angles
-    public static final double TOP_ARM_ANGLE = -1;
-    public static final double BOTTOM_ARM_ANGLE = -1;
-    public static final double ARM_ANGLE_TOLERANCE = -1;
-    
-    //Arm FeedForward
-    public static final double GRIPPER_KS = -1;
-    public static final double GRIPPER_KCOS = -1;
-    public static final double GRIPPER_KV = -1;
+    public static final double ARM_UP_POWER = 0.6;
+    public static final double ARM_DOWN_POWER = -0.3;
     //#endregion
 }

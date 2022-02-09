@@ -13,12 +13,18 @@ public class MoveElivator extends CommandBase {
   /** Creates a new MoveElivator. */
   private final ElivatorInside elivator;
   private final XboxController controller;
+  private boolean hasStarted;
 
   public MoveElivator(ElivatorInside eInside, XboxController controller) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.elivator = eInside;
     this.controller = controller;
     addRequirements(elivator);
+
+  }
+
+  public void changeClimbing(){
+    hasStarted = !hasStarted;
   }
 
   // Called when the command is initially scheduled.

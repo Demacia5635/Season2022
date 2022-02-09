@@ -125,7 +125,7 @@ public class GroupOfMotors {
     public void invertMotors(boolean isInverted) {
         lead.setInverted(isInverted);
         for (TalonFX motor : motors) {
-            motor.setInverted(InvertType.FollowMaster);
+            motor.setInverted(isInverted);
         }
     }
 

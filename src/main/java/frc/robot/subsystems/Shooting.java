@@ -40,6 +40,7 @@ public class Shooting extends SubsystemBase {
     shooterSecondary.setInverted(true);
     shooterSecondary.follow(shooterMain);
     limitSwitch = new DigitalInput(Constants.LIMIT_SWITCH_PORT);
+    shooterMain.config_kP(0, Constants.SHOOTER_KP);
   }
 
   /**
@@ -66,7 +67,7 @@ public class Shooting extends SubsystemBase {
    * @param velocity in meter/sec
    */
   public void setShooterVelocity(double velocity){
-    shooterMain.set(ControlMode.Velocity, velocity * 10 / Constants.SHOOTER_PULSE_TO_METER, 
+    shooterMain.set(ControlMode.Velocity, velocity / (10 * Constants.SHOOTER_PULSE_TO_METER), 
         DemandType.ArbitraryFeedForward, shooterAff.get(velocity));
   }
 
@@ -75,7 +76,11 @@ public class Shooting extends SubsystemBase {
    * @return in meter/sec
    */
   public double getShooterVelocity(){
-    return shooterMain.getSelectedSensorPosition() * Constants.SHOOTER_PULSE_TO_METER / 10;
+    return shooterMain.getSelectedSensorVelocity() * Constants.SHOOTER_PULSE_TO_METER * 10;
+  }
+
+  public double getShooterEncoder(){
+    return shooterMain.getSelectedSensorPosition();
   }
 
   /**
@@ -83,7 +88,7 @@ public class Shooting extends SubsystemBase {
    * @return in degrees
    */
   public double getTurnerAngle(){
-    return gyro.getPitch();
+    return gyro.getRoll();
   }
 
   /**
@@ -138,5 +143,8 @@ public class Shooting extends SubsystemBase {
   @Override
   public void initSendable(SendableBuilder builder) {
     builder.addDoubleProperty("Shooter Velocity", this::getShooterVelocity, this::setShooterVelocity);
+    builder.addDoubleProperty("Angle", this::getTurnerAngle, null);
+    builder.addDoubleProperty("encoder", this::getShooterEncoder, null);
+    builder.addBooleanProperty("limit switch", this::getLimitSwitch, null);
   }
 }

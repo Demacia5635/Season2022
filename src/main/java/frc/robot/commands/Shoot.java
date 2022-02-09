@@ -15,13 +15,14 @@ public class Shoot extends CommandBase {
   private final Shooting shooting;
   private final DoubleSupplier velocityGetter;
   private final DoubleSupplier angleGetter;
-  private boolean shoot;
+  private boolean shoot, angleRight;
 
   public Shoot(Shooting shooting, DoubleSupplier velocityGetter, DoubleSupplier angleGetter) {
     this.shooting = shooting;
     this.velocityGetter = velocityGetter;
     this.angleGetter = angleGetter;
     shoot = false;
+    angleRight = false;
 
     addRequirements(shooting);
   }
@@ -41,12 +42,18 @@ public class Shoot extends CommandBase {
   @Override
   public void execute() {
     shooting.setShooterVelocity(velocityGetter.getAsDouble());
-    shooting.setTurnerPower(Math.signum(angleGetter.getAsDouble() - shooting.getTurnerAngle()) * Constants.TURNER_DEFAULT_POWER);
 
-    if (Math.abs(shooting.getShooterVelocity() - velocityGetter.getAsDouble()) <= Constants.MAX_SHOOT_VELOCITY_ERROR && 
-        shoot && Math.abs(angleGetter.getAsDouble() - shooting.getTurnerAngle()) <= Constants.MAX_SHOOT_ANGLE_ERROR){
-          
+    if (!angleRight && Math.abs(angleGetter.getAsDouble() - shooting.getTurnerAngle()) > Constants.MAX_SHOOT_ANGLE_ERROR){
+      shooting.setTurnerPower(Math.signum(angleGetter.getAsDouble() - shooting.getTurnerAngle()) * Constants.TURNER_DEFAULT_POWER);
+    }
+    else if (shoot && Math.abs(shooting.getShooterVelocity() - velocityGetter.getAsDouble()) > Constants.MAX_SHOOT_VELOCITY_ERROR){
+      shooting.setTurnerPower(0);
       shooting.openShooterInput();
+      angleRight = true;
+    }
+    else {
+      angleRight = true;
+      shooting.setTurnerPower(0);
     }
   }
 

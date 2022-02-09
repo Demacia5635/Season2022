@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.AutoShoot;
@@ -39,6 +40,7 @@ public class RobotContainer {
   private final JoystickButton yButtonMain;
   private final JoystickButton bButtonMain;
   private final JoystickButton rightBumperMain;
+  private final JoystickButton startButtonMain;
 
   private final JoystickButton bButtonSecondary;
   
@@ -62,8 +64,9 @@ public class RobotContainer {
     
     aButtonMain = new JoystickButton(mainController, 1);
     bButtonMain = new JoystickButton(mainController, 2);
-    yButtonMain = new JoystickButton(mainController, 3);
+    yButtonMain = new JoystickButton(mainController, 4);
     rightBumperMain = new JoystickButton(mainController, 6);
+    startButtonMain = new JoystickButton(secondaryController, 8);
 
     openShackle = new OpenShackle(elivatorInside);
     autoShoot = new AutoShoot(shooting, chassis);
@@ -88,6 +91,8 @@ public class RobotContainer {
    * X button main -> vision tracking
    * right bumper main -> open shackle
    * B button secondary -> default shoot
+   * start button secondary -> start climb sequence
+   * right joystick y -> move elevator
    */
   private void configureButtonBindings() {
     aButtonMain.whenHeld(intake);
@@ -98,7 +103,9 @@ public class RobotContainer {
 
     rightBumperMain.whileHeld(openShackle);
 
-    bButtonSecondary.whileHeld(new Shoot(shooting, Constants.SHOOTING_DEFAULT_VELOCITY, 0));
+    startButtonMain.whenPressed(new InstantCommand(() -> {elivatorInside.changeClimbingMode();}));
+
+    bButtonSecondary.whileHeld(new Shoot(shooting, Constants.SHOOTING_DEFAULT_VELOCITY, Constants.SHOOTING_DEFAULT_ANGLE));
   }
 
   /**
