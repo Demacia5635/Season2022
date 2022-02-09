@@ -21,7 +21,7 @@ public final class Constants {
     public static final int SHOOTER_PORT_MAIN = 5;
     public static final int SHOOTER_PORT_SECONDARY = 6;
     public static final int TURNER_PORT = 8;
-    public static final int TURNER_GYRO_PORT = -1;
+    public static final int TURNER_GYRO_PORT = 13;
     public static final int INPUT_WHEEL_PORT = 9;
     public static final int LIMIT_SWITCH_PORT = -1;
     public static final double INPUT_WHEEL_POWER = -1;
@@ -43,12 +43,12 @@ public final class Constants {
     public static final double MAX_VELOCITY = -1;
     public static final double PULSES_PER_METER = -1;
 
-    public static final int LEFT_FRONT_PORT = -1; 
-    public static final int LEFT_BACK_PORT = -1; 
-    public static final int RIGHT_FRONT_PORT = -1; 
-    public static final int RIGHT_BACK_PORT = -1; 
+    public static final int LEFT_FRONT_PORT = 3; 
+    public static final int LEFT_BACK_PORT = 4; 
+    public static final int RIGHT_FRONT_PORT = 1; 
+    public static final int RIGHT_BACK_PORT = 2; 
 
-    public static final int GYRO_PORT = -1;
+    public static final int GYRO_PORT = 14;
 
     public static final int ANGLE_KP = -1;
     public static final int ANGLE_KI = -1;
