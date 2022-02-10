@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.AutoShoot;
 import frc.robot.commands.Drive;
-import frc.robot.commands.OpenShackle;
+import frc.robot.commands.MoveShackle;
 import frc.robot.commands.SetArm;
 import frc.robot.commands.SetArm.Destination;
 import frc.robot.commands.Shoot;
@@ -43,8 +43,10 @@ public class RobotContainer {
   private final JoystickButton startButtonMain;
 
   private final JoystickButton bButtonSecondary;
+  private final JoystickButton yButtonSecondary;
   
-  private final OpenShackle openShackle;
+  private final MoveShackle openShackle;
+  private final MoveShackle closeShackle;
   private final AutoShoot autoShoot;
   private final SetArm armUp;
   private final Command intake;
@@ -61,6 +63,7 @@ public class RobotContainer {
     shooting = new Shooting();
 
     bButtonSecondary = new JoystickButton(secondaryController, 2);
+    yButtonSecondary = new JoystickButton(secondaryController, 4);
     
     aButtonMain = new JoystickButton(mainController, 1);
     bButtonMain = new JoystickButton(mainController, 2);
@@ -68,7 +71,8 @@ public class RobotContainer {
     rightBumperMain = new JoystickButton(mainController, 6);
     startButtonMain = new JoystickButton(secondaryController, 8);
 
-    openShackle = new OpenShackle(elivatorInside);
+    openShackle = new MoveShackle(elivatorInside, MoveShackle.Destination.OPEN);
+    closeShackle = new MoveShackle(elivatorInside, MoveShackle.Destination.CLOSE);
     autoShoot = new AutoShoot(shooting, chassis);
     armUp = new SetArm(pickup, Destination.UP);
     intake = new SetArm(pickup, Destination.DOWN).andThen(new StartEndCommand(
@@ -93,6 +97,7 @@ public class RobotContainer {
    * B button secondary -> default shoot
    * start button secondary -> start climb sequence
    * right joystick y -> move elevator
+   * Y button secondary -> close shackle
    */
   private void configureButtonBindings() {
     aButtonMain.whenHeld(intake);
@@ -102,6 +107,8 @@ public class RobotContainer {
     bButtonMain.whenHeld(autoShoot);
 
     rightBumperMain.whileHeld(openShackle);
+
+    yButtonSecondary.whileHeld(closeShackle);
 
     startButtonMain.whenPressed(new InstantCommand(() -> {elivatorInside.changeClimbingMode();}));
 

@@ -8,21 +8,27 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.ElivatorInside;
 
-public class OpenShackle extends CommandBase {
+public class MoveShackle extends CommandBase {
   /** Creates a new OpenShackle. */
   
   private final ElivatorInside elivator;
+  private final Destination destination;
 
-  public OpenShackle(ElivatorInside elivator) {
+  public MoveShackle(ElivatorInside elivator, Destination destination) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.elivator = elivator;
+    this.destination = destination;
     addRequirements(elivator);
+  }
+
+  public enum Destination {
+    OPEN, CLOSE
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    elivator.setPowerShackleOpenner(Constants.SHACKLE_OPENNING_MAX_POWER);
+    elivator.setPowerShackleOpenner(Constants.SHACKLE_OPENNING_MAX_POWER * (destination == Destination.OPEN ? 1 : -1));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
