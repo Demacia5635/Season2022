@@ -15,6 +15,7 @@ import frc.robot.commands.MoveShackle;
 import frc.robot.commands.SetArm;
 import frc.robot.commands.SetArm.Destination;
 import frc.robot.commands.Shoot;
+import frc.robot.commands.ShootingCalibration;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ElivatorInside;
 import frc.robot.subsystems.Pickup;
@@ -50,6 +51,7 @@ public class RobotContainer {
   private final AutoShoot autoShoot;
   private final SetArm armUp;
   private final Command intake;
+  private final ShootingCalibration calibration;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
 
@@ -77,6 +79,7 @@ public class RobotContainer {
     armUp = new SetArm(pickup, Destination.UP);
     intake = new SetArm(pickup, Destination.DOWN).andThen(new StartEndCommand(
         () -> {pickup.setPower(Constants.PICKUP_POWER);},() -> {pickup.setPower(0);}, pickup));
+    calibration = new ShootingCalibration(shooting, chassis);
 
     chassis.setDefaultCommand(new Drive(chassis, mainController));
     

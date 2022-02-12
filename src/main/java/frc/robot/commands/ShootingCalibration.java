@@ -13,21 +13,30 @@ import frc.robot.Constants;
 public class ShootingCalibration extends CommandBase {
   
   private double velocity;
+  private double angle;
   private final Shoot shootCommand;
   private double[] velocities;
+  private double[] angles;
   private final MoveCommand moveCommand;
 
   public ShootingCalibration(Shooting shooting, Chassis chassis) {
     moveCommand = new MoveCommand(chassis, () -> {return shooting.getVisionY() - Constants.MIN_SHOOTING_Y - Constants.SHOOTING_VELOCITIES_DIFF * velocities.length;});
     shootCommand = new Shoot(shooting, () -> {return velocity;}, () -> {return 0;});
     velocities = new double[0];
+    angles = new double[0];
     velocity = 0;
+    angle = 0;
   }
 
   @Override
   public void end(boolean interrupted) {
     shootCommand.cancel();
     moveCommand.cancel();
+    for (int i = 0; i < angles.length; i++){
+      System.out.println("Angle" + i + ": " + angles[i]);
+      System.out.println("Velocity" + i + ": " + velocities[i]);
+      System.out.println("--------------------------------------------------------");
+    }
   }
 
   @Override
@@ -47,6 +56,7 @@ public class ShootingCalibration extends CommandBase {
     });
 
     builder.addDoubleProperty("Calibration Velocity", null, (vel) -> {velocity = vel;});
+    builder.addDoubleProperty("Calibration Angle", null, (angle) -> {this.angle = angle;});
 
     builder.addBooleanProperty("Calibration Shoot", null, (bool) -> {
       if (bool){
@@ -60,12 +70,16 @@ public class ShootingCalibration extends CommandBase {
     builder.addBooleanProperty("Calibration Save", () -> {return false;}, (bool) -> {
       if (bool){
         double[] temp = new double[velocities.length + 1];
+        double[] temp2 = new double[angles.length + 1];
 
         for (int i = 0; i < velocities.length; i++){
           temp[i] = velocities[i];
+          temp2[i] = angles[i];
         }
         temp[velocities.length] = velocity;
+        temp2[angles.length] = angle;
         velocities = temp;
+        angles = temp2;
 
         moveCommand.schedule();
       }
