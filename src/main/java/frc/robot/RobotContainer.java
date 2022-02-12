@@ -98,11 +98,12 @@ public class RobotContainer {
    * Y buttom main -> arm up
    * B button main -> shoot
    * X button main -> vision tracking
-   * right bumper main -> open shackle
+   * X button secondary -> open shackle
    * B button secondary -> default shoot
    * start button secondary -> start climb sequence
-   * right joystick y -> move elevator
+   * right joystick y secondary -> move elevator
    * Y button secondary -> close shackle
+   * Back button main -> reverse controls
    */
   private void configureButtonBindings() {
     aButtonMain.whenHeld(intake);
