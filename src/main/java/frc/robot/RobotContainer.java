@@ -73,7 +73,7 @@ public class RobotContainer {
     aButtonMain = new JoystickButton(mainController, 1);
     bButtonMain = new JoystickButton(mainController, 2);
     yButtonMain = new JoystickButton(mainController, 4);
-    backButtonMain = new JoystickButton(mainController, 9);
+    backButtonMain = new JoystickButton(mainController, 7);
 
     openShackle = new MoveShackle(elivatorInside, MoveShackle.Destination.OPEN);
     closeShackle = new MoveShackle(elivatorInside, MoveShackle.Destination.CLOSE);
