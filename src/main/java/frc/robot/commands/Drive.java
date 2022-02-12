@@ -29,7 +29,7 @@ public class Drive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double value = deadband(controller.getRightTriggerAxis() - controller.getLeftTriggerAxis());
+    double value = deadband((chassis.isReversed() ? -1 : 1) * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
     double angle = deadband(controller.getLeftX());
 
     if (controller.getXButton()){

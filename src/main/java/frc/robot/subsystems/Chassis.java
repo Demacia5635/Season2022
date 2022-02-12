@@ -41,6 +41,7 @@ public class Chassis extends SubsystemBase{
   private final DifferentialDriveOdometry odometry;
   private static final SimpleMotorFeedforward Aff = 
       new SimpleMotorFeedforward(Constants.KS / 12, Constants.KV / 12, Constants.KA / 12);
+  private boolean isReversed = false;
 
   public Chassis() {
     left = new GroupOfMotors(Constants.LEFT_FRONT_PORT, Constants.LEFT_BACK_PORT);
@@ -55,6 +56,14 @@ public class Chassis extends SubsystemBase{
 
     left.setK_P(Constants.KP);
     right.setK_P(Constants.KP);
+  }
+
+  public void reverse(boolean isReversed){
+    this.isReversed = isReversed;
+  }
+
+  public boolean isReversed(){
+    return isReversed;
   }
   
   /**

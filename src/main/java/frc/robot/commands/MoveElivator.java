@@ -35,8 +35,8 @@ public class MoveElivator extends CommandBase {
   @Override
   public void execute() {
     double power = deadband(-controller.getRightY());
-
-    elivator.setPowerTelescopicMotor(power);
+    if (hasStarted)
+      elivator.setPowerTelescopicMotor(power);
   }
 
   /**

@@ -40,9 +40,10 @@ public class RobotContainer {
   private final JoystickButton aButtonMain;
   private final JoystickButton yButtonMain;
   private final JoystickButton bButtonMain;
-  private final JoystickButton rightBumperMain;
-  private final JoystickButton startButtonMain;
+  private final JoystickButton startButtonSecondary;
+  private final JoystickButton backButtonMain;
 
+  private final JoystickButton xButtonSecondary;
   private final JoystickButton bButtonSecondary;
   private final JoystickButton yButtonSecondary;
   
@@ -61,17 +62,18 @@ public class RobotContainer {
 
     chassis = new Chassis();
     pickup = new Pickup();
-    elivatorInside = new ElivatorInside(mainController);
+    elivatorInside = new ElivatorInside(secondaryController);
     shooting = new Shooting();
 
     bButtonSecondary = new JoystickButton(secondaryController, 2);
+    xButtonSecondary = new JoystickButton(secondaryController, 3);
     yButtonSecondary = new JoystickButton(secondaryController, 4);
+    startButtonSecondary = new JoystickButton(secondaryController, 8);
     
     aButtonMain = new JoystickButton(mainController, 1);
     bButtonMain = new JoystickButton(mainController, 2);
     yButtonMain = new JoystickButton(mainController, 4);
-    rightBumperMain = new JoystickButton(mainController, 6);
-    startButtonMain = new JoystickButton(secondaryController, 8);
+    backButtonMain = new JoystickButton(mainController, 9);
 
     openShackle = new MoveShackle(elivatorInside, MoveShackle.Destination.OPEN);
     closeShackle = new MoveShackle(elivatorInside, MoveShackle.Destination.CLOSE);
@@ -109,11 +111,13 @@ public class RobotContainer {
     
     bButtonMain.whenHeld(autoShoot);
 
-    rightBumperMain.whileHeld(openShackle);
+    xButtonSecondary.whileHeld(openShackle);
 
     yButtonSecondary.whileHeld(closeShackle);
 
-    startButtonMain.whenPressed(new InstantCommand(() -> {elivatorInside.changeClimbingMode();}));
+    backButtonMain.whenPressed(new InstantCommand(() -> {chassis.reverse(!chassis.isReversed());}));
+
+    startButtonSecondary.whenPressed(new InstantCommand(() -> {elivatorInside.changeClimbingMode();}));
 
     bButtonSecondary.whileHeld(new Shoot(shooting, Constants.SHOOTING_DEFAULT_VELOCITY, Constants.SHOOTING_DEFAULT_ANGLE));
   }

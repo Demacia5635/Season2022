@@ -86,5 +86,6 @@ public class Pickup extends SubsystemBase {
   public void initSendable(SendableBuilder builder) {
     builder.addBooleanProperty("Lower Limit Switch", this::getLowerLimit, null);
     builder.addBooleanProperty("Upper Limit Switch", this::getUpperLimit, null);
+    builder.addBooleanProperty("Is Down", this::isDown, null);
   }
 }

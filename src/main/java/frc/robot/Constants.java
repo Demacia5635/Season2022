@@ -62,7 +62,7 @@ public final class Constants {
     public static final double KV = -1;
     public static final double KA = -1;
     public static final double KP = -1;
-    public static final double TRACK_WIDTH = -1;
+    public static final double TRACK_WIDTH = 0.55;
 
     public static final DifferentialDriveKinematics KINEMATICS = new DifferentialDriveKinematics(TRACK_WIDTH);
 
@@ -114,7 +114,7 @@ public final class Constants {
     public static final double PICKUP_POWER = 1;
 
     //Velocity
-    public static final double ARM_UP_POWER = 0.6;
+    public static final double ARM_UP_POWER = 0.7;
     public static final double ARM_DOWN_POWER = -0.3;
     //#endregion
 }
