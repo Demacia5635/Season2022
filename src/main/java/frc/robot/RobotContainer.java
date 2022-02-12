@@ -118,7 +118,10 @@ public class RobotContainer {
 
     backButtonMain.whenPressed(new InstantCommand(() -> {chassis.reverse(!chassis.isReversed());}));
 
-    startButtonSecondary.whenPressed(new InstantCommand(() -> {elivatorInside.changeClimbingMode();}));
+    startButtonSecondary.whenPressed(new InstantCommand(() -> {
+      new SetArm(pickup, SetArm.Destination.DOWN).schedule();
+      elivatorInside.changeClimbingMode();
+    }));
 
     bButtonSecondary.whileHeld(new Shoot(shooting, Constants.SHOOTING_DEFAULT_VELOCITY, Constants.SHOOTING_DEFAULT_ANGLE));
   }
