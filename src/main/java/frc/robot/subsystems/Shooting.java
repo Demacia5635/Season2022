@@ -9,7 +9,6 @@ import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -27,14 +26,12 @@ public class Shooting extends SubsystemBase {
   private final WPI_TalonSRX inputWheel;
   private final WPI_TalonSRX turner;
   private final DigitalInput limitSwitch;
-  private final PigeonIMU gyro;
 
   public Shooting() {
     shooterMain = new WPI_TalonFX(Constants.SHOOTER_PORT_MAIN);
     turner = new WPI_TalonSRX(Constants.TURNER_PORT);
     turner.setNeutralMode(NeutralMode.Brake);
     shooterAff = new FeedForward(Constants.SHOOTER_KS, Constants.SHOOTER_KV);
-    gyro = new PigeonIMU(Constants.TURNER_GYRO_PORT);
     shooterSecondary = new WPI_TalonFX(Constants.SHOOTER_PORT_SECONDARY);
     inputWheel = new WPI_TalonSRX(Constants.INPUT_WHEEL_PORT);
     shooterSecondary.setInverted(true);
@@ -87,8 +84,8 @@ public class Shooting extends SubsystemBase {
    * gets the turner angle
    * @return in degrees
    */
-  public double getTurnerAngle(){
-    return gyro.getRoll();
+  public double getTurnerAngle() {
+    return inputWheel.getSelectedSensorPosition() * Constants.PULSE_TO_ANGLE;
   }
 
   /**
