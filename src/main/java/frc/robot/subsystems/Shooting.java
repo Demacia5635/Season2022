@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.commands.ShootingCalibration;
 import frc.robot.utils.FeedForward;
 
 public class Shooting extends SubsystemBase {
@@ -26,6 +27,7 @@ public class Shooting extends SubsystemBase {
   private final WPI_TalonSRX inputWheel;
   private final WPI_TalonSRX turner;
   private final DigitalInput limitSwitch;
+  private final ShootingCalibration calibration;
 
   public Shooting() {
     shooterMain = new WPI_TalonFX(Constants.SHOOTER_PORT_MAIN);
@@ -40,6 +42,8 @@ public class Shooting extends SubsystemBase {
     shooterMain.config_kP(0, Constants.SHOOTER_KP);
     inputWheel.setSensorPhase(true);
     inputWheel.setSelectedSensorPosition(0);
+
+    calibration = new ShootingCalibration(this);
   }
 
   /**
@@ -145,5 +149,12 @@ public class Shooting extends SubsystemBase {
     builder.addDoubleProperty("Angle", this::getTurnerAngle, null);
     builder.addDoubleProperty("encoder", this::getShooterEncoder, null);
     builder.addBooleanProperty("limit switch", this::getLimitSwitch, null);
+
+    builder.addBooleanProperty("Shooting Calibration", null, calibration::start);
+    builder.addDoubleProperty("Calibration Velocity", null, calibration::setVelocity);
+    builder.addDoubleProperty("Calibration Angle", null, calibration::setAngle);
+    builder.addBooleanProperty("Calibration Shoot", null, calibration::shoot);
+
+    builder.addBooleanProperty("Calibration Save", () -> {return false;}, (bool) -> {calibration.save();});
   }
 }

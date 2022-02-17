@@ -52,7 +52,6 @@ public class RobotContainer {
   private final AutoShoot autoShoot;
   private final SetArm armUp;
   private final Command intake;
-  private final ShootingCalibration calibration;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
 
@@ -81,7 +80,6 @@ public class RobotContainer {
     armUp = new SetArm(pickup, Destination.UP);
     intake = new SetArm(pickup, Destination.DOWN).andThen(new StartEndCommand(
         () -> {pickup.setPower(Constants.PICKUP_POWER);},() -> {pickup.setPower(0);}, pickup));
-    calibration = new ShootingCalibration(shooting, chassis);
 
     chassis.setDefaultCommand(new Drive(chassis, mainController));
     
