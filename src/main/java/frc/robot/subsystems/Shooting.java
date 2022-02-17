@@ -38,6 +38,8 @@ public class Shooting extends SubsystemBase {
     shooterSecondary.follow(shooterMain);
     limitSwitch = new DigitalInput(Constants.LIMIT_SWITCH_PORT);
     shooterMain.config_kP(0, Constants.SHOOTER_KP);
+    inputWheel.setSensorPhase(true);
+    inputWheel.setSelectedSensorPosition(0);
   }
 
   /**
