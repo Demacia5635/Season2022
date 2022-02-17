@@ -29,17 +29,19 @@ public final class Constants {
     public static final double SHOOTER_PULSE_TO_METER = 0.1 * Math.PI / 2048;
     public static final double SHOOTER_KS = 0.04;
     public static final double SHOOTER_KV = 1 / 34.;
-    public static final double SHOOTER_KP = 1 / 2000.;
-    public static final double TURNER_DEFAULT_POWER = -0.15;
-    public static final double MAX_SHOOT_ANGLE_ERROR = 3;
+    public static final double SHOOTER_KP = 1 / 1000.;
+    public static final double TURNER_DEFAULT_POWER = -0.4;
+    public static final double MAX_SHOOT_ANGLE_ERROR = 1;
     public static final double MAX_SHOOT_VELOCITY_ERROR = 1.5;
     public static final double SHOOTING_DEFAULT_VELOCITY = 20;
     public static final double SHOOTING_DEFAULT_ANGLE = 20;
     public static final double MAX_ANGLE_ERROR_CHASSIS = -1;
 
-    public static final Vector2d[] SHOOTING_VALUES = null;
+    public static final Vector2d[] SHOOTING_VALUES = {
+        new Vector2d(11, 52)
+    };
     public static final double SHOOTING_VELOCITIES_DIFF = -1;
-    public static final double MIN_SHOOTING_Y = -1;
+    public static final double MIN_SHOOTING_DISTANCE = 1.3;
     //#endregion
 
     //#region Chassis

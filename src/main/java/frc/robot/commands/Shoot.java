@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Shooting;
@@ -33,7 +34,9 @@ public class Shoot extends CommandBase {
   }
 
   @Override
-  public void initialize() {}
+  public void initialize() {
+    angleRight = false;
+  }
 
   public void shoot(){
     shoot = true;
@@ -42,11 +45,12 @@ public class Shoot extends CommandBase {
   @Override
   public void execute() {
     shooting.setShooterVelocity(velocityGetter.getAsDouble());
+    SmartDashboard.putBoolean("Angle Correct", angleRight);
 
     if (!angleRight && Math.abs(angleGetter.getAsDouble() - shooting.getTurnerAngle()) > Constants.MAX_SHOOT_ANGLE_ERROR){
       shooting.setTurnerPower(Math.signum(angleGetter.getAsDouble() - shooting.getTurnerAngle()) * Constants.TURNER_DEFAULT_POWER);
     }
-    else if (shoot && Math.abs(shooting.getShooterVelocity() - velocityGetter.getAsDouble()) > Constants.MAX_SHOOT_VELOCITY_ERROR){
+    else if (shoot && Math.abs(shooting.getShooterVelocity() - velocityGetter.getAsDouble()) < Constants.MAX_SHOOT_VELOCITY_ERROR){
       shooting.setTurnerPower(0);
       shooting.openShooterInput();
       angleRight = true;

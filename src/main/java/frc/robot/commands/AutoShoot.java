@@ -39,13 +39,13 @@ public class AutoShoot extends CommandBase {
    * @return a Vector2d where x is the velocity in meter/sec and y is the angle if out of range, returns null
    */
   private Vector2d calculateValues(double y){
-    if (y < Constants.MIN_SHOOTING_Y){
+    if (y < Constants.MIN_SHOOTING_DISTANCE){
       cancel();
       return null;
     }
 
     for (int i = 0; i < Constants.SHOOTING_VALUES.length; i++) {
-      double currentY = Constants.MIN_SHOOTING_Y + Constants.SHOOTING_VELOCITIES_DIFF * i;
+      double currentY = Constants.MIN_SHOOTING_DISTANCE + Constants.SHOOTING_VELOCITIES_DIFF * i;
       if (currentY > y){
         double slopeVel = (Constants.SHOOTING_VALUES[i].x - Constants.SHOOTING_VALUES[i - 1].x) /
             Constants.SHOOTING_VELOCITIES_DIFF;
