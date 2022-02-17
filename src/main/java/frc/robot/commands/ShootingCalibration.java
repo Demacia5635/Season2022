@@ -20,7 +20,7 @@ public class ShootingCalibration extends CommandBase {
   private final MoveCommand moveCommand;
 
   public ShootingCalibration(Shooting shooting, Chassis chassis) {
-    moveCommand = new MoveCommand(chassis, () -> {return shooting.getVisionY() - Constants.MIN_SHOOTING_Y - Constants.SHOOTING_VELOCITIES_DIFF * velocities.length;});
+    moveCommand = new MoveCommand(chassis, () -> {return shooting.getVisionDistance() - Constants.MIN_SHOOTING_Y - Constants.SHOOTING_VELOCITIES_DIFF * velocities.length;});
     shootCommand = new Shoot(shooting, () -> {return velocity;}, () -> {return 0;});
     velocities = new double[0];
     angles = new double[0];

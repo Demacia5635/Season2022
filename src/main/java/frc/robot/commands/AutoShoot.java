@@ -26,8 +26,8 @@ public class AutoShoot extends CommandBase {
   @Override
   public void initialize() {
 
-    Shoot shootCommand = new Shoot(shooting, () -> {return calculateValues(shooting.getVisionY()).x;},
-        () -> {return calculateValues(shooting.getVisionY()).y;});
+    Shoot shootCommand = new Shoot(shooting, () -> {return calculateValues(shooting.getVisionDistance()).x;},
+        () -> {return calculateValues(shooting.getVisionDistance()).y;});
 
     command = new TurnByVision(chassis, shooting::getVisionX).andThen(
         new InstantCommand(() -> {shootCommand.shoot();}).alongWith(shootCommand));

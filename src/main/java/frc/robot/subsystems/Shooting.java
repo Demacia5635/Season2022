@@ -124,8 +124,8 @@ public class Shooting extends SubsystemBase {
    * gets the y from the vision
    * @return the y value from vision
    */
-  public double getVisionY(){
-    return SmartDashboard.getNumber("vision_tower_y", Double.NaN);
+  public double getVisionDistance(){
+    return SmartDashboard.getNumber("vision_tower_distance", Double.NaN);
   }
 
   public double getTurnerPower(){
