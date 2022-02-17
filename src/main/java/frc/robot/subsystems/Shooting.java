@@ -150,10 +150,10 @@ public class Shooting extends SubsystemBase {
     builder.addDoubleProperty("encoder", this::getShooterEncoder, null);
     builder.addBooleanProperty("limit switch", this::getLimitSwitch, null);
 
-    builder.addBooleanProperty("Shooting Calibration", null, calibration::start);
-    builder.addDoubleProperty("Calibration Velocity", null, calibration::setVelocity);
-    builder.addDoubleProperty("Calibration Angle", null, calibration::setAngle);
-    builder.addBooleanProperty("Calibration Shoot", null, calibration::shoot);
+    builder.addBooleanProperty("Shooting Calibration", calibration::isScheduled, calibration::start);
+    builder.addDoubleProperty("Calibration Velocity", calibration::getVelocity, calibration::setVelocity);
+    builder.addDoubleProperty("Calibration Angle", calibration::getAngle, calibration::setAngle);
+    builder.addBooleanProperty("Calibration Shoot", calibration::isShooting, calibration::shoot);
 
     builder.addBooleanProperty("Calibration Save", () -> {return false;}, (bool) -> {calibration.save();});
   }

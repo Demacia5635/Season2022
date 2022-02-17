@@ -51,6 +51,18 @@ public class ShootingCalibration extends CommandBase {
     this.velocity = velocity;
   }
 
+  public double getVelocity(){
+    return velocity;
+  }
+
+  public double getAngle(){
+    return angle;
+  }
+
+  public boolean isShooting(){
+    return shootCommand.isScheduled();
+  }
+
   public void setAngle(double angle){
     this.angle = angle;
   }
