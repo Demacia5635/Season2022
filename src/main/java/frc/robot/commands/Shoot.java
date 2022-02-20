@@ -18,6 +18,10 @@ public class Shoot extends CommandBase {
   private final DoubleSupplier angleGetter;
   private boolean shoot, angleRight;
 
+  private final double turnerPowerUp = -0.3;
+  private final double turnerPowerDown = 0.4;
+  private boolean toSwitch = false;
+
   public Shoot(Shooting shooting, DoubleSupplier velocityGetter, DoubleSupplier angleGetter) {
     this.shooting = shooting;
     this.velocityGetter = velocityGetter;
@@ -36,6 +40,8 @@ public class Shoot extends CommandBase {
   @Override
   public void initialize() {
     angleRight = false;
+    toSwitch = true;
+    shooting.setTurnerPower(turnerPowerUp);
   }
 
   public void shoot(){
@@ -44,13 +50,45 @@ public class Shoot extends CommandBase {
 
   @Override
   public void execute() {
+    // set velocity power
     shooting.setShooterVelocity(velocityGetter.getAsDouble());
     SmartDashboard.putBoolean("Angle Correct", angleRight);
 
-    if (!angleRight && Math.abs(angleGetter.getAsDouble() - shooting.getTurnerAngle()) > Constants.MAX_SHOOT_ANGLE_ERROR){
+    // handle angle - to switch
+    if(toSwitch) {
+      if(shooting.getLimitSwitch()) { // switch reached, set angle and reverse power
+        shooting.setTurnerAngle();
+        toSwitch = false;
+        angleRight = false;
+        shooting.setTurnerPower(turnerPowerDown);
+      }
+    }
+    // handle angle after switch
+    if(!toSwitch && !angleRight) { 
+      double currentAngle = shooting.getTurnerAngle();
+      double angle = angleGetter.getAsDouble();
+      if(Math.abs(currentAngle - angle) < Constants.MAX_SHOOT_ANGLE_ERROR) {
+        // angle OK
+        angleRight = true;
+        shooting.setTurnerPower(0);
+      }
+    }
+    // haandle angle OK and shooting
+    if(angleRight && shoot) {
+      double v = velocityGetter.getAsDouble();
+      double cv = shooting.getShooterVelocity();
+      if(Math.abs(v-cv) < Constants.MAX_SHOOT_VELOCITY_ERROR) {
+        shooting.openShooterInput();
+      }
+    }
+
+
+/*    if (!angleRight && Math.abs(angleGetter.getAsDouble() - shooting.getTurnerAngle()) > ){
       shooting.setTurnerPower(Math.signum(angleGetter.getAsDouble() - shooting.getTurnerAngle()) * Constants.TURNER_DEFAULT_POWER);
     }
-    else if (shoot && Math.abs(shooting.getShooterVelocity() - velocityGetter.getAsDouble()) < Constants.MAX_SHOOT_VELOCITY_ERROR){
+    else if (shoot && 
+            Math.abs(shooting.getShooterVelocity() - velocityGetter.getAsDouble()) < 
+            Constants.MAX_SHOOT_VELOCITY_ERROR){
       shooting.setTurnerPower(0);
       shooting.openShooterInput();
       angleRight = true;
@@ -59,6 +97,7 @@ public class Shoot extends CommandBase {
       angleRight = true;
       shooting.setTurnerPower(0);
     }
+    */
   }
 
   @Override

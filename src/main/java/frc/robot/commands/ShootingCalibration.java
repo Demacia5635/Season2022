@@ -23,14 +23,15 @@ public class ShootingCalibration extends CommandBase {
     angles = new double[0];
     velocity = 0;
     angle = 0;
-  }
-
-  @Override
-  public void initialize() {
     SmartDashboard.putData("Calibration/Shoot", shootCommand);
     SmartDashboard.putNumber("Calibration/Velocity", 0);
     SmartDashboard.putNumber("Calibration/Angle", 0);
     SmartDashboard.putBoolean("Calibration/Save", false);
+  }
+
+  @Override
+  public void initialize() {
+    shootCommand.schedule();
   }
 
   @Override
