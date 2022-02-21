@@ -54,23 +54,26 @@ public class Shoot extends CommandBase {
     shooting.setShooterVelocity(velocityGetter.getAsDouble());
     SmartDashboard.putBoolean("Angle Correct", angleRight);
 
+    double angle = angleGetter.getAsDouble();
+    double currentAngle = shooting.getTurnerAngle();
+
     // handle angle - to switch
     if(toSwitch) {
       if(shooting.getLimitSwitch()) { // switch reached, set angle and reverse power
         shooting.setTurnerAngle();
         toSwitch = false;
         angleRight = false;
-        shooting.setTurnerPower(turnerPowerDown);
       }
     }
     // handle angle after switch
     if(!toSwitch && !angleRight) { 
-      double currentAngle = shooting.getTurnerAngle();
-      double angle = angleGetter.getAsDouble();
       if(Math.abs(currentAngle - angle) < Constants.MAX_SHOOT_ANGLE_ERROR) {
         // angle OK
         angleRight = true;
         shooting.setTurnerPower(0);
+      }
+      else {
+        shooting.setTurnerPower(angle > currentAngle ? turnerPowerUp : turnerPowerDown);
       }
     }
     // haandle angle OK and shooting
