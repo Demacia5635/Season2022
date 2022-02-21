@@ -129,11 +129,15 @@ public class Shooting extends SubsystemBase {
   }
 
   /**
-   * gets the y from the vision
-   * @return the y value from vision
+   * gets the angle from the vision
+   * @return the angle value from vision
    */
+  public double getVisionAngle(){
+    return SmartDashboard.getNumber("vision_tower_angle", Double.NaN);
+  }
+
   public double getVisionDistance(){
-    return SmartDashboard.getNumber("vision_tower_distance", Double.NaN);
+    return Constants.CAMERA_TOWER_DIFF / Math.tan(Math.toRadians(getVisionAngle() + Constants.CAMERA_ANGLE));
   }
 
   public double getTurnerPower(){
