@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.setShootingAngle;
 import frc.robot.commands.ShootingCalibration;
 import frc.robot.utils.FeedForward;
 
@@ -45,7 +44,6 @@ public class Shooting extends SubsystemBase {
     inputWheel.setSelectedSensorPosition(0);
 
     calibration = new ShootingCalibration(this);
-    SmartDashboard.putData("Set Angle",new setShootingAngle(this));
   }
 
   /**
@@ -131,11 +129,15 @@ public class Shooting extends SubsystemBase {
   }
 
   /**
-   * gets the y from the vision
-   * @return the y value from vision
+   * gets the angle from the vision
+   * @return the angle value from vision
    */
+  public double getVisionAngle(){
+    return SmartDashboard.getNumber("vision_tower_angle", Double.NaN);
+  }
+
   public double getVisionDistance(){
-    return SmartDashboard.getNumber("vision_tower_distance", Double.NaN);
+    return Constants.CAMERA_TOWER_DIFF / Math.tan(Math.toRadians(getVisionAngle() + Constants.CAMERA_ANGLE));
   }
 
   public double getTurnerPower(){

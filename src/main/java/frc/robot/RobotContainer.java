@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.AutoShoot;
 import frc.robot.commands.Drive;
+import frc.robot.commands.MoveForward;
 import frc.robot.commands.MoveShackle;
 import frc.robot.commands.SetArm;
 import frc.robot.commands.SetArm.Destination;
@@ -122,6 +123,10 @@ public class RobotContainer {
     }));
 
     bButtonSecondary.whileHeld(new Shoot(shooting, Constants.SHOOTING_DEFAULT_VELOCITY, Constants.SHOOTING_DEFAULT_ANGLE));
+  }
+
+  public Command getSimpleAutCommand() {
+    return new MoveForward(chassis, 3).raceWith(intake).andThen(new Shoot(shooting, Constants.SHOOTING_AUTO_VELOCITY, Constants.SHOOTING_AUTO_ANGLE));
   }
 
   /**

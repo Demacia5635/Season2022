@@ -35,7 +35,11 @@ public final class Constants {
     public static final double MAX_SHOOT_VELOCITY_ERROR = 1.5;
     public static final double SHOOTING_DEFAULT_VELOCITY = 20;
     public static final double SHOOTING_DEFAULT_ANGLE = 20;
+    public static final double SHOOTING_AUTO_VELOCITY = 20;
+    public static final double SHOOTING_AUTO_ANGLE = 20;
+    public static final double CAMERA_TOWER_DIFF = 1.5;
     public static final double MAX_ANGLE_ERROR_CHASSIS = -1;
+    public static final double CAMERA_ANGLE = 0;
 
     public static final Vector2d[] SHOOTING_VALUES = {
         new Vector2d(11, 52)
@@ -72,8 +76,8 @@ public final class Constants {
     public static final double MAX_VELOCITY_AUTO = -1;
     public static final double MAX_ACCELERATION_AUTO = -1;
 
-    public static final double MOVE_POWER = 0.6;
-    public static final double TURN_POWER = 0.6;
+    public static final double MOVE_POWER = 0.3;
+    public static final double TURN_POWER = 0.3;
 
     public static final double RAMSETE_B = 2;
     public static final double RAMSETE_ZETA = 0.7;
