@@ -136,7 +136,7 @@ public class Chassis extends SubsystemBase{
 
   /**
    * Gets the average distance of the two encoders.
-   * @return the average of the two encoder readings
+   * @return the average of the two encoder readings in meters
    */
   public double getAverageEncoderDistance() {
     return (left.getDistance() + right.getDistance()) / 2;
@@ -200,7 +200,7 @@ public class Chassis extends SubsystemBase{
     return list;
   }
 
-  public Command getAutoCommand(String trajectoryFileName){
+  public Command getAutoCommand(String trajectoryFileName, boolean setPose){
     Trajectory trajectory = new Trajectory();
 
     trajectoryFileName = "paths/" + trajectoryFileName;
@@ -210,6 +210,10 @@ public class Chassis extends SubsystemBase{
     } catch (IOException ex) {
       DriverStation.reportError("Unable to open trajectory: " + trajectoryFileName, ex.getStackTrace());
       return null;
+    }
+
+    if (setPose){
+      resetOdometry(trajectory.getInitialPose());
     }
 
     Command ramseteCommand =

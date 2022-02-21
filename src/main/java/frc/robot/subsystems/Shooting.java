@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.setShootingAngle;
 import frc.robot.commands.ShootingCalibration;
 import frc.robot.utils.FeedForward;
 
@@ -45,7 +44,6 @@ public class Shooting extends SubsystemBase {
     inputWheel.setSelectedSensorPosition(0);
 
     calibration = new ShootingCalibration(this);
-    SmartDashboard.putData("Set Angle",new setShootingAngle(this));
   }
 
   /**
