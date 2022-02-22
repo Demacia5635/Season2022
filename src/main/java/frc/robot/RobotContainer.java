@@ -53,6 +53,8 @@ public class RobotContainer {
   private final AutoShoot autoShoot;
   private final SetArm armUp;
   private final Command intake;
+  private final Command shootIntake;
+  private final Command shoot;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
 
@@ -81,6 +83,9 @@ public class RobotContainer {
     armUp = new SetArm(pickup, Destination.UP);
     intake = new SetArm(pickup, Destination.DOWN).andThen(new StartEndCommand(
         () -> {pickup.setPower(Constants.PICKUP_POWER);},() -> {pickup.setPower(0);}, pickup));
+    shootIntake = new SetArm(pickup, Destination.DOWN).andThen(new StartEndCommand(
+      () -> {pickup.setPower(Constants.PICKUP_POWER);},() -> {pickup.setPower(0);}, pickup));
+    shoot = new Shoot(shooting, chassis, Constants.SHOOTING_DEFAULT_VELOCITY, Constants.SHOOTING_DEFAULT_ANGLE, -chassis.getFusedHeading()).raceWith(shootIntake);
 
     chassis.setDefaultCommand(new Drive(chassis, mainController));
     
@@ -109,7 +114,7 @@ public class RobotContainer {
       
     yButtonMain.whenPressed(armUp);
     
-    bButtonMain.whenHeld(new Shoot(shooting, chassis, Constants.SHOOTING_DEFAULT_VELOCITY, Constants.SHOOTING_DEFAULT_ANGLE, -chassis.getFusedHeading())); //autoShoot
+    bButtonMain.whenHeld(shoot); //autoShoot
 
     xButtonSecondary.whileHeld(openShackle);
 
@@ -122,7 +127,7 @@ public class RobotContainer {
       elivatorInside.changeClimbingMode();
     }));
 
-    bButtonSecondary.whileHeld(new Shoot(shooting, chassis, Constants.SHOOTING_DEFAULT_VELOCITY, Constants.SHOOTING_DEFAULT_ANGLE, -chassis.getFusedHeading()));
+    bButtonSecondary.whileHeld(shoot);
   }
 
   public Command getSimpleAutCommand() {
