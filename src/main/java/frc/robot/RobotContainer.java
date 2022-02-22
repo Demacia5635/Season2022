@@ -81,11 +81,11 @@ public class RobotContainer {
     closeShackle = new MoveShackle(elivatorInside, MoveShackle.Destination.CLOSE);
     autoShoot = new AutoShoot(shooting, chassis);
     armUp = new SetArm(pickup, Destination.UP);
-    intake = new SetArm(pickup, Destination.DOWN).andThen(new StartEndCommand(
+    intake = new SetArm(pickup, Destination.DOWN).alongWith(new StartEndCommand(
         () -> {pickup.setPower(Constants.PICKUP_POWER);},() -> {pickup.setPower(0);}, pickup));
-    shootIntake = new SetArm(pickup, Destination.DOWN).andThen(new StartEndCommand(
+    shootIntake = new SetArm(pickup, Destination.DOWN).alongWith(new StartEndCommand(
       () -> {pickup.setPower(Constants.PICKUP_POWER);},() -> {pickup.setPower(0);}, pickup));
-    shoot = new Shoot(shooting, chassis, Constants.SHOOTING_DEFAULT_VELOCITY, Constants.SHOOTING_DEFAULT_ANGLE, -chassis.getFusedHeading()).raceWith(shootIntake);
+    shoot = new Shoot(shooting, chassis, Constants.SHOOTING_DEFAULT_VELOCITY, Constants.SHOOTING_DEFAULT_ANGLE, -chassis.getFusedHeading()).alongWith(shootIntake);
 
     chassis.setDefaultCommand(new Drive(chassis, mainController));
     
