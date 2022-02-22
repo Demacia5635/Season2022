@@ -63,7 +63,7 @@ public class RobotContainer {
     chassis = new Chassis();
     pickup = new Pickup();
     elivatorInside = new ElivatorInside(secondaryController);
-    shooting = new Shooting();
+    shooting = new Shooting(chassis);
 
     bButtonSecondary = new JoystickButton(secondaryController, 2);
     xButtonSecondary = new JoystickButton(secondaryController, 3);
@@ -109,7 +109,7 @@ public class RobotContainer {
       
     yButtonMain.whenPressed(armUp);
     
-    bButtonMain.whenHeld(autoShoot);
+    bButtonMain.whenHeld(new Shoot(shooting, chassis, Constants.SHOOTING_DEFAULT_VELOCITY, Constants.SHOOTING_DEFAULT_ANGLE, -chassis.getFusedHeading())); //autoShoot
 
     xButtonSecondary.whileHeld(openShackle);
 
@@ -122,11 +122,11 @@ public class RobotContainer {
       elivatorInside.changeClimbingMode();
     }));
 
-    bButtonSecondary.whileHeld(new Shoot(shooting, Constants.SHOOTING_DEFAULT_VELOCITY, Constants.SHOOTING_DEFAULT_ANGLE));
+    bButtonSecondary.whileHeld(new Shoot(shooting, chassis, Constants.SHOOTING_DEFAULT_VELOCITY, Constants.SHOOTING_DEFAULT_ANGLE, -chassis.getFusedHeading()));
   }
 
   public Command getSimpleAutCommand() {
-    return new MoveForward(chassis, 3).raceWith(intake).andThen(new Shoot(shooting, Constants.SHOOTING_AUTO_VELOCITY, Constants.SHOOTING_AUTO_ANGLE));
+    return new MoveForward(chassis, 3).raceWith(intake).andThen(new Shoot(shooting, chassis, Constants.SHOOTING_AUTO_VELOCITY, Constants.SHOOTING_AUTO_ANGLE, 0));
   }
 
   /**

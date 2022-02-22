@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Shooting;
 
 public class ShootingCalibration extends CommandBase {
@@ -16,8 +17,9 @@ public class ShootingCalibration extends CommandBase {
   private double[] velocities;
   private double[] angles;
 
-  public ShootingCalibration(Shooting shooting) {
-    shootCommand = new Shoot(shooting, () -> {return velocity;}, () -> {return angle;});
+  public ShootingCalibration(Shooting shooting, Chassis chassis) {
+    shootCommand = new Shoot(shooting, chassis, () -> {return velocity;}, () -> {return angle;},
+    () -> {return 0;});
     shootCommand.shoot();
     velocities = new double[0];
     angles = new double[0];

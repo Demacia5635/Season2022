@@ -29,7 +29,7 @@ public class Shooting extends SubsystemBase {
   private final DigitalInput limitSwitch;
   private final ShootingCalibration calibration;
 
-  public Shooting() {
+  public Shooting(Chassis chassis) {
     shooterMain = new WPI_TalonFX(Constants.SHOOTER_PORT_MAIN);
     turner = new WPI_TalonSRX(Constants.TURNER_PORT);
     turner.setNeutralMode(NeutralMode.Brake);
@@ -43,7 +43,7 @@ public class Shooting extends SubsystemBase {
     inputWheel.setSensorPhase(true);
     inputWheel.setSelectedSensorPosition(0);
 
-    calibration = new ShootingCalibration(this);
+    calibration = new ShootingCalibration(this, chassis);
   }
 
   /**

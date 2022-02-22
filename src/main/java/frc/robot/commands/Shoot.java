@@ -9,6 +9,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Shooting;
 
 public class Shoot extends CommandBase {
@@ -16,24 +17,29 @@ public class Shoot extends CommandBase {
   private final Shooting shooting;
   private final DoubleSupplier velocityGetter;
   private final DoubleSupplier angleGetter;
+  private final DoubleSupplier headingGetter;
   private boolean shoot, angleRight;
+  private final Chassis chassis;
 
   private final double turnerPowerUp = -0.3;
   private final double turnerPowerDown = 0.4;
   private boolean toSwitch = false;
+  private TurnByVision turnCmd = null;
 
-  public Shoot(Shooting shooting, DoubleSupplier velocityGetter, DoubleSupplier angleGetter) {
+  public Shoot(Shooting shooting, Chassis chassis, DoubleSupplier velocityGetter, DoubleSupplier angleGetter, DoubleSupplier headingGetter) {
     this.shooting = shooting;
+    this.chassis = chassis;
     this.velocityGetter = velocityGetter;
     this.angleGetter = angleGetter;
+    this.headingGetter = headingGetter;
     shoot = false;
     angleRight = false;
 
     addRequirements(shooting);
   }
 
-  public Shoot(Shooting shooting, double velocity, double angle) {
-    this(shooting, () -> {return velocity;}, () -> {return angle;});
+  public Shoot(Shooting shooting, Chassis chassis, double velocity, double angle, double heading) {
+    this(shooting, chassis, () -> {return velocity;}, () -> {return angle;}, () -> {return -chassis.getFusedHeading();});
     shoot = true;
   }
 
@@ -42,6 +48,8 @@ public class Shoot extends CommandBase {
     angleRight = false;
     toSwitch = true;
     shooting.setTurnerPower(turnerPowerUp);
+    turnCmd = new TurnByVision(chassis, headingGetter);
+    turnCmd.schedule();
   }
 
   public void shoot(){
@@ -80,7 +88,7 @@ public class Shoot extends CommandBase {
     if(angleRight && shoot) {
       double v = velocityGetter.getAsDouble();
       double cv = shooting.getShooterVelocity();
-      if(Math.abs(v-cv) < Constants.MAX_SHOOT_VELOCITY_ERROR) {
+      if(Math.abs(v-cv) < Constants.MAX_SHOOT_VELOCITY_ERROR && turnCmd.isFinished()) {
         shooting.openShooterInput();
       }
     }
