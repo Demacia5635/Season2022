@@ -8,11 +8,8 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.commands.SetArm;
 
 public class Pickup extends SubsystemBase {
 
@@ -90,10 +87,5 @@ public class Pickup extends SubsystemBase {
     builder.addBooleanProperty("Lower Limit Switch", this::getLowerLimit, null);
     builder.addBooleanProperty("Upper Limit Switch", this::getUpperLimit, null);
     builder.addBooleanProperty("Is Down", this::isDown, null);
-  }
-  
-  public CommandBase getIntakeCommand() {
-    return new SetArm(this, SetArm.Destination.DOWN).andThen(new StartEndCommand(
-      () -> {setPower(Constants.PICKUP_POWER);},() -> {setPower(0);},this));
   }
 }

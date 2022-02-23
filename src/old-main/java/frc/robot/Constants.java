@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.drive.Vector2d;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    //TODO : set constants
     //#region Shooting
     public static final int SHOOTER_PORT_MAIN = 5;
     public static final int SHOOTER_PORT_SECONDARY = 6;
@@ -30,7 +31,7 @@ public final class Constants {
     public static final double SHOOTER_KV = 1 / 34.;
     public static final double SHOOTER_KP = 1 / 1000.;
     public static final double TURNER_DEFAULT_POWER = -0.4;
-    public static final double MAX_SHOOT_ANGLE_ERROR = 2;
+    public static final double MAX_SHOOT_ANGLE_ERROR = 1;
     public static final double MAX_SHOOT_VELOCITY_ERROR = 1.5;
     public static final double SHOOTING_DEFAULT_VELOCITY = 10;
     public static final double SHOOTING_DEFAULT_ANGLE = 45;
@@ -49,7 +50,7 @@ public final class Constants {
 
     //#region Chassis
     public static final double MAX_VELOCITY = -1;
-    public static final double PULSES_PER_METER = 12.0*2048/(6.0*25.4*Math.PI/1000.0);
+    public static final double PULSES_PER_METER = 1;
 
     public static final int LEFT_FRONT_PORT = 3; 
     public static final int LEFT_BACK_PORT = 4; 

@@ -29,14 +29,14 @@ public class Turn extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    startingDistance = chassis.getAngle();
+    startingDistance = chassis.getFusedHeading();
     pidAngle.setPoint(angle + startingDistance);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    currentAngle = chassis.getAngle();
+    currentAngle = chassis.getFusedHeading();
     double velocityRatio = pidAngle.calculate(currentAngle);
     chassis.setVelocity(velocityRatio, -velocityRatio);
 
@@ -52,7 +52,7 @@ public class Turn extends CommandBase {
   @Override
   public boolean isFinished() {
     if(toStop == true)
-      return chassis.getAngle() >= ((angle + startingDistance)-Constants.STOP_ANGLE);
+      return chassis.getFusedHeading() >= ((angle + startingDistance)-Constants.STOP_ANGLE);
     else{
       return toStop;
     }

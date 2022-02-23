@@ -7,13 +7,16 @@ package frc.robot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.AutoShoot;
 import frc.robot.commands.Drive;
 import frc.robot.commands.MoveForward;
 import frc.robot.commands.MoveShackle;
 import frc.robot.commands.SetArm;
 import frc.robot.commands.SetArm.Destination;
 import frc.robot.commands.Shoot;
+import frc.robot.commands.ShootingCalibration;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ElivatorInside;
 import frc.robot.subsystems.Pickup;
@@ -47,9 +50,10 @@ public class RobotContainer {
   
   private final MoveShackle openShackle;
   private final MoveShackle closeShackle;
-//  private final AutoShoot autoShoot;
+  private final AutoShoot autoShoot;
   private final SetArm armUp;
   private final Command intake;
+  private final Command shootIntake;
   private final Command shoot;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -75,10 +79,13 @@ public class RobotContainer {
 
     openShackle = new MoveShackle(elivatorInside, MoveShackle.Destination.OPEN);
     closeShackle = new MoveShackle(elivatorInside, MoveShackle.Destination.CLOSE);
-//    autoShoot = new AutoShoot(shooting, chassis);
+    autoShoot = new AutoShoot(shooting, chassis);
     armUp = new SetArm(pickup, Destination.UP);
-    intake = pickup.getIntakeCommand();
-    shoot = new Shoot(shooting, chassis).alongWith(pickup.getIntakeCommand());
+    intake = new SetArm(pickup, Destination.DOWN).alongWith(new StartEndCommand(
+        () -> {pickup.setPower(Constants.PICKUP_POWER);},() -> {pickup.setPower(0);}, pickup));
+    shootIntake = new SetArm(pickup, Destination.DOWN).alongWith(new StartEndCommand(
+      () -> {pickup.setPower(Constants.PICKUP_POWER);},() -> {pickup.setPower(0);}, pickup));
+    shoot = new Shoot(shooting, chassis, Constants.SHOOTING_DEFAULT_VELOCITY, Constants.SHOOTING_DEFAULT_ANGLE, -chassis.getFusedHeading()).alongWith(shootIntake);
 
     chassis.setDefaultCommand(new Drive(chassis, mainController));
     
@@ -124,7 +131,7 @@ public class RobotContainer {
   }
 
   public Command getSimpleAutCommand() {
-    return new MoveForward(chassis, 3).raceWith(pickup.getIntakeCommand()).andThen(new Shoot(shooting, chassis ));
+    return new MoveForward(chassis, 3).raceWith(intake).andThen(new Shoot(shooting, chassis, Constants.SHOOTING_AUTO_VELOCITY, Constants.SHOOTING_AUTO_ANGLE, 0));
   }
 
   /**

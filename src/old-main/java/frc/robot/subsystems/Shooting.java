@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.commands.ShootingCalibration;
 import frc.robot.utils.FeedForward;
-import frc.robot.utils.ShootingUtil;
 
 public class Shooting extends SubsystemBase {
   /** Creates a new Shooting. */
@@ -29,10 +28,8 @@ public class Shooting extends SubsystemBase {
   private final WPI_TalonSRX turner;
   private final DigitalInput limitSwitch;
   private final ShootingCalibration calibration;
-  private final Chassis chassis;
 
   public Shooting(Chassis chassis) {
-    this.chassis = chassis;
     shooterMain = new WPI_TalonFX(Constants.SHOOTER_PORT_MAIN);
     turner = new WPI_TalonSRX(Constants.TURNER_PORT);
     turner.setNeutralMode(NeutralMode.Brake);
@@ -160,43 +157,7 @@ public class Shooting extends SubsystemBase {
     builder.addDoubleProperty("Angle", this::getTurnerAngle, null);
     builder.addDoubleProperty("encoder", this::getShooterEncoder, null);
     builder.addBooleanProperty("limit switch", this::getLimitSwitch, null);
-    builder.addBooleanProperty("Viusion OK", this::visionOK, null);
-    builder.addDoubleProperty("target direction", this::getTargetDirection, null);
-    builder.addDoubleProperty("target distance", this::getTargetDistance, null);
-    builder.addDoubleProperty("shoot velocity", this::getShootingVelocity, null);
-    builder.addDoubleProperty("shoot angle", this::getShootingAngle, null);
-    
 
     SmartDashboard.putData("Start Calibration", calibration);
   }
-
-  public boolean visionOK() {
-    double d = getVisionAngle();
-    return d != Double.NaN && d < 360;
-  }
-
-  public double getTargetDistance() {
-    if(visionOK()) {
-      return ShootingUtil.VisionXtoDistance(getVisionX());
-    } else {
-      return ShootingUtil.getDistance(ShootingUtil.getTargetPosition(chassis.getPose()));
-    }
-  }
-  public double getTargetDirection() {
-    if(visionOK()) {
-      return getVisionAngle();
-    } else {
-      return ShootingUtil.getRotation(
-        ShootingUtil.getTargetPosition(chassis.getPose())
-        , chassis.getPose()).getDegrees();
-    }
-  }
-  public double getShootingVelocity() {
-    return ShootingUtil.distanceToVelocity(getTargetDistance());
-  }
-  public double getShootingAngle() {
-    return ShootingUtil.distanceToAngle(getTargetDistance());
-  }
-
-
 }

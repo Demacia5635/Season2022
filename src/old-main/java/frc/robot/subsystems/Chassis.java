@@ -26,10 +26,8 @@ import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstrai
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -41,7 +39,6 @@ public class Chassis extends SubsystemBase{
   private final GroupOfMotors right;
   private final PigeonIMU gyro;
   private final DifferentialDriveOdometry odometry;
-  private final Field2d field2d = new Field2d();
   private static final SimpleMotorFeedforward Aff = 
       new SimpleMotorFeedforward(Constants.KS / 12, Constants.KV / 12, Constants.KA / 12);
   private boolean isReversed = false;
@@ -73,16 +70,19 @@ public class Chassis extends SubsystemBase{
    * returns gyros position
    * @return
    */
-  private double _getFusedHeading(){
+  public double getFusedHeading(){
     return gyro.getFusedHeading();
   } 
 
-  private Rotation2d getHeading() {
-    return getPose().getRotation();
-  }
-
   public double getAngle(){
-    return getHeading().getDegrees();
+    double heading = getFusedHeading() % 360;
+    if (heading > 180) {
+      heading -= 360;
+    }
+    else if (heading < -180) {
+      heading += 360;
+    }
+    return heading;
   }
 
   /**
@@ -131,13 +131,7 @@ public class Chassis extends SubsystemBase{
    */
   public void resetOdometry(Pose2d pose) {
     resetEncoders();
-    odometry.resetPosition(pose, Rotation2d.fromDegrees(_getFusedHeading()));
-  }
-
-  public void resetOdometry(double x, double y, double heading) {
-    System.out.printf("set odo tp %f  %f %f\n",x,y,heading);
-    setHeading(heading);
-    resetOdometry(new Pose2d(x,y, Rotation2d.fromDegrees(heading)));
+    odometry.resetPosition(pose, Rotation2d.fromDegrees(getAngle()));
   }
 
   /**
@@ -287,8 +281,7 @@ public class Chassis extends SubsystemBase{
   
   @Override
   public void periodic() {
-    odometry.update(Rotation2d.fromDegrees(_getFusedHeading()), left.getDistance(), right.getDistance());
-    field2d.setRobotPose(getPose());
+    odometry.update(Rotation2d.fromDegrees(getFusedHeading()), left.getDistance(), right.getDistance());
   }
 
   @Override
@@ -296,22 +289,5 @@ public class Chassis extends SubsystemBase{
     builder.addDoubleProperty("left encoder", left::getEncoder, null);
     builder.addDoubleProperty("right encoder", right::getEncoder, null);
     builder.addDoubleProperty("angle", this::getAngle, null);
-    SmartDashboard.putData("Robot Position", field2d);
-    double x = SmartDashboard.getNumber("Set X Position", 4);
-    SmartDashboard.putNumber("Set X Position", x);
-    x = SmartDashboard.getNumber("Set y Position", 4);
-    SmartDashboard.putNumber("Set y Position", x);
-    x = SmartDashboard.getNumber("Set Heading", 0);
-    SmartDashboard.putNumber("Set Heading", x);
-    SmartDashboard.putData("Set Position", new InstantCommand(
-      ()->{setRobotPosition();}
-    ));
   }
-
-  public void setRobotPosition() {
-    resetOdometry(SmartDashboard.getNumber("Set X Position", 4),
-      SmartDashboard.getNumber("Set y Position", 4),
-      SmartDashboard.getNumber("Set Heading", 0));
-  }
-
 }
