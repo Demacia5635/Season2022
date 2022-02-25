@@ -1,10 +1,10 @@
-package frc.robot;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Shooting;
 
-public class setShootingAngle extends CommandBase {
+public class SetShootingAngle extends CommandBase {
     Shooting shooting;
     double angle = 30;
     double powerUp = -0.3;
@@ -12,7 +12,7 @@ public class setShootingAngle extends CommandBase {
 
     boolean goingToSwitch = false;
 
-    public setShootingAngle(Shooting shooting) {
+    public SetShootingAngle(Shooting shooting) {
         this.shooting = shooting;   
         SmartDashboard.putNumber("Target Angle", angle);
     }

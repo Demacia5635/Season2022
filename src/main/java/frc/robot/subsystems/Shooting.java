@@ -43,6 +43,7 @@ public class Shooting extends SubsystemBase {
     shooterSecondary.follow(shooterMain);
     limitSwitch = new DigitalInput(Constants.LIMIT_SWITCH_PORT);
     shooterMain.config_kP(0, Constants.SHOOTER_KP);
+    inputWheel.setInverted(false);
     inputWheel.setSensorPhase(true);
     inputWheel.setSelectedSensorPosition(0);
 
@@ -83,6 +84,10 @@ public class Shooting extends SubsystemBase {
    */
   public double getShooterVelocity(){
     return shooterMain.getSelectedSensorVelocity() * Constants.SHOOTER_PULSE_TO_METER * 10;
+  }
+
+  public double getShooterVelocity2(){
+    return shooterSecondary.getSelectedSensorVelocity() * Constants.SHOOTER_PULSE_TO_METER * 10;
   }
 
   public double getShooterEncoder(){
@@ -164,6 +169,7 @@ public class Shooting extends SubsystemBase {
     builder.addDoubleProperty("target direction", this::getTargetDirection, null);
     builder.addDoubleProperty("target distance", this::getTargetDistance, null);
     builder.addDoubleProperty("shoot velocity", this::getShootingVelocity, null);
+    builder.addDoubleProperty("Shooting Velocity 2", this::getShooterVelocity2, null);
     builder.addDoubleProperty("shoot angle", this::getShootingAngle, null);
     
 

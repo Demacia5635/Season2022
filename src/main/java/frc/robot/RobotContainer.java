@@ -4,20 +4,26 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Drive;
 import frc.robot.commands.MoveForward;
 import frc.robot.commands.MoveShackle;
 import frc.robot.commands.SetArm;
+import frc.robot.commands.SetTurnerDown;
 import frc.robot.commands.SetArm.Destination;
 import frc.robot.commands.Shoot;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ElivatorInside;
 import frc.robot.subsystems.Pickup;
 import frc.robot.subsystems.Shooting;
+import frc.robot.utils.ShootingUtil;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -44,6 +50,7 @@ public class RobotContainer {
   private final JoystickButton xButtonSecondary;
   private final JoystickButton bButtonSecondary;
   private final JoystickButton yButtonSecondary;
+  private final JoystickButton aButtonSecondary;
   
   private final MoveShackle openShackle;
   private final MoveShackle closeShackle;
@@ -51,6 +58,7 @@ public class RobotContainer {
   private final SetArm armUp;
   private final Command intake;
   private final Command shoot;
+  private final Command defaultShoot;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
 
@@ -66,6 +74,7 @@ public class RobotContainer {
     bButtonSecondary = new JoystickButton(secondaryController, 2);
     xButtonSecondary = new JoystickButton(secondaryController, 3);
     yButtonSecondary = new JoystickButton(secondaryController, 4);
+    aButtonSecondary = new JoystickButton(secondaryController, 1);
     startButtonSecondary = new JoystickButton(secondaryController, 8);
     
     aButtonMain = new JoystickButton(mainController, 1);
@@ -79,8 +88,11 @@ public class RobotContainer {
     armUp = new SetArm(pickup, Destination.UP);
     intake = pickup.getIntakeCommand();
     shoot = new Shoot(shooting, chassis).alongWith(pickup.getIntakeCommand());
+    defaultShoot = new Shoot(shooting, chassis, Constants.SHOOTING_DEFAULT_VELOCITY, Constants.SHOOTING_DEFAULT_ANGLE).alongWith(new SetArm(pickup, Destination.DOWN));
 
     chassis.setDefaultCommand(new Drive(chassis, mainController));
+    shooting.setDefaultCommand(new SetTurnerDown(shooting));
+    pickup.setDefaultCommand(new SetArm(pickup, Destination.UP).andThen(new StartEndCommand(() -> {}, () -> {}, pickup)));
     
     // Configure the button bindings
     configureButtonBindings();
@@ -101,11 +113,20 @@ public class RobotContainer {
    * right joystick y secondary -> move elevator
    * Y button secondary -> close shackle
    * Back button main -> reverse controls
+   * A button secondary -> reset position
    */
   private void configureButtonBindings() {
     aButtonMain.whenHeld(intake);
       
     yButtonMain.whenPressed(armUp);
+
+    aButtonSecondary.whenPressed(new InstantCommand(() -> {
+      NetworkTableInstance nt = NetworkTableInstance.getDefault();
+      boolean isRed = nt.getEntry("FMSInfo/IsRedAlliance").getBoolean(true);
+      SmartDashboard.putBoolean("isRed", isRed);
+      Translation2d location = isRed ? ShootingUtil.RED_LAUNCH_LOCATION : ShootingUtil.BLUE_LAUNCH_LOCATION;
+      chassis.setPose(location.getX(), location.getY());
+    }));
     
     bButtonMain.whenHeld(shoot); //autoShoot
 
@@ -116,15 +137,15 @@ public class RobotContainer {
     backButtonMain.whenPressed(new InstantCommand(() -> {chassis.reverse(!chassis.isReversed());}));
 
     startButtonSecondary.whenPressed(new InstantCommand(() -> {
-      new SetArm(pickup, SetArm.Destination.DOWN).schedule();
+      new SetArm(pickup, SetArm.Destination.DOWN).andThen(new StartEndCommand(() -> {}, () -> {}, pickup)).schedule();
       elivatorInside.changeClimbingMode();
     }));
 
-    bButtonSecondary.whileHeld(shoot);
+    bButtonSecondary.whileHeld(defaultShoot);
   }
 
-  public Command getSimpleAutCommand() {
-    return new MoveForward(chassis, 3).raceWith(pickup.getIntakeCommand()).andThen(new Shoot(shooting, chassis ));
+  public Command getSimpleAutoCommand() {
+    return new SetArm(pickup, Destination.DOWN).andThen(pickup.getIntakeCommand().raceWith(new MoveForward(chassis, 2))).andThen(new Shoot(shooting, chassis, Constants.SHOOTING_AUTO_VELOCITY, Constants.SHOOTING_AUTO_ANGLE));
   }
 
   /**
@@ -133,6 +154,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return null;
+    return getSimpleAutoCommand();
   }
 }

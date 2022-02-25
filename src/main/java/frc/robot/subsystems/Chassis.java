@@ -45,6 +45,7 @@ public class Chassis extends SubsystemBase{
   private static final SimpleMotorFeedforward Aff = 
       new SimpleMotorFeedforward(Constants.KS / 12, Constants.KV / 12, Constants.KA / 12);
   private boolean isReversed = false;
+  private boolean isBrake = true;
 
   public Chassis() {
     left = new GroupOfMotors(Constants.LEFT_FRONT_PORT, Constants.LEFT_BACK_PORT);
@@ -53,9 +54,13 @@ public class Chassis extends SubsystemBase{
 
     gyro.setFusedHeading(0);
     odometry = new DifferentialDriveOdometry(new Rotation2d(0));
+    resetOdometry(12.53, 4, 0);
 
     left.invertMotors(false);
     right.invertMotors(true);
+    right.setNeutralMode(true);
+    left.setNeutralMode(true);
+    isBrake = true;
 
     left.setK_P(Constants.KP);
     right.setK_P(Constants.KP);
@@ -188,6 +193,10 @@ public class Chassis extends SubsystemBase{
     gyro.setFusedHeading(angle);
   }
 
+  public void setPose(double x, double y){
+    odometry.resetPosition(new Pose2d(x, y, odometry.getPoseMeters().getRotation()), Rotation2d.fromDegrees(gyro.getFusedHeading()));
+  }
+
   /** Zeroes the heading of the robot. */
   public void resetGyro() {
     setHeading(0);
@@ -306,6 +315,12 @@ public class Chassis extends SubsystemBase{
     SmartDashboard.putData("Set Position", new InstantCommand(
       ()->{setRobotPosition();}
     ));
+    SmartDashboard.putData("Set Neutral", new InstantCommand(() -> {
+      isBrake = !isBrake;
+      System.out.println(isBrake);
+      left.setNeutralMode(isBrake);
+      right.setNeutralMode(isBrake);
+    }));
   }
 
   public void setRobotPosition() {

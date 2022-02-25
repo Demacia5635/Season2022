@@ -7,7 +7,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 
 public class ShootingUtil {
 
-    public static final Translation2d TargetLocation = new Translation2d(8.0,4.0);
+    public static final Translation2d TargetLocation = new Translation2d(8.3,4.1);
+    public static final Translation2d RED_LAUNCH_LOCATION = new Translation2d(3.85, 5.5);
+    public static final Translation2d BLUE_LAUNCH_LOCATION = new Translation2d(12.75, 2.8);
 
     public static final double xToDistance[][] = {
         { -10, 1},
@@ -92,7 +94,6 @@ public class ShootingUtil {
         } else if(rot > 180) {
             rot -= 360;
         }
-        return Rotation2d.fromDegrees(rot);
-        
+        return Rotation2d.fromDegrees(rot);        
     }
 }

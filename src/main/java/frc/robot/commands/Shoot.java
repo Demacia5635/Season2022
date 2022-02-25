@@ -22,7 +22,7 @@ public class Shoot extends CommandBase {
   private final Chassis chassis;
 
   private final double turnerPowerUp = -0.3;
-  private final double turnerPowerDown = 0.4;
+  private final double turnerPowerDown = 0.3;
   private final double turnPower = 0.2;
   private boolean toSwitch = false;
 

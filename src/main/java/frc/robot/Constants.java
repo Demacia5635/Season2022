@@ -24,20 +24,21 @@ public final class Constants {
     public static final int INPUT_WHEEL_PORT = 9;
     public static final int LIMIT_SWITCH_PORT = 0;
     public static final double PULSE_TO_ANGLE = 360./4000;
-    public static final double INPUT_WHEEL_POWER = -1;
+    public static final double INPUT_WHEEL_POWER = -0.6;
     public static final double SHOOTER_PULSE_TO_METER = 0.1 * Math.PI / 2048;
     public static final double SHOOTER_KS = 0.04;
     public static final double SHOOTER_KV = 1 / 34.;
     public static final double SHOOTER_KP = 1 / 1000.;
     public static final double TURNER_DEFAULT_POWER = -0.4;
-    public static final double MAX_SHOOT_ANGLE_ERROR = 2;
+    public static final double MAX_SHOOT_ANGLE_ERROR = 1;
     public static final double MAX_SHOOT_VELOCITY_ERROR = 1.5;
-    public static final double SHOOTING_DEFAULT_VELOCITY = 10;
-    public static final double SHOOTING_DEFAULT_ANGLE = 45;
-    public static final double SHOOTING_AUTO_VELOCITY = 20;
-    public static final double SHOOTING_AUTO_ANGLE = 20;
+    public static final double SHOOTING_DEFAULT_VELOCITY = 12;
+    public static final double SHOOTING_DEFAULT_ANGLE = 50;
+    public static final double SHOOTING_AUTO_VELOCITY = 16;
+    public static final double SHOOTING_AUTO_ANGLE = 36;
     public static final double CAMERA_TOWER_DIFF = 1.5;
     public static final double MAX_ANGLE_ERROR_CHASSIS = 10;
+    public static final double DRIVE_POWER_FACTOR = 0.75;
     public static final double CAMERA_ANGLE = 0;
 
     public static final Vector2d[] SHOOTING_VALUES = {
@@ -120,7 +121,7 @@ public final class Constants {
     public static final double PICKUP_POWER = 1;
 
     //Velocity
-    public static final double ARM_UP_POWER = 0.7;
-    public static final double ARM_DOWN_POWER = -0.3;
+    public static final double ARM_UP_POWER = 0.8;
+    public static final double ARM_DOWN_POWER = -0.45;
     //#endregion
 }

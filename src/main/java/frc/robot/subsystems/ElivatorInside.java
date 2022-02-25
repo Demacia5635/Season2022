@@ -26,6 +26,7 @@ public class ElivatorInside extends SubsystemBase {
     this.shackleOpenner = new WPI_TalonSRX(Constants.SHACKLE_OPENNER);
     command = new MoveElivator(this, controller);
     setDefaultCommand(command);
+    telescopicMotor.setInverted(true);
 
     //telescopicMotor.setSelectedSensorPosition(0);
   }

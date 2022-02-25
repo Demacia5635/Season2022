@@ -50,7 +50,7 @@ public class Drive extends CommandBase {
   }
 
   private double scalePower(double power){
-    return power * power * power;
+    return power * power * power * Constants.DRIVE_POWER_FACTOR;
   }
 
   // Called once the command ends or is interrupted.
