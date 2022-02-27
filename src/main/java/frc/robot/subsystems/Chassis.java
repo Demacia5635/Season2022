@@ -12,6 +12,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -29,10 +30,13 @@ import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstrai
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.commands.Calibrate;
 import frc.robot.commands.InstantCommandInDisable;
+import frc.robot.utils.FeedForward;
 import frc.robot.utils.GroupOfMotors;
 
 public class Chassis extends SubsystemBase{
@@ -40,8 +44,9 @@ public class Chassis extends SubsystemBase{
   private final GroupOfMotors left;
   private final GroupOfMotors right;
   private final PigeonIMU gyro;
-  private static final SimpleMotorFeedforward aff = new SimpleMotorFeedforward(Constants.KS, Constants.KV);
+  private static final SimpleMotorFeedforward aff = new SimpleMotorFeedforward(Constants.KS / 12, Constants.KV / 12, Constants.KA / 12);
   private boolean isBrake;
+  private final Field2d field2d;
   private final DifferentialDriveOdometry odometry;
 
   public Chassis(){
@@ -49,6 +54,7 @@ public class Chassis extends SubsystemBase{
     right = new GroupOfMotors(Constants.RIGHT_FRONT_PORT, Constants.RIGHT_BACK_PORT);
     gyro = new PigeonIMU(Constants.GYRO_PORT);
     odometry = new DifferentialDriveOdometry(new Rotation2d(0));
+    field2d = new Field2d();
     gyro.setFusedHeading(0);
 
     setNeutralMode(true);
@@ -69,9 +75,22 @@ public class Chassis extends SubsystemBase{
     ChassisSpeeds speeds = new ChassisSpeeds(velocity * Constants.MAX_VELOCITY, 0, turns * Constants.MAX_ANGULAR_VELOCITY);
 
     DifferentialDriveWheelSpeeds wheelSpeeds = Constants.KINEMATICS.toWheelSpeeds(speeds);
-    left.setVelocity(wheelSpeeds.leftMetersPerSecond, aff);
-    right.setVelocity(wheelSpeeds.rightMetersPerSecond, aff);
+    setVelocityOurFF(wheelSpeeds.leftMetersPerSecond, wheelSpeeds.rightMetersPerSecond);
   }
+
+  public void setVelocityOurFF(double left, double right){
+    this.left.setVelocity(left, FeedForward.feedForwardLeftPower(left, right));
+    this.right.setVelocity(right, FeedForward.feedForwardRightPower(left, right));
+  }
+
+  public double getLeftVelocity(){
+    return left.getVelocity();
+  }
+
+  public double getRightVelocity(){
+    return right.getVelocity();
+  }
+
   /**
    * returns gyros position
    * @return
@@ -118,6 +137,14 @@ public class Chassis extends SubsystemBase{
     return odometry.getPoseMeters();
   }
 
+  public void setPose(double x, double y){
+    odometry.resetPosition(new Pose2d(x, y, odometry.getPoseMeters().getRotation()), Rotation2d.fromDegrees(gyro.getFusedHeading()));
+  }
+
+  public void setPose(Pose2d pose){
+    odometry.resetPosition(pose, Rotation2d.fromDegrees(gyro.getFusedHeading()));
+  }
+
   /**
    * Returns the current wheel speeds of the robot.
    * @return The current wheel speeds in m/s.
@@ -138,6 +165,12 @@ public class Chassis extends SubsystemBase{
   public void resetOdometry(Pose2d pose) {
     resetEncoders();
     odometry.resetPosition(pose, Rotation2d.fromDegrees(getAngle()));
+  }
+
+  public void resetOdometry(double x, double y, double heading) {
+    System.out.printf("set odo tp %f  %f %f\n",x,y,heading);
+    setHeading(heading);
+    resetOdometry(new Pose2d(x,y, Rotation2d.fromDegrees(heading)));
   }
 
   /**
@@ -170,6 +203,21 @@ public class Chassis extends SubsystemBase{
     return list;
   }
 
+  public Trajectory getTrajectory(String trajectoryFileName){
+    Trajectory trajectory = new Trajectory();
+
+    trajectoryFileName = "paths/" + trajectoryFileName;
+    try {
+      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryFileName);
+      trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+    } catch (IOException ex) {
+      DriverStation.reportError("Unable to open trajectory: " + trajectoryFileName, ex.getStackTrace());
+      return null;
+    }
+    
+    return trajectory;
+  }
+
   public Command getAutoCommand(String trajectoryFileName){
     Trajectory trajectory = new Trajectory();
 
@@ -182,6 +230,10 @@ public class Chassis extends SubsystemBase{
       return null;
     }
 
+    return getAutoCommand(trajectory);
+  }
+
+  public Command getAutoCommand(Trajectory trajectory){
     Command ramseteCommand =
         new RamseteCommand(
             trajectory,
@@ -224,34 +276,37 @@ public class Chassis extends SubsystemBase{
 
     Trajectory trajectory = TrajectoryGenerator.generateTrajectory(arrayToList(poses), config);
 
-    Command ramseteCommand =
-        new RamseteCommand(
-            trajectory,
-            this::getPose,
-            new RamseteController(Constants.RAMSETE_B, Constants.RAMSETE_ZETA),
-            new SimpleMotorFeedforward(
-                Constants.KS,
-                Constants.KV,
-                Constants.KA),
-            Constants.KINEMATICS,
-            this::getWheelSpeeds,
-            new PIDController(Constants.KP * 12, 0, 0),
-            new PIDController(Constants.KP * 12, 0, 0),
-            // RamseteCommand passes volts to the callback
-            this::setVoltage,
-            this
-        ).andThen(() -> {setPower(0, 0);}, this);
+    return getAutoCommand(trajectory);
+  }
 
-    return ramseteCommand;
+  public void setRobotPosition() {
+    resetOdometry(SmartDashboard.getNumber("Set X Position", 4),
+      SmartDashboard.getNumber("Set y Position", 4),
+      SmartDashboard.getNumber("Set Heading", 0));
   }
 
   @Override
   public void periodic() {
     odometry.update(Rotation2d.fromDegrees(getFusedHeading()), left.getDistance(), right.getDistance());
+    field2d.setRobotPose(getPose());
   }
 
   @Override
   public void initSendable(SendableBuilder builder) {
-      SmartDashboard.putData("NeutralMode", new InstantCommandInDisable(() -> {setNeutralMode(!isBrake);}));
+    SmartDashboard.putData("NeutralMode", new InstantCommandInDisable(() -> {setNeutralMode(!isBrake);}));
+    builder.addDoubleProperty("left encoder", left::getEncoder, null);
+    builder.addDoubleProperty("right encoder", right::getEncoder, null);
+    builder.addDoubleProperty("angle", this::getAngle, null);
+    SmartDashboard.putData("Robot Position", field2d);
+    double x = SmartDashboard.getNumber("Set X Position", 4);
+    SmartDashboard.putNumber("Set X Position", x);
+    x = SmartDashboard.getNumber("Set y Position", 4);
+    SmartDashboard.putNumber("Set y Position", x);
+    x = SmartDashboard.getNumber("Set Heading", 0);
+    SmartDashboard.putNumber("Set Heading", x);
+    SmartDashboard.putData("Set Position", new InstantCommand(
+      ()->{setRobotPosition();}
+    ));
+    SmartDashboard.putData("Calibrate", new Calibrate(this));
   }
 }
