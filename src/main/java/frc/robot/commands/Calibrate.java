@@ -15,8 +15,8 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 public class Calibrate extends CommandBase {
 
 
-  public static final double Power1 = 0.4;
-  public static final double Power2 = 0.3;
+  public static final double Power1 = 0.35;
+  public static final double Power2 = 0.25;
   public static final double MinPower = 0.1;
 
   Chassis chassis;
@@ -45,7 +45,7 @@ public class Calibrate extends CommandBase {
         cmd  = c;
       } else {
         // cmd = cmd.andThen().andThen(c);
-        cmd = cmd.andThen(new WaitCommand(1)).andThen(c);
+        cmd = cmd.andThen(new WaitCommand(0.7)).andThen(c);
         System.out.println("RUNNING OVER THE COMMANDS WHICH ARENT");
       }
     }

@@ -13,8 +13,8 @@ import frc.robot.Constants;
  */
 public class FeedForward {
     
-    public static double K_HA = 0.127;
-    public static double K_LA = 0.0458;
+    public static double K_HA = 0.755183876280745;
+    public static double K_LA = 0.059717813093936;
     public static double K_S = Constants.KS / 12; //0.22404
     public static double K_V = Constants.KV / 12; //0.04314
     public static double MAX_BRAKEMODE = 0.05;

@@ -31,7 +31,7 @@ public class Drive extends CommandBase {
   public void execute() {
     double value = deadband(controller.getRightTriggerAxis() - controller.getLeftTriggerAxis());
     double angle = deadband(controller.getLeftX());
-    chassis.setAngularVelocity(value, angle);
+    chassis.setAngularVelocity(value, -angle);
   }
 
   private double deadband(double value){
