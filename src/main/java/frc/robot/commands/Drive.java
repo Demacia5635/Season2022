@@ -31,19 +31,11 @@ public class Drive extends CommandBase {
   public void execute() {
     double value = deadband(controller.getRightTriggerAxis() - controller.getLeftTriggerAxis());
     double angle = deadband(controller.getLeftX());
-    double lPower, rPower;
-
-    lPower = scalePower(value + angle);
-    rPower = scalePower(value - angle);
-    chassis.setPower(lPower, rPower);
+    chassis.setAngularVelocity(value, angle);
   }
 
   private double deadband(double value){
     return Math.abs(value) > Constants.CONTROLLER_DEADBAND ? value : 0;
-  }
-
-  private double scalePower(double power){
-    return power * power * power;
   }
 
   // Called once the command ends or is interrupted.

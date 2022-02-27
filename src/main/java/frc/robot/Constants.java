@@ -18,16 +18,18 @@ public final class Constants {
 
     public static final double MAX_VELOCITY = 3;
     public static final double MAX_ANGULAR_VELOCITY = Math.PI / 2;
-    public static final double PULSES_PER_METER = -1;
+    public static final double PULSES_PER_METER = 12.0*2048/(6.0*25.4*Math.PI/1000.0);
 
     public static final int LEFT_FRONT_PORT = 3; 
     public static final int LEFT_BACK_PORT = 4; 
     public static final int RIGHT_FRONT_PORT = 1; 
-    public static final int RIGHT_BACK_PORT = 2; 
+    public static final int RIGHT_BACK_PORT = 2;
+    public static final int GYRO_PORT = 5;
     public static final double CONTROLLER_DEADBAND = 0.1;
     public static final double KS = -1;
     public static final double KV = -1;
-    public static final double TRACK_WIDTH = -1;
+    public static final double KP = -1;
+    public static final double TRACK_WIDTH = 0.56;
     public static final DifferentialDriveKinematics KINEMATICS = new DifferentialDriveKinematics(TRACK_WIDTH);
     
 }
