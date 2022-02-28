@@ -13,10 +13,10 @@ import frc.robot.Constants;
  */
 public class FeedForward {
     
-    public double K_H = 0.755183876280745;
-    public double K_L = 0.059717813093936;
-    public double K_S = Constants.KS; //0.22404
-    public double K_V = Constants.KV; //0.04314
+    public double K_H = -0.014648098142334;
+    public double K_L = -0.017385422077827;
+    public double K_S = Constants.KS / 12; //0.22404
+    public double K_V = Constants.KV / 12; //0.04314
     public double leftV;
     public double rightV;
     public double leftP;
@@ -42,6 +42,6 @@ public class FeedForward {
     }
     
     private double feedForwardPower(double velocity) {
-        return velocity * K_V + K_S;
+        return velocity * K_V + Math.signum(velocity) * K_S;
     }
 }

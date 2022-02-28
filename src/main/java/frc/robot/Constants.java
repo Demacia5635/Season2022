@@ -26,8 +26,8 @@ public final class Constants {
     public static final int RIGHT_BACK_PORT = 2;
     public static final int GYRO_PORT = 5;
     public static final double CONTROLLER_DEADBAND = 0.1;
-    public static final double KS = 0.225926945943913 * 12;
-    public static final double KV = 0.050693221830986 * 12;
+    public static final double KS = 0.052575059035196 * 12;
+    public static final double KV = 0.230880927104271 * 12;
     public static final double KP = 0.015574;
     public static final double KA = 0;
     public static final double TRACK_WIDTH = 0.56;
