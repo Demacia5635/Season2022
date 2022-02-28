@@ -13,59 +13,35 @@ import frc.robot.Constants;
  */
 public class FeedForward {
     
-    public static double K_HA = 0.755183876280745;
-    public static double K_LA = 0.059717813093936;
-    public static double K_S = Constants.KS / 12; //0.22404
-    public static double K_V = Constants.KV / 12; //0.04314
-    public static double MAX_BRAKEMODE = 0.05;
-    public static double MIN_BRAKEMODE = 0.1;
-    
-    public static double feedForwardPower(double velocity) {
-        return velocity * K_S + K_V;
-    }
-    
-    public static double feedForwardLeftPower(double leftVelocity, double rightVelocity) {
-        // if zeros - return 0
-        if(leftVelocity == 0 && rightVelocity == 0) {
-            return 0;
-        }
-        // if not in same direction - use normal power
-        if(leftVelocity * rightVelocity < 0) {
-            return feedForwardPower(leftVelocity);
-        }
-        // if negative - return minus of the positive values
-        if(leftVelocity < 0) {
-            return -feedForwardLeftPower(-leftVelocity, -rightVelocity);
-        }
-        // if very small velocity and other side is higher - retuen 0 for brake mode
-        if(leftVelocity < MAX_BRAKEMODE && rightVelocity > MIN_BRAKEMODE) {
-            return 0;
-        }
-        if(leftVelocity > rightVelocity) {
-            return highPower(leftVelocity, rightVelocity);
-        } else {
-            return lowPower(rightVelocity, leftVelocity);
-        }
-    }
+    public double K_H = 0.755183876280745;
+    public double K_L = 0.059717813093936;
+    public double K_S = Constants.KS; //0.22404
+    public double K_V = Constants.KV; //0.04314
+    public double leftV;
+    public double rightV;
+    public double leftP;
+    public double rightP;
 
-    public static double feedForwardRightPower(double leftVelocity, double rightVelocity) {
-        return feedForwardLeftPower(rightVelocity, leftVelocity);
+   public void calculate(double left, double right) {
+       leftV = left;
+       rightV = right;
+       leftP = feedForwardPower(leftV);
+       rightP = feedForwardPower(rightV);
+       if(left * right < 0) {
+           return;
+       }
+       double dv = left - right;
+
+       if(Math.abs(left) > Math.abs(right)) {
+           leftP += dv * K_H;
+           rightP += dv * K_L;
+       } else {
+        leftP -= dv * K_L;
+        rightP -= dv * K_H;
+       }
     }
     
-    private static double power(double highVelocity, double lowVelocity, boolean high) {
-        // double v = (highVelocity - lowVelocity + highVelocity*K_HA - lowVelocity*K_LA) / (K_HA - K_LA);
-        double v = highVelocity + lowVelocity*K_LA / (K_HA - K_LA);
-        double p = feedForwardPower(v);
-        if(high) {
-            return p;
-        } else {
-            return p - (v-lowVelocity) * K_LA;
-        }
-    }
-    private static double highPower(double highVelocity, double lowVelocity) {
-        return power(highVelocity, lowVelocity, true);
-    }
-    private static double lowPower(double highVelocity, double lowVelocity) {
-        return power(highVelocity, lowVelocity, false);
+    private double feedForwardPower(double velocity) {
+        return velocity * K_V + K_S;
     }
 }

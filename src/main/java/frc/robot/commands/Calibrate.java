@@ -35,8 +35,6 @@ public class Calibrate extends CommandBase {
       new CalibrateTurn(chassis, chassis::setPower, chassis::getLeftVelocity, chassis::getRightVelocity, -Power1, -MinPower),
       new CalibrateTurn(chassis, chassis::setPower, chassis::getLeftVelocity, chassis::getRightVelocity, Power2, Power2),
       new CalibrateTurn(chassis, chassis::setPower, chassis::getLeftVelocity, chassis::getRightVelocity, -Power2, -Power2),
-      new CalibrateTurn(chassis, chassis::setPower, chassis::getLeftVelocity, chassis::getRightVelocity, Power2, MinPower),
-      new CalibrateTurn(chassis, chassis::setPower, chassis::getLeftVelocity, chassis::getRightVelocity, -Power2, -MinPower)
     };
     // build the cmd to run all tests - with a 1 second wait in between
     cmd = null;
@@ -73,32 +71,30 @@ public class Calibrate extends CommandBase {
     double v2 = (cmds[4].lVelocity - cmds[5].lVelocity + cmds[4].rVelocity - cmds[5].rVelocity)/4;
     double v1h = (cmds[2].lVelocity - cmds[3].lVelocity)/2;
     double v1l = (cmds[2].rVelocity - cmds[3].rVelocity)/2;
-    double v2h = (cmds[6].lVelocity - cmds[7].lVelocity)/2;
-    double v2l = (cmds[6].rVelocity - cmds[7].rVelocity)/2;
-
+ 
     // calculate the constants
-    double ks = (Power1 - Power2) / (v1 - v2);
-    double kv = ((Power1 - v1*ks) + (Power2 - v2*ks))/2;
-    double hr = ((Power1 - MinPower)/(v1-v1h) + (Power2 - MinPower)/v2-v2h)/2;
-    double lr = ((Power1 - MinPower)/(v1-v1l) + (Power2 - MinPower)/v2-v2l)/2;
+    double kv = (Power1 - Power2) / (v1 - v2);
+    double ks = Power1 - v1*kv;
+    double hr = (Power1 - ks - kv * v1h)/(v1h - v1l); 
+    double lr = (MinPower-ks-kv*v1l)/(v1h - v1l);
     // set up the global parameters - for the test
-    FeedForward.K_S = ks;
-    FeedForward.K_V = kv;
-    FeedForward.K_HA = hr;
-    FeedForward.K_LA = lr;
+    FeedForward ff = new FeedForward();
+    ff.K_S = ks;
+    ff.K_V = kv;
+    ff.K_H = hr;
+    ff.K_L = lr;
     // check all values
     double error = 0;
     for(CalibrateTurn c : cmds) {
-      double pl = FeedForward.feedForwardLeftPower(c.lVelocity, c.rVelocity);
-      double pr = FeedForward.feedForwardRightPower(c.lVelocity, c.rVelocity);
-      error = Math.abs(pl - c.lPower) + Math.abs(pr - c.rPower);
+      ff.calculate(c.lVelocity, c.rVelocity);
+      error = Math.abs(ff.leftP - c.lPower) + Math.abs(ff.rightP - c.rPower);
     }
     // put all data into the network table
     SmartDashboard.putNumber("Calibrate KS", ks);
     SmartDashboard.putNumber("Calibrate KV", kv);
-    SmartDashboard.putNumber("Calibrate HR", hr);
-    SmartDashboard.putNumber("Calibrate LR", lr);
-    SmartDashboard.putNumber("Calibrate Error", error/16); // average of the 16 tests
+    SmartDashboard.putNumber("Calibrate KH", hr);
+    SmartDashboard.putNumber("Calibrate KL", lr);
+    SmartDashboard.putNumber("Calibrate Error", error/12); // average of the 16 tests
   }
 
   // Returns true when the command should end.

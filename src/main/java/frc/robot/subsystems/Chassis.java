@@ -49,6 +49,7 @@ public class Chassis extends SubsystemBase{
   private boolean isBrake;
   private final Field2d field2d;
   private final DifferentialDriveOdometry odometry;
+  private final FeedForward feedForward = new FeedForward();
 
   public Chassis(){
     left = new GroupOfMotors(Constants.LEFT_FRONT_PORT, Constants.LEFT_BACK_PORT);
@@ -81,8 +82,9 @@ public class Chassis extends SubsystemBase{
   }
 
   public void setVelocityOurFF(double left, double right){
-    this.left.setVelocity(left, FeedForward.feedForwardLeftPower(left, right));
-    this.right.setVelocity(right, FeedForward.feedForwardRightPower(left, right));
+    feedForward.calculate(left, right); 
+    this.left.setVelocity(left, feedForward.leftP);
+    this.right.setVelocity(right, feedForward.rightP);
   }
 
   public double getLeftVelocity(){
