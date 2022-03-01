@@ -50,12 +50,14 @@ public class Chassis extends SubsystemBase{
   private final Field2d field2d;
   private final DifferentialDriveOdometry odometry;
   private final FeedForward feedForward = new FeedForward();
+  private boolean isSagi = true;
 
   public Chassis(){
     left = new GroupOfMotors(Constants.LEFT_FRONT_PORT, Constants.LEFT_BACK_PORT);
     right = new GroupOfMotors(Constants.RIGHT_BACK_PORT, Constants.RIGHT_FRONT_PORT);
     gyro = new PigeonIMU(new WPI_TalonSRX(Constants.GYRO_PORT));
     odometry = new DifferentialDriveOdometry(new Rotation2d(0));
+    setPose(4,4);
     field2d = new Field2d();
     gyro.setFusedHeading(0);
 
@@ -74,7 +76,12 @@ public class Chassis extends SubsystemBase{
   }
 
   public void setAngularVelocity(double velocity, double turns){
-    turns *= Math.abs(velocity) + 1;
+    double absVel = Math.abs(velocity);
+    if (isSagi) {
+      turns *= (absVel == 0 ? Constants.ZERO_TURN_SAGI : Math.max(absVel, Constants.LOW_TURN_SAGI)) + Constants.TURN_SCALE_SAGI;
+    }
+    else
+      turns *= absVel + Constants.TURN_SCALE_GUY;
     ChassisSpeeds speeds = new ChassisSpeeds(velocity * Constants.MAX_VELOCITY, 0, turns * Constants.MAX_ANGULAR_VELOCITY);
 
     DifferentialDriveWheelSpeeds wheelSpeeds = Constants.KINEMATICS.toWheelSpeeds(speeds);
@@ -142,7 +149,7 @@ public class Chassis extends SubsystemBase{
   }
 
   public void setPose(double x, double y){
-    odometry.resetPosition(new Pose2d(x, y, odometry.getPoseMeters().getRotation()), Rotation2d.fromDegrees(gyro.getFusedHeading()));
+    resetOdometry(new Pose2d(x, y, Rotation2d.fromDegrees(getAngle())));
   }
 
   public void setPose(Pose2d pose){
@@ -168,12 +175,11 @@ public class Chassis extends SubsystemBase{
    */
   public void resetOdometry(Pose2d pose) {
     resetEncoders();
-    odometry.resetPosition(pose, Rotation2d.fromDegrees(getAngle()));
+    odometry.resetPosition(pose, Rotation2d.fromDegrees(getFusedHeading()));
   }
 
   public void resetOdometry(double x, double y, double heading) {
     System.out.printf("set odo tp %f  %f %f\n",x,y,heading);
-    setHeading(heading);
     resetOdometry(new Pose2d(x,y, Rotation2d.fromDegrees(heading)));
   }
 
@@ -210,7 +216,7 @@ public class Chassis extends SubsystemBase{
   public Trajectory getTrajectory(String trajectoryFileName){
     Trajectory trajectory = new Trajectory();
 
-    trajectoryFileName = "paths/" + trajectoryFileName;
+    trajectoryFileName = "output/" + trajectoryFileName;
     try {
       Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryFileName);
       trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
@@ -225,7 +231,7 @@ public class Chassis extends SubsystemBase{
   public Command getAutoCommand(String trajectoryFileName){
     Trajectory trajectory = new Trajectory();
 
-    trajectoryFileName = "paths/" + trajectoryFileName;
+    trajectoryFileName = "output/" + trajectoryFileName;
     try {
       Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryFileName);
       trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
@@ -259,7 +265,7 @@ public class Chassis extends SubsystemBase{
     return ramseteCommand;
   }
 
-  public Command getAutCommand(Pose2d... poses){
+  public Command getAutoCommand(Pose2d... poses){
     DifferentialDriveVoltageConstraint autoVoltageConstraint =
         new DifferentialDriveVoltageConstraint(
             new SimpleMotorFeedforward(
@@ -312,5 +318,8 @@ public class Chassis extends SubsystemBase{
       ()->{setRobotPosition();}
     ));
     SmartDashboard.putData("Calibrate", new Calibrate(this));
+
+    SmartDashboard.putData("Change Driver", new InstantCommandInDisable(() -> {isSagi = !isSagi;}));
+    builder.addBooleanProperty("Is Sage", () -> {return isSagi;}, null);
   }
 }

@@ -16,7 +16,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
  */
 public final class Constants {
 
-    public static final double MAX_VELOCITY = 3;
+    public static final double MAX_VELOCITY = 3.2;
     public static final double MAX_ANGULAR_VELOCITY = Math.PI;
     public static final double PULSES_PER_METER = 12.0*2048/(6.0*25.4*Math.PI/1000.0);
 
@@ -29,12 +29,16 @@ public final class Constants {
     public static final double KS = 0.052575059035196 * 12;
     public static final double KV = 0.230880927104271 * 12;
     public static final double KP = 0.015574;
+    public static final double TURN_SCALE_SAGI = 1.175;
+    public static final double TURN_SCALE_GUY = 1.2;
+    public static final double ZERO_TURN_SAGI = 0.9;
+    public static final double LOW_TURN_SAGI = 0.35;
     public static final double KA = 0;
     public static final double TRACK_WIDTH = 0.56;
     public static final DifferentialDriveKinematics KINEMATICS = new DifferentialDriveKinematics(TRACK_WIDTH);
 
-    public static final double MAX_VELOCITY_AUTO = 3;
-    public static final double MAX_ACCELERATION_AUTO = 3;
+    public static final double MAX_VELOCITY_AUTO = 2;
+    public static final double MAX_ACCELERATION_AUTO = 1;
 
     public static final double MOVE_POWER = 0.6;
     public static final double TURN_POWER = 0.6;
