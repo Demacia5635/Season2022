@@ -10,13 +10,13 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.commands.ShootingCalibration;
-import frc.robot.utils.FeedForward;
 import frc.robot.utils.ShootingUtil;
 
 public class Shooting extends SubsystemBase {
@@ -24,7 +24,7 @@ public class Shooting extends SubsystemBase {
 
   private final WPI_TalonFX shooterMain;
   private final WPI_TalonFX shooterSecondary;
-  private final FeedForward shooterAff;
+  private final SimpleMotorFeedforward shooterAff;
   private final WPI_TalonSRX inputWheel;
   private final WPI_TalonSRX turner;
   private final DigitalInput limitSwitch;
@@ -36,7 +36,7 @@ public class Shooting extends SubsystemBase {
     shooterMain = new WPI_TalonFX(Constants.SHOOTER_PORT_MAIN);
     turner = new WPI_TalonSRX(Constants.TURNER_PORT);
     turner.setNeutralMode(NeutralMode.Brake);
-    shooterAff = new FeedForward(Constants.SHOOTER_KS, Constants.SHOOTER_KV);
+    shooterAff = new SimpleMotorFeedforward(Constants.SHOOTER_KS, Constants.SHOOTER_KV);
     shooterSecondary = new WPI_TalonFX(Constants.SHOOTER_PORT_SECONDARY);
     inputWheel = new WPI_TalonSRX(Constants.INPUT_WHEEL_PORT);
     shooterSecondary.setInverted(true);
@@ -75,7 +75,7 @@ public class Shooting extends SubsystemBase {
    */
   public void setShooterVelocity(double velocity){
     shooterMain.set(ControlMode.Velocity, velocity / (10 * Constants.SHOOTER_PULSE_TO_METER), 
-        DemandType.ArbitraryFeedForward, shooterAff.get(velocity));
+        DemandType.ArbitraryFeedForward, shooterAff.calculate(velocity));
   }
 
   /**

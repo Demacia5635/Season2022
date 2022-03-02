@@ -1,42 +1,47 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package frc.robot.utils;
 
-/** Add your docs here. */
+import frc.robot.Constants;
+
+/**
+ *
+ * @author Udi Kislev
+ */
 public class FeedForward {
-    private double kS;
-    private double kV;
-    private double kA;
+    
+    public double K_H = -0.014648098142334;
+    public double K_L = -0.017385422077827;
+    public double K_S = Constants.KS / 12; //0.22404
+    public double K_V = Constants.KV / 12; //0.04314
+    public double leftV;
+    public double rightV;
+    public double leftP;
+    public double rightP;
 
-    public FeedForward(double kS, double kV){
-        this.kS = kS;
-        this.kV = kV;
-        kA = 0;
+   public void calculate(double left, double right) {
+       leftV = left;
+       rightV = right;
+       leftP = feedForwardPower(leftV);
+       rightP = feedForwardPower(rightV);
+       if(left * right < 0) {
+           return;
+       }
+       double dv = left - right;
+
+       if(Math.abs(left) > Math.abs(right)) {
+           leftP += dv * K_H;
+           rightP += dv * K_L;
+       } else {
+        leftP -= dv * K_L;
+        rightP -= dv * K_H;
+       }
     }
-
-    public FeedForward(double kS, double kV, double kA){
-        this(kS, kV);
-        this.kA = kA;
-    }
-
-    /**
-     * calculates the estimated power needed to reach the velocity
-     * @param velocity in meter/sec
-     * @return the power, between 1 and -1
-     */
-    public double get(double velocity){
-        return kS * Math.signum(velocity) + kV * velocity;
-    }
-
-    /**
-     * calculates the estimated power needed to reach the velocity with the acceleration specified
-     * @param velocity in meter/sec
-     * @param accel in meter/sec^2
-     * @return the power, between 1 and -1
-     */
-    public double get(double velocity, double accel){
-        return kS * Math.signum(velocity) + kV * velocity + accel * kA;
+    
+    private double feedForwardPower(double velocity) {
+        return velocity * K_V + Math.signum(velocity) * K_S;
     }
 }
