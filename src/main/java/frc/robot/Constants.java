@@ -41,7 +41,7 @@ public final class Constants {
     public static final double MAX_ANGLE_ERROR_CHASSIS = 10;
     public static final double DRIVE_POWER_FACTOR = 0.75;
     public static final double CAMERA_ANGLE = 0;
-    public static final double SPIN_PERCENTAGE = 0.3;
+    public static final double SPIN_PERCENTAGE = 0.1;
 
     public static final Vector2d[] SHOOTING_VALUES = {
         new Vector2d(11, 52)
