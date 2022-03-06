@@ -40,9 +40,9 @@ public class Shooting extends SubsystemBase {
     shooterSecondary = new WPI_TalonFX(Constants.SHOOTER_PORT_SECONDARY);
     inputWheel = new WPI_TalonSRX(Constants.INPUT_WHEEL_PORT);
     shooterSecondary.setInverted(true);
-    shooterSecondary.follow(shooterMain);
     limitSwitch = new DigitalInput(Constants.LIMIT_SWITCH_PORT);
     shooterMain.config_kP(0, Constants.SHOOTER_KP);
+    shooterSecondary.config_kP(0, Constants.SHOOTER_KP);
     inputWheel.setInverted(false);
     inputWheel.setSensorPhase(true);
     inputWheel.setSelectedSensorPosition(0);
@@ -74,8 +74,12 @@ public class Shooting extends SubsystemBase {
    * @param velocity in meter/sec
    */
   public void setShooterVelocity(double velocity){
+    shooterSecondary.set(ControlMode.Velocity, velocity / (10 * Constants.SHOOTER_PULSE_TO_METER), 
+        DemandType.ArbitraryFeedForward, shooterAff.calculate(velocity));
+    velocity *= 1 + Constants.SPIN_PERCENTAGE;
     shooterMain.set(ControlMode.Velocity, velocity / (10 * Constants.SHOOTER_PULSE_TO_METER), 
         DemandType.ArbitraryFeedForward, shooterAff.calculate(velocity));
+    
   }
 
   /**

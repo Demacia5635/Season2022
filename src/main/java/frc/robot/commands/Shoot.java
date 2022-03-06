@@ -82,7 +82,7 @@ public class Shoot extends CommandBase {
     double v = velocityGetter.getAsDouble();
     SmartDashboard.putNumber("Current Shooting Velocity", v);
     shooting.setShooterVelocity(v);
-    double cv = shooting.getShooterVelocity();
+    double cv = shooting.getShooterVelocity2();
     velocityOK = Math.abs(v-cv) < Constants.MAX_SHOOT_VELOCITY_ERROR;
   }
 

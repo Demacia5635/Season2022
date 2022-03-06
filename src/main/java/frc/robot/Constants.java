@@ -28,7 +28,7 @@ public final class Constants {
     public static final double SHOOTER_PULSE_TO_METER = 0.1 * Math.PI / 2048;
     public static final double SHOOTER_KS = 0.0625;
     public static final double SHOOTER_KV = 0.03125;
-    public static final double SHOOTER_KP = 0;//0.05 / (1 / (SHOOTER_PULSE_TO_METER * 10));
+    public static final double SHOOTER_KP = 1 / 2000.;//0.05 / (1 / (SHOOTER_PULSE_TO_METER * 10));
     public static final double SHOOTER_KI = 0;//SHOOTER_KP / 10;
     public static final double TURNER_DEFAULT_POWER = -0.4;
     public static final double MAX_SHOOT_ANGLE_ERROR = 1;
@@ -41,7 +41,7 @@ public final class Constants {
     public static final double MAX_ANGLE_ERROR_CHASSIS = 10;
     public static final double DRIVE_POWER_FACTOR = 0.75;
     public static final double CAMERA_ANGLE = 0;
-    public static final double SPIN_PERCENTAGE = 0.3;
+    public static final double SPIN_PERCENTAGE = 0.1;
 
     public static final Vector2d[] SHOOTING_VALUES = {
         new Vector2d(11, 52)
