@@ -361,7 +361,7 @@ public class Chassis extends SubsystemBase{
     SmartDashboard.putNumber("Set y Position", x);
     x = SmartDashboard.getNumber("Set Heading", 0);
     SmartDashboard.putNumber("Set Heading", x);
-    SmartDashboard.putData("Set Position", new InstantCommand(
+    SmartDashboard.putData("Set Position", new InstantCommandInDisable(
       ()->{setRobotPosition();}
     ));
     SmartDashboard.putData("Calibrate", new Calibrate(this));

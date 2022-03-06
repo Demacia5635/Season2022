@@ -152,10 +152,13 @@ public class RobotContainer {
   }
 
   public Command getAuto1Command() {
-    return (new MoveForward(chassis, 0.6).alongWith(new SetArm(pickup, Destination.DOWN))).andThen(
-      (new Shoot(shooting, chassis).withTimeout(3)),
-      (pickup.getIntakeCommand().raceWith(new MoveForward(chassis, 0.3))),
-      (new Shoot(shooting, chassis).withTimeout(3)));
+    return new InstantCommand(()->{chassis.setNeutralMode(true);}).andThen(
+        new SetArm(pickup, Destination.DOWN), 
+        pickup.getIntakeCommand().raceWith(
+          (new MoveForward(chassis, 1).andThen(
+          (new Shoot(shooting, chassis).withTimeout(5))))));
+//      (pickup.getIntakeCommand().raceWith(new MoveForward(chassis, 0.3))),
+//      (new Shoot(shooting, chassis).withTimeout(3)));
   }
   public Command getAuto2Command() {
     return (new MoveForward(chassis, 0.6).alongWith(new SetArm(pickup, Destination.DOWN))).andThen(
