@@ -18,13 +18,13 @@ public class Shoot extends CommandBase {
   private final DoubleSupplier velocityGetter;
   private final DoubleSupplier angleGetter;
   private final DoubleSupplier headingGetter;
-  private boolean shoot, angleOK, velocityOK, headingOK;
+  private boolean shoot, isAngleOK, velocityOK, headingOK;
   private final Chassis chassis;
 
   private final double turnerPowerUp = -0.3;
   private final double turnerPowerDown = 0.3;
-  private final double turnPower = 0.2;
   private boolean toSwitch = false;
+  private int timeout;
 
   public Shoot(Shooting shooting, Chassis chassis, 
       DoubleSupplier velocityGetter, DoubleSupplier angleGetter, DoubleSupplier headingGetter) {
@@ -34,7 +34,7 @@ public class Shoot extends CommandBase {
     this.angleGetter = angleGetter;
     this.headingGetter = headingGetter;
     shoot = true;
-    angleOK = false;
+    isAngleOK = false;
     headingOK = false;
     velocityOK = false;
 
@@ -54,7 +54,7 @@ public class Shoot extends CommandBase {
 
   @Override
   public void initialize() {
-    angleOK = false;
+    isAngleOK = false;
     headingOK = false;
     velocityOK = false;
     toSwitch = true;
@@ -67,11 +67,10 @@ public class Shoot extends CommandBase {
 
   private void setHeading() {
     double h = headingGetter.getAsDouble();
-    if(h < -Constants.MAX_ANGLE_ERROR_CHASSIS) {
-      chassis.setPower(turnPower, -turnPower);
-      headingOK = false;
-    } else if(h > Constants.MAX_ANGLE_ERROR_CHASSIS) {
-      chassis.setPower(-turnPower, +turnPower);
+    double power = h * Constants.ANGLE_KP;
+    SmartDashboard.putNumber("Turn Power", power);
+    if(Math.abs(h) > Constants.MAX_ANGLE_ERROR_CHASSIS) {
+      chassis.setPower(-power, power);
       headingOK = false;
     } else {
         chassis.setPower(0,0);
@@ -81,6 +80,7 @@ public class Shoot extends CommandBase {
 
   private void setVelocity() {
     double v = velocityGetter.getAsDouble();
+    SmartDashboard.putNumber("Current Shooting Velocity", v);
     shooting.setShooterVelocity(v);
     double cv = shooting.getShooterVelocity();
     velocityOK = Math.abs(v-cv) < Constants.MAX_SHOOT_VELOCITY_ERROR;
@@ -88,22 +88,31 @@ public class Shoot extends CommandBase {
 
   private void setAngle() {
     double angle = angleGetter.getAsDouble();
+    SmartDashboard.putNumber("Current Shooting Angle", angle);
     // handle angle - to switch
     if(toSwitch) {
       if(shooting.getLimitSwitch()) { // switch reached, set angle and reverse power
         shooting.setTurnerAngle();
-        shooting.setTurnerPower(turnerPowerDown);
+        timeout = 0;
         toSwitch = false;
-        angleOK = false;
+        isAngleOK = false;
       }
     }
     // handle angle after switch
-    if(!toSwitch && !angleOK) { 
-      double currentAngle = shooting.getTurnerAngle();
-      if(currentAngle < angle + Constants.MAX_SHOOT_ANGLE_ERROR) {
-        // angle OK
-        angleOK= true;
-        shooting.setTurnerPower(0);
+    if(!toSwitch && !isAngleOK) {
+      if (timeout < 25) {
+        timeout++;
+      }
+      else {
+        double currentAngle = shooting.getTurnerAngle();
+        if(currentAngle < angle + Constants.MAX_SHOOT_ANGLE_ERROR) {
+          // angle OK
+          isAngleOK= true;
+          shooting.setTurnerPower(0);
+        }
+        else {
+          shooting.setTurnerPower(turnerPowerDown);
+        }
       }
     }
   }
@@ -113,9 +122,9 @@ public class Shoot extends CommandBase {
     setHeading();
     setVelocity();
     setAngle();
-    SmartDashboard.putBoolean("Angle Correct", angleOK);
+    SmartDashboard.putBoolean("Angle Correct", isAngleOK);
 
-    if(angleOK && velocityOK && headingOK && shoot) {
+    if(isAngleOK && velocityOK && headingOK && shoot) {
         shooting.openShooterInput();
     }
 

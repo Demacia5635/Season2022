@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -56,13 +55,13 @@ public class Chassis extends SubsystemBase{
   public Chassis(){
     left = new GroupOfMotors(Constants.LEFT_FRONT_PORT, Constants.LEFT_BACK_PORT);
     right = new GroupOfMotors(Constants.RIGHT_BACK_PORT, Constants.RIGHT_FRONT_PORT);
-    gyro = new PigeonIMU(new WPI_TalonSRX(Constants.GYRO_PORT));
+    gyro = new PigeonIMU(Constants.GYRO_PORT);
     odometry = new DifferentialDriveOdometry(new Rotation2d(0));
-    setPose(4,4);
-    field2d = new Field2d();
     gyro.setFusedHeading(0);
+    setPose(6.15, 4.1);
+    field2d = new Field2d();
 
-    setNeutralMode(true);
+    setNeutralMode(false);
     left.invertMotors(false);
     right.invertMotors(true);
 
@@ -74,6 +73,10 @@ public class Chassis extends SubsystemBase{
     isBrake = brake;
     left.setNeutralMode(isBrake);
     right.setNeutralMode(isBrake);
+  }
+
+  public void changeNeutralMode() {
+    setNeutralMode(!isBrake);
   }
 
   public void setAngularVelocity(double velocity, double turns){

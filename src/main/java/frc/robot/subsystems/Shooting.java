@@ -141,7 +141,7 @@ public class Shooting extends SubsystemBase {
    * @return the angle value from vision
    */
   public double getVisionAngle(){
-    return SmartDashboard.getNumber("vision_tower_angle", Double.NaN);
+    return ShootingUtil.yToAngle(SmartDashboard.getNumber("vision_tower_y", Double.NaN)) * 544 / 480;
   }
 
   public double getVisionDistance(){
@@ -154,9 +154,6 @@ public class Shooting extends SubsystemBase {
   
   @Override
   public void periodic() {
-    if (getLimitSwitch() && getTurnerPower() < 0){
-      setTurnerPower(0);
-    }
   }
 
   @Override
@@ -177,8 +174,7 @@ public class Shooting extends SubsystemBase {
   }
 
   public boolean visionOK() {
-    double d = getVisionAngle();
-    return d != Double.NaN && d < 360;
+    return SmartDashboard.getBoolean("vision_found", false);
   }
 
   public double getTargetDistance() {

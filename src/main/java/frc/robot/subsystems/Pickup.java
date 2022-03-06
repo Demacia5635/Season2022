@@ -91,10 +91,12 @@ public class Pickup extends SubsystemBase {
     builder.addBooleanProperty("Lower Limit Switch", this::getLowerLimit, null);
     builder.addBooleanProperty("Upper Limit Switch", this::getUpperLimit, null);
     builder.addBooleanProperty("Is Down", this::isDown, null);
+    builder.addDoubleProperty("Arm Current", arm::getStatorCurrent, null);
   }
   
   public CommandBase getIntakeCommand() {
-    return new SetArm(this, SetArm.Destination.DOWN).andThen(new StartEndCommand(
-      () -> {setPower(Constants.PICKUP_POWER);},() -> {setPower(0);},this));
+    return new SetArm(this, SetArm.Destination.DOWN).raceWith(new StartEndCommand(
+      () -> {setPower(Constants.PICKUP_POWER);},() -> {setPower(0);})).andThen(new StartEndCommand(
+        () -> {setPower(Constants.PICKUP_POWER);},() -> {setPower(0);}, this));
   }
 }

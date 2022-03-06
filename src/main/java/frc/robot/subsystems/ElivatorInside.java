@@ -20,6 +20,7 @@ public class ElivatorInside extends SubsystemBase {
   private final WPI_TalonFX telescopicMotor;
   private final WPI_TalonSRX shackleOpenner;
   private final MoveElivator command;
+  private boolean isClimbingMode = false;
 
   public ElivatorInside(XboxController controller) {
     this.telescopicMotor = new WPI_TalonFX(Constants.TELESCOPIC_MOTOR);
@@ -61,7 +62,11 @@ public class ElivatorInside extends SubsystemBase {
   }
 
   public void changeClimbingMode(){
-    command.changeClimbing();
+    isClimbingMode = !isClimbingMode;
+  }
+
+  public boolean isClimbingMode() {
+    return isClimbingMode;
   }
 
   @Override

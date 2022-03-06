@@ -13,7 +13,6 @@ public class MoveElivator extends CommandBase {
   /** Creates a new MoveElivator. */
   private final ElivatorInside elivator;
   private final XboxController controller;
-  private boolean hasStarted;
 
   public MoveElivator(ElivatorInside eInside, XboxController controller) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -23,21 +22,16 @@ public class MoveElivator extends CommandBase {
 
   }
 
-  public void changeClimbing(){
-    hasStarted = !hasStarted;
-  }
-
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    hasStarted = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     double power = deadband(-controller.getRightY());
-    if (hasStarted)
+    if (elivator.isClimbingMode())
       elivator.setPowerTelescopicMotor(power);
   }
 

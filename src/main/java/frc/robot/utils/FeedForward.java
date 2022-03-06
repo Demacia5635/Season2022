@@ -13,8 +13,8 @@ import frc.robot.Constants;
  */
 public class FeedForward {
     
-    public double K_H = -0.014648098142334;
-    public double K_L = -0.017385422077827;
+    public double K_H = 0.082965597371838;
+    public double K_L = -0.052519585698594;
     public double K_S = Constants.KS / 12; //0.22404
     public double K_V = Constants.KV / 12; //0.04314
     public double leftV;

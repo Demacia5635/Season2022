@@ -24,11 +24,12 @@ public final class Constants {
     public static final int INPUT_WHEEL_PORT = 9;
     public static final int LIMIT_SWITCH_PORT = 0;
     public static final double PULSE_TO_ANGLE = 360./4000;
-    public static final double INPUT_WHEEL_POWER = -0.6;
+    public static final double INPUT_WHEEL_POWER = -0.65;
     public static final double SHOOTER_PULSE_TO_METER = 0.1 * Math.PI / 2048;
-    public static final double SHOOTER_KS = 0.04;
-    public static final double SHOOTER_KV = 1 / 34.;
-    public static final double SHOOTER_KP = 1 / 1000.;
+    public static final double SHOOTER_KS = 0.0625;
+    public static final double SHOOTER_KV = 0.03125;
+    public static final double SHOOTER_KP = 0;//0.05 / (1 / (SHOOTER_PULSE_TO_METER * 10));
+    public static final double SHOOTER_KI = 0;//SHOOTER_KP / 10;
     public static final double TURNER_DEFAULT_POWER = -0.4;
     public static final double MAX_SHOOT_ANGLE_ERROR = 1;
     public static final double MAX_SHOOT_VELOCITY_ERROR = 1.5;
@@ -40,6 +41,7 @@ public final class Constants {
     public static final double MAX_ANGLE_ERROR_CHASSIS = 10;
     public static final double DRIVE_POWER_FACTOR = 0.75;
     public static final double CAMERA_ANGLE = 0;
+    public static final double SPIN_PERCENTAGE = 0.3;
 
     public static final Vector2d[] SHOOTING_VALUES = {
         new Vector2d(11, 52)
@@ -49,7 +51,7 @@ public final class Constants {
     //#endregion
 
     //#region Chassis
-    public static final double MAX_VELOCITY = 3.2;
+    public static final double MAX_VELOCITY = 3;
     public static final double MAX_ANGULAR_VELOCITY = Math.PI;
     public static final double PULSES_PER_METER = 12.0*2048/(6.0*25.4*Math.PI/1000.0);
 
@@ -60,14 +62,14 @@ public final class Constants {
 
     public static final int GYRO_PORT = 14;
 
-    public static final int ANGLE_KP = -1;
+    public static final double ANGLE_KP = 0.2 / 20;
     public static final int ANGLE_KI = -1;
     public static final int ANGLE_KD = -1;
 
     public static final int STOP_ANGLE = 5;
 
-    public static final double KS = 0.052575059035196 * 12;
-    public static final double KV = 0.230880927104271 * 12;
+    public static final double KS = 0.041444097583536 * 12;
+    public static final double KV = 0.237394390650743 * 12;
     public static final double KP = 0.015574;
     public static final double TURN_SCALE_SAGI = 1.175;
     public static final double TURN_SCALE_GUY = 1.2;

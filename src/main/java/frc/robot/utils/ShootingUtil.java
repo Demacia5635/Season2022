@@ -4,37 +4,34 @@ package frc.robot.utils;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ShootingUtil {
 
     public static final Translation2d TargetLocation = new Translation2d(8.3,4.1);
     public static final Translation2d RED_LAUNCH_LOCATION = new Translation2d(3.85, 5.5);
     public static final Translation2d BLUE_LAUNCH_LOCATION = new Translation2d(12.75, 2.8);
+    public static final double yToAngle = 11.6 / 130;
 
     public static final double xToDistance[][] = {
-        { -10, 1},
-        { -9, 1.3},
-        { -8, 1.7},
-        { -5, 2.1},
-        { -3, 2.7},
-        { -1, 3},
-        { 0, 3.5},
-        { 1, 4},
-        { 3, 4.1},
-        { 5, 4.5},
-        { 8, 5},
-        { 10, 6}
+        { 405, 5},
+        { 438, 4.5},
+        { 474, 4},
+        { 520, 3.5},
+        { 575, 3},
+        { 656, 2.5},
+        { 749, 2},
+        { 893, 1.5}
     };
 
     public static final double distanceToVelocityAndAngle[][] = {
-        { 1, 12, 80},
-        { 2, 13, 77},
-        { 3, 13.7,75},
-        { 4, 14,73},
-        { 5, 15,70},
-        { 6, 17, 68},
-        { 7, 18, 62},
-        { 8, 19,57}
+        { 2, 14, 46},
+        { 2.5, 15, 43},
+        { 3, 16, 40.5},
+        { 3.5, 16.5,40},
+        { 4, 17, 37.5},
+        { 4.5, 20, 35},
+        { 5, 21, 33},
     };
     
     public static double VisionXtoDistance(double x) {
@@ -47,8 +44,10 @@ public class ShootingUtil {
         double x2 = xToDistance[idx][0];
         double v1 = xToDistance[idx-1][1];
         double v2 = xToDistance[idx][1];
-        double r = (x-x1)/(x2-x1);
-        return r*(v2-v1) + v1;
+        double m = (v2 - v1) / (x2 - x1);
+        double distance = v1 + m * (x - x1);
+        SmartDashboard.putNumber("Vision Distance", distance);
+        return distance;
     }
     public static double distanceToVelocity(double distance) {
         int idx;
@@ -60,8 +59,10 @@ public class ShootingUtil {
         double d2 = distanceToVelocityAndAngle[idx][0];
         double v1 = distanceToVelocityAndAngle[idx-1][1];
         double v2 = distanceToVelocityAndAngle[idx][1];
-        double r = (distance-d1)/(d2-d1);
-        return r*(v2-v1) + v1;
+        double m = (v2 - v1) / (d2 - d1);
+        double velocity = (v1 + m * (distance - d1));
+        SmartDashboard.putNumber("Shooting Wanted Velocity", velocity);
+        return velocity;
     }
     public static double distanceToAngle(double distance) {
         int idx;
@@ -71,10 +72,18 @@ public class ShootingUtil {
         }
         double d1 = distanceToVelocityAndAngle[idx-1][0];
         double d2 = distanceToVelocityAndAngle[idx][0];
-        double v1 = distanceToVelocityAndAngle[idx-1][2];
-        double v2 = distanceToVelocityAndAngle[idx][2];
-        double r = (distance-d1)/(d2-d1);
-        return r*(v2-v1) + v1;
+        double a1 = distanceToVelocityAndAngle[idx-1][2];
+        double a2 = distanceToVelocityAndAngle[idx][2];
+        double m = (a2 - a1) / (d2 - d1);
+        double angle = m * (distance - d1) + a1;
+        SmartDashboard.putNumber("Shooting Wanted Angle", angle);
+        return angle;
+    }
+
+    public static double yToAngle(double y){
+        double ans = (y - 270) * yToAngle;
+        SmartDashboard.putNumber("Vision Angle", ans);
+        return -ans;
     }
 
     public static Translation2d getTargetPosition(Pose2d pose) {
@@ -83,7 +92,7 @@ public class ShootingUtil {
     }
 
     public static double getDistance(Translation2d t) {
-        return t.getNorm();
+        return t.getNorm() - 0.61;
     }
 
     public static Rotation2d getRotation(Translation2d t, Pose2d pose) {
