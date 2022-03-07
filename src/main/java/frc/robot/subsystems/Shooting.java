@@ -99,6 +99,10 @@ public class Shooting extends SubsystemBase {
     return shooterMain.getSelectedSensorPosition();
   }
 
+  public double[] getShoot(){
+    return ShootingUtil.distanceToVelocityAndAngle(getTargetDistance());
+  }
+
   /**
    * gets the turner angle
    * @return in degrees

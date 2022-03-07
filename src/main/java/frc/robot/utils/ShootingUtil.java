@@ -13,7 +13,7 @@ public class ShootingUtil {
     public static final Translation2d BLUE_LAUNCH_LOCATION = new Translation2d(12.75, 2.8);
     public static final double yToAngle = 11.6 / 130;
 
-    public static final double xToDistance[][] = {
+    public static final LookUpTable xToDistance = new LookUpTable(new double[][]{
         { 356, 5},
         { 372, 4.5},
         { 395, 4},
@@ -22,9 +22,9 @@ public class ShootingUtil {
         { 505, 2.5},
         { 571, 2},
         { 622, 1.65}
-    };
+    });
 
-    public static final double distanceToVelocityAndAngle[][] = {
+    public static final LookUpTable distanceToVelocityAndAngle = new LookUpTable(new double[][]{
         { 2, 12, 52},
         { 2.5, 14, 50},
         { 3, 15.5, 46},
@@ -35,50 +35,26 @@ public class ShootingUtil {
         { 5.5, 22, 31},
         { 6, 24, 30},
         { 7, 27, 25}
-    };
+    });
     
     public static double VisionXtoDistance(double x) {
-        int idx;
-        for(idx = 1; idx < xToDistance.length && xToDistance[idx][0] < x; idx++);
-        if(idx == xToDistance.length) {
-            return xToDistance[idx-1][1];
-        }
-        double x1 = xToDistance[idx-1][0];
-        double x2 = xToDistance[idx][0];
-        double v1 = xToDistance[idx-1][1];
-        double v2 = xToDistance[idx][1];
-        double m = (v2 - v1) / (x2 - x1);
-        double distance = v1 + m * (x - x1);
+        double distance = xToDistance.get(x)[0];
         SmartDashboard.putNumber("Vision Distance", distance);
         return distance;
     }
+
+    public static double[] distanceToVelocityAndAngle(double distance) {
+        return distanceToVelocityAndAngle.get(distance);
+    }
+
     public static double distanceToVelocity(double distance) {
-        int idx;
-        for(idx = 1; idx < distanceToVelocityAndAngle.length && distanceToVelocityAndAngle[idx][0] < distance; idx++);
-        if(idx == distanceToVelocityAndAngle.length) {
-            return distanceToVelocityAndAngle[idx-1][1];
-        }
-        double d1 = distanceToVelocityAndAngle[idx-1][0];
-        double d2 = distanceToVelocityAndAngle[idx][0];
-        double v1 = distanceToVelocityAndAngle[idx-1][1];
-        double v2 = distanceToVelocityAndAngle[idx][1];
-        double m = (v2 - v1) / (d2 - d1);
-        double velocity = (v1 + m * (distance - d1));
+        double velocity = distanceToVelocityAndAngle.get(distance)[0];
         SmartDashboard.putNumber("Shooting Wanted Velocity", velocity);
         return velocity;
     }
+
     public static double distanceToAngle(double distance) {
-        int idx;
-        for(idx = 1; idx < distanceToVelocityAndAngle.length && distanceToVelocityAndAngle[idx][0] < distance; idx++);
-        if(idx == distanceToVelocityAndAngle.length) {
-            return distanceToVelocityAndAngle[idx-1][2];
-        }
-        double d1 = distanceToVelocityAndAngle[idx-1][0];
-        double d2 = distanceToVelocityAndAngle[idx][0];
-        double a1 = distanceToVelocityAndAngle[idx-1][2];
-        double a2 = distanceToVelocityAndAngle[idx][2];
-        double m = (a2 - a1) / (d2 - d1);
-        double angle = m * (distance - d1) + a1;
+        double angle = distanceToVelocityAndAngle.get(distance)[1];
         SmartDashboard.putNumber("Shooting Wanted Angle", angle);
         return angle;
     }

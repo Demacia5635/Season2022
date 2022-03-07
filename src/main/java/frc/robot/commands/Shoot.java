@@ -42,11 +42,9 @@ public class Shoot extends CommandBase {
   }
 
   public Shoot(Shooting shooting, Chassis chassis) {
-    this(shooting, chassis, 
-       ()->{return shooting.getShootingVelocity();},
-       ()->{return shooting.getShootingAngle();},
-       ()->{return shooting.getTargetDirection();});
+    this(shooting, chassis, null, null, () -> {return shooting.getTargetDirection();});
   }
+
   public Shoot(Shooting shooting, Chassis chassis, double velocity, double angle) {
     this(shooting, chassis, () -> {return velocity;}, () -> {return angle;}, () -> {return 0;});
     shoot = true;
@@ -65,12 +63,11 @@ public class Shoot extends CommandBase {
     shoot = true;
   }
 
-  private void setHeading() {
-    double h = headingGetter.getAsDouble();
-    double velocity = h * Constants.ANGLE_KP;
+  private void setHeading(double heading) {
+    double velocity = heading * Constants.ANGLE_KP;
     velocity = Math.signum(velocity) * Math.max(Math.abs(velocity), 0.4);
     SmartDashboard.putNumber("Turn Power", velocity);
-    if(Math.abs(h) > Constants.MAX_ANGLE_ERROR_CHASSIS) {
+    if(Math.abs(heading) > Constants.MAX_ANGLE_ERROR_CHASSIS) {
       chassis.setVelocity(-velocity, velocity);
       headingOK = false;
     } else {
@@ -79,16 +76,14 @@ public class Shoot extends CommandBase {
     }
   }
 
-  private void setVelocity() {
-    double v = velocityGetter.getAsDouble();
-    SmartDashboard.putNumber("Current Shooting Velocity", v);
-    shooting.setShooterVelocity(v);
+  private void setVelocity(double velocity) {
+    SmartDashboard.putNumber("Current Shooting Velocity", velocity);
+    shooting.setShooterVelocity(velocity);
     double cv = shooting.getShooterVelocity2();
-    velocityOK = Math.abs(v-cv) < Constants.MAX_SHOOT_VELOCITY_ERROR;
+    velocityOK = Math.abs(velocity-cv) < Constants.MAX_SHOOT_VELOCITY_ERROR;
   }
 
-  private void setAngle() {
-    double angle = angleGetter.getAsDouble();
+  private void setAngle(double angle) {
     SmartDashboard.putNumber("Current Shooting Angle", angle);
     // handle angle - to switch
     if(toSwitch) {
@@ -120,9 +115,18 @@ public class Shoot extends CommandBase {
 
   @Override
   public void execute() {
-    setHeading();
-    setVelocity();
-    setAngle();
+    double angle, velocity;
+    if (angleGetter == null) {
+      double[] shoot = shooting.getShoot();
+      angle = shoot[1];
+      velocity = shoot[0];
+    } else {
+      angle = angleGetter.getAsDouble();
+      velocity = velocityGetter.getAsDouble();
+    }
+    setHeading(headingGetter.getAsDouble());
+    setVelocity(velocity);
+    setAngle(angle);
     SmartDashboard.putBoolean("Angle Correct", isAngleOK);
 
     if(isAngleOK && velocityOK && headingOK && shoot) {
