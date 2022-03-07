@@ -56,6 +56,7 @@ public class Shooting extends SubsystemBase {
    */
   public void setShooterPower(double power){
     shooterMain.set(ControlMode.PercentOutput, power);
+    shooterSecondary.set(ControlMode.PercentOutput, power);
   }
 
   /**
@@ -140,12 +141,16 @@ public class Shooting extends SubsystemBase {
     return SmartDashboard.getNumber("vision_tower_x", Double.NaN);
   }
 
+  public void freeInput() {
+    inputWheel.set(ControlMode.PercentOutput, -Constants.INPUT_WHEEL_POWER);
+  }
+
   /**
    * gets the angle from the vision
    * @return the angle value from vision
    */
   public double getVisionAngle(){
-    return ShootingUtil.yToAngle(SmartDashboard.getNumber("vision_tower_y", Double.NaN)) * 544 / 480;
+    return ShootingUtil.yToAngle(SmartDashboard.getNumber("vision_tower_y", Double.NaN) * 544 / 360.);
   }
 
   public double getVisionDistance(){

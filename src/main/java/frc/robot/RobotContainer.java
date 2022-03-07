@@ -51,6 +51,7 @@ public class RobotContainer {
   private final JoystickButton bButtonSecondary;
   private final JoystickButton yButtonSecondary;
   private final JoystickButton aButtonSecondary;
+  private final JoystickButton backButtonSecondary;
   
   private final MoveShackle openShackle;
   private final MoveShackle closeShackle;
@@ -58,7 +59,7 @@ public class RobotContainer {
   private final SetArm armUp;
   private final Command intake;
   private final Command shoot;
-  private final Command defaultShoot;
+  private final Command throwOut;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
 
@@ -75,6 +76,7 @@ public class RobotContainer {
     xButtonSecondary = new JoystickButton(secondaryController, 3);
     yButtonSecondary = new JoystickButton(secondaryController, 4);
     aButtonSecondary = new JoystickButton(secondaryController, 1);
+    backButtonSecondary = new JoystickButton(secondaryController, 7);
     startButtonSecondary = new JoystickButton(secondaryController, 8);
     
     aButtonMain = new JoystickButton(mainController, 1);
@@ -88,7 +90,13 @@ public class RobotContainer {
     armUp = new SetArm(pickup, Destination.UP);
     intake = pickup.getIntakeCommand();
     shoot = new Shoot(shooting, chassis).alongWith(pickup.getIntakeCommand());
-    defaultShoot = new Shoot(shooting, chassis, Constants.SHOOTING_DEFAULT_VELOCITY, Constants.SHOOTING_DEFAULT_ANGLE).alongWith(new SetArm(pickup, Destination.DOWN));
+    throwOut = new StartEndCommand(() -> {
+      shooting.setShooterVelocity(6);
+      shooting.openShooterInput();
+    }, () -> {
+      shooting.setShooterPower(0);
+      shooting.closeShooterInput();
+    }, shooting);
 
     chassis.setDefaultCommand(new Drive(chassis, mainController));
     shooting.setDefaultCommand(new SetTurnerDown(shooting));
@@ -139,9 +147,11 @@ public class RobotContainer {
     startButtonSecondary.whenPressed(new InstantCommand(() -> {
       new SetArm(pickup, SetArm.Destination.DOWN).andThen(new StartEndCommand(() -> {}, () -> {}, pickup)).schedule();
       elivatorInside.changeClimbingMode();
-    }).andThen(new InstantCommand(() -> {chassis.changeNeutralMode();})));
+    }).andThen(new InstantCommand(() -> {chassis.setNeutralMode(elivatorInside.isClimbingMode());})));
 
-    bButtonSecondary.whileHeld(defaultShoot);
+    bButtonSecondary.whileHeld(throwOut);
+
+    backButtonSecondary.whileHeld(new StartEndCommand(shooting::freeInput, shooting::closeShooterInput, shooting));
   }
 
   public Command getSimpleAutoCommand() {
@@ -152,11 +162,9 @@ public class RobotContainer {
   }
 
   public Command getAuto1Command() {
-    return new InstantCommand(()->{chassis.setNeutralMode(true);}).andThen(
-        new SetArm(pickup, Destination.DOWN), 
-        pickup.getIntakeCommand().raceWith(
-          (new MoveForward(chassis, 1).andThen(
-          (new Shoot(shooting, chassis).withTimeout(5))))));
+    Command start = new InstantCommand(chassis::setPosition1).andThen(new InstantCommand(() -> {chassis.setNeutralMode(true);}).andThen(new MoveForward(chassis, 0.7).andThen(new Shoot(shooting, chassis).withTimeout(5))));
+    return start.andThen(new SetArm(pickup, Destination.DOWN).andThen(new MoveForward(chassis, 0.3).andThen(new Shoot(shooting, chassis))
+          .alongWith(pickup.getIntakeCommand()))).withTimeout(15);
 //      (pickup.getIntakeCommand().raceWith(new MoveForward(chassis, 0.3))),
 //      (new Shoot(shooting, chassis).withTimeout(3)));
   }

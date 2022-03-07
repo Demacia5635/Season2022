@@ -22,7 +22,7 @@ public final class Constants {
     public static final int TURNER_PORT = 11;
     public static final int TURNER_GYRO_PORT = 13;
     public static final int INPUT_WHEEL_PORT = 9;
-    public static final int LIMIT_SWITCH_PORT = 0;
+    public static final int LIMIT_SWITCH_PORT = 1;
     public static final double PULSE_TO_ANGLE = 360./4000;
     public static final double INPUT_WHEEL_POWER = -0.65;
     public static final double SHOOTER_PULSE_TO_METER = 0.1 * Math.PI / 2048;
@@ -33,12 +33,12 @@ public final class Constants {
     public static final double TURNER_DEFAULT_POWER = -0.4;
     public static final double MAX_SHOOT_ANGLE_ERROR = 1;
     public static final double MAX_SHOOT_VELOCITY_ERROR = 1.5;
-    public static final double SHOOTING_DEFAULT_VELOCITY = 12;
-    public static final double SHOOTING_DEFAULT_ANGLE = 50;
-    public static final double SHOOTING_AUTO_VELOCITY = 16;
-    public static final double SHOOTING_AUTO_ANGLE = 36;
+    public static final double SHOOTING_DEFAULT_VELOCITY = 6;
+    public static final double SHOOTING_DEFAULT_ANGLE = 0;
+    public static final double SHOOTING_AUTO_VELOCITY = 6;
+    public static final double SHOOTING_AUTO_ANGLE = 0;
     public static final double CAMERA_TOWER_DIFF = 1.5;
-    public static final double MAX_ANGLE_ERROR_CHASSIS = 10;
+    public static final double MAX_ANGLE_ERROR_CHASSIS = 3;
     public static final double DRIVE_POWER_FACTOR = 0.75;
     public static final double CAMERA_ANGLE = 0;
     public static final double SPIN_PERCENTAGE = 0.1;
@@ -62,7 +62,7 @@ public final class Constants {
 
     public static final int GYRO_PORT = 14;
 
-    public static final double ANGLE_KP = 0.2 / 20;
+    public static final double ANGLE_KP = 0.1;
     public static final int ANGLE_KI = -1;
     public static final int ANGLE_KD = -1;
 

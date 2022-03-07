@@ -56,8 +56,7 @@ public class Chassis extends SubsystemBase{
     right = new GroupOfMotors(Constants.RIGHT_BACK_PORT, Constants.RIGHT_FRONT_PORT);
     gyro = new PigeonIMU(Constants.GYRO_PORT);
     odometry = new DifferentialDriveOdometry(new Rotation2d(0));
-    gyro.setFusedHeading(0);
-    setPose(6.15, 4.1);
+    setPosition1();
     field2d = new Field2d();
 
     setNeutralMode(false);
@@ -66,6 +65,12 @@ public class Chassis extends SubsystemBase{
 
     left.setK_P(Constants.KP);
     right.setK_P(Constants.KP);
+  }
+
+  public void setPosition1() {
+    resetEncoders();
+    gyro.setFusedHeading(0);
+    odometry.resetPosition(new Pose2d(5.8, 4.1, Rotation2d.fromDegrees(180)), new Rotation2d(0));
   }
 
   public void setNeutralMode(boolean brake){

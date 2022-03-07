@@ -67,10 +67,11 @@ public class Shoot extends CommandBase {
 
   private void setHeading() {
     double h = headingGetter.getAsDouble();
-    double power = h * Constants.ANGLE_KP;
-    SmartDashboard.putNumber("Turn Power", power);
+    double velocity = h * Constants.ANGLE_KP;
+    velocity = Math.signum(velocity) * Math.max(Math.abs(velocity), 0.4);
+    SmartDashboard.putNumber("Turn Power", velocity);
     if(Math.abs(h) > Constants.MAX_ANGLE_ERROR_CHASSIS) {
-      chassis.setPower(-power, power);
+      chassis.setVelocity(-velocity, velocity);
       headingOK = false;
     } else {
         chassis.setPower(0,0);
