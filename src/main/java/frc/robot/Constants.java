@@ -67,6 +67,7 @@ public final class Constants {
     public static final int ANGLE_KD = -1;
 
     public static final int STOP_ANGLE = 5;
+    public static final double SCALE_VELOCITY_ON_PICKUP = 0.5;
 
     public static final double KS = 0.041444097583536 * 12;
     public static final double KV = 0.237394390650743 * 12;

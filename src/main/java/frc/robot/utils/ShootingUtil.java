@@ -14,27 +14,23 @@ public class ShootingUtil {
     public static final double yToAngle = 11.6 / 130;
 
     public static final LookUpTable xToDistance = new LookUpTable(new double[][]{
-        { 356, 5},
-        { 372, 4.5},
-        { 395, 4},
-        { 423, 3.5},
-        { 455, 3},
-        { 505, 2.5},
-        { 571, 2},
-        { 622, 1.65}
+        { 364, 5},
+        { 384, 4.5},
+        { 410, 4},
+        { 439, 3.5},
+        { 478, 3},
+        { 532, 2.5},
+        { 608, 2},
     });
 
     public static final LookUpTable distanceToVelocityAndAngle = new LookUpTable(new double[][]{
-        { 2, 12, 52},
-        { 2.5, 14, 50},
-        { 3, 15.5, 46},
-        { 3.5, 17, 43.5},
-        { 4, 18.5, 37},
-        { 4.5, 20, 35},
-        { 5, 21, 33},
-        { 5.5, 22, 31},
-        { 6, 24, 30},
-        { 7, 27, 25}
+        { 2.25, 13, 46},
+        { 2.63, 14, 42},
+        { 2.98, 14.5, 39},
+        { 3.23, 16, 37},
+        { 3.72, 17, 35},
+        { 4.43, 18.7, 32},
+        { 5, 19, 30.5}
     });
     
     public static double VisionXtoDistance(double x) {
@@ -60,7 +56,7 @@ public class ShootingUtil {
     }
 
     public static double yToAngle(double y){
-        double ans = (y - 270) * yToAngle + 9;
+        double ans = (y - 270) * yToAngle + 4;
         SmartDashboard.putNumber("Vision Angle", ans);
         return -ans;
     }

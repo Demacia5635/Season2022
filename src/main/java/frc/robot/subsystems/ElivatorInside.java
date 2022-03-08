@@ -10,8 +10,10 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.commands.InstantCommandInDisable;
 import frc.robot.commands.MoveElivator;
 
 public class ElivatorInside extends SubsystemBase {
@@ -27,7 +29,6 @@ public class ElivatorInside extends SubsystemBase {
     this.shackleOpenner = new WPI_TalonSRX(Constants.SHACKLE_OPENNER);
     command = new MoveElivator(this, controller);
     setDefaultCommand(command);
-    telescopicMotor.setInverted(true);
 
     //telescopicMotor.setSelectedSensorPosition(0);
   }
@@ -76,6 +77,6 @@ public class ElivatorInside extends SubsystemBase {
 
   @Override
   public void initSendable(SendableBuilder builder) {
-      
+      SmartDashboard.putData("Reverse Elevator Motor", new InstantCommandInDisable(() -> {telescopicMotor.setInverted(!telescopicMotor.getInverted());}));
   }
 }

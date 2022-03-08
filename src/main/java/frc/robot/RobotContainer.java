@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Drive;
 import frc.robot.commands.MoveForward;
@@ -162,9 +163,14 @@ public class RobotContainer {
   }
 
   public Command getAuto1Command() {
-    Command start = new InstantCommand(chassis::setPosition1).andThen(new InstantCommand(() -> {chassis.setNeutralMode(true);}).andThen(new MoveForward(chassis, 0.7).andThen(new Shoot(shooting, chassis).withTimeout(5))));
-    return start.andThen(new SetArm(pickup, Destination.DOWN).andThen(new MoveForward(chassis, 0.3).andThen(new Shoot(shooting, chassis))
-          .alongWith(pickup.getIntakeCommand()))).withTimeout(15);
+    Command start = new InstantCommand(chassis::setPosition1).andThen(
+        new InstantCommand(() -> {chassis.setNeutralMode(true);}),
+        new MoveForward(chassis, 0.7),
+        (new Shoot(shooting, chassis).withTimeout(3)),
+        new SetArm(pickup, Destination.DOWN));
+    return start.andThen(
+        (new MoveForward(chassis, 0.3).andThen(new Shoot(shooting, chassis)))
+          .alongWith(pickup.getIntakeCommand()));
 //      (pickup.getIntakeCommand().raceWith(new MoveForward(chassis, 0.3))),
 //      (new Shoot(shooting, chassis).withTimeout(3)));
   }
@@ -187,5 +193,13 @@ public class RobotContainer {
 
   public void onDisable() {
     chassis.setNeutralMode(false);
+  }
+
+  public void onTeleop() {
+    if (elivatorInside.isClimbingMode()) elivatorInside.changeClimbingMode();
+  }
+
+  public void onAuto() {
+
   }
 }

@@ -50,6 +50,7 @@ public class Chassis extends SubsystemBase{
   private final FeedForward feedForward = new FeedForward();
   private boolean isSagi = true;
   private boolean isReversed = false;
+  private boolean isPicking = false;
 
   public Chassis(){
     left = new GroupOfMotors(Constants.LEFT_FRONT_PORT, Constants.LEFT_BACK_PORT);
@@ -90,6 +91,8 @@ public class Chassis extends SubsystemBase{
     }
     else
       turns *= absVel + Constants.TURN_SCALE_GUY;
+
+    if (isPicking) velocity *= Constants.SCALE_VELOCITY_ON_PICKUP;
     ChassisSpeeds speeds = new ChassisSpeeds(velocity * Constants.MAX_VELOCITY, 0, turns * Constants.MAX_ANGULAR_VELOCITY);
 
     DifferentialDriveWheelSpeeds wheelSpeeds = Constants.KINEMATICS.toWheelSpeeds(speeds);
