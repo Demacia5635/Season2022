@@ -184,6 +184,7 @@ public class Shooting extends SubsystemBase {
     
 
     SmartDashboard.putData("Start Calibration", calibration);
+    SmartDashboard.putNumber("Distance Change", SmartDashboard.getNumber("Distance Change", 0));
   }
 
   public boolean visionOK() {

@@ -71,7 +71,7 @@ public class Chassis extends SubsystemBase{
   public void setPosition1() {
     resetEncoders();
     gyro.setFusedHeading(0);
-    odometry.resetPosition(new Pose2d(5.8, 4.1, Rotation2d.fromDegrees(180)), new Rotation2d(0));
+    odometry.resetPosition(new Pose2d(5.6, 4.1, Rotation2d.fromDegrees(180)), new Rotation2d(0));
   }
 
   public void setNeutralMode(boolean brake){

@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class ShootingUtil {
 
     public static final Translation2d TargetLocation = new Translation2d(8.3,4.1);
-    public static final Translation2d RED_LAUNCH_LOCATION = new Translation2d(3.85, 5.5);
-    public static final Translation2d BLUE_LAUNCH_LOCATION = new Translation2d(12.75, 2.8);
+    public static final Translation2d RED_LAUNCH_LOCATION = new Translation2d(4, 5.5);
+    public static final Translation2d BLUE_LAUNCH_LOCATION = new Translation2d(12.6, 2.8);
     public static final double yToAngle = 11.6 / 130;
 
     public static final LookUpTable xToDistance = new LookUpTable(new double[][]{
@@ -34,7 +34,7 @@ public class ShootingUtil {
     });
     
     public static double VisionXtoDistance(double x) {
-        double distance = xToDistance.get(x)[0];
+        double distance = xToDistance.get(x)[0] + SmartDashboard.getNumber("Distance Change", 0);
         SmartDashboard.putNumber("Vision Distance", distance);
         return distance;
     }
