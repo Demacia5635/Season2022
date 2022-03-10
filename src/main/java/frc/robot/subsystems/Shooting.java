@@ -112,7 +112,7 @@ public class Shooting extends SubsystemBase {
   }
 
   public void setTurnerAngle() {
-    inputWheel.setSelectedSensorPosition(52.0 / Constants.PULSE_TO_ANGLE);
+    inputWheel.setSelectedSensorPosition(56.0 / Constants.PULSE_TO_ANGLE);
   }
 
   /**
@@ -185,6 +185,7 @@ public class Shooting extends SubsystemBase {
 
     SmartDashboard.putData("Start Calibration", calibration);
     SmartDashboard.putNumber("Distance Change", SmartDashboard.getNumber("Distance Change", 0));
+    SmartDashboard.putNumber("Angle Change", SmartDashboard.getNumber("Angle Change", 0));
   }
 
   public boolean visionOK() {

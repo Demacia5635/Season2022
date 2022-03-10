@@ -26,7 +26,7 @@ public final class Constants {
     public static final double PULSE_TO_ANGLE = 360./4000;
     public static final double INPUT_WHEEL_POWER = -0.65;
     public static final double SHOOTER_PULSE_TO_METER = 0.1 * Math.PI / 2048;
-    public static final double SHOOTER_KS = 0.027;
+    public static final double SHOOTER_KS = 0.048;
     public static final double SHOOTER_KV = 0.03;
     public static final double SHOOTER_KP = 0;//0.05 / (1 / (SHOOTER_PULSE_TO_METER * 10));
     public static final double SHOOTER_KI = 0;//SHOOTER_KP / 10;

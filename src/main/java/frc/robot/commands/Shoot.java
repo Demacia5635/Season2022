@@ -18,7 +18,7 @@ public class Shoot extends CommandBase {
   private final DoubleSupplier velocityGetter;
   private final DoubleSupplier angleGetter;
   private final DoubleSupplier headingGetter;
-  private boolean shoot, isAngleOK, velocityOK, headingOK;
+  private boolean shoot, isAngleOK, headingOK;
   private final Chassis chassis;
 
   private final double turnerPowerUp = -0.3;
@@ -36,7 +36,6 @@ public class Shoot extends CommandBase {
     shoot = true;
     isAngleOK = false;
     headingOK = false;
-    velocityOK = false;
 
     addRequirements(shooting, chassis);
   }
@@ -54,7 +53,6 @@ public class Shoot extends CommandBase {
   public void initialize() {
     isAngleOK = false;
     headingOK = false;
-    velocityOK = false;
     toSwitch = true;
     shooting.setTurnerPower(turnerPowerUp);
   }
@@ -65,7 +63,7 @@ public class Shoot extends CommandBase {
 
   private void setHeading(double heading) {
     double velocity = heading * Constants.ANGLE_KP;
-    velocity = Math.signum(velocity) * Math.max(Math.abs(velocity), 0.4);
+    velocity = Math.signum(velocity) * Math.max(Math.abs(velocity), 0.5);
     SmartDashboard.putNumber("Turn Power", velocity);
     if(Math.abs(heading) > Constants.MAX_ANGLE_ERROR_CHASSIS) {
       chassis.setVelocity(-velocity, velocity);
@@ -79,8 +77,6 @@ public class Shoot extends CommandBase {
   private void setVelocity(double velocity) {
     SmartDashboard.putNumber("Current Shooting Velocity", velocity);
     shooting.setShooterVelocity(velocity);
-    double cv = shooting.getShooterVelocity2();
-    velocityOK = Math.abs(velocity-cv) < Constants.MAX_SHOOT_VELOCITY_ERROR;
   }
 
   private void setAngle(double angle) {
@@ -128,8 +124,10 @@ public class Shoot extends CommandBase {
     setVelocity(velocity);
     setAngle(angle);
     SmartDashboard.putBoolean("Angle Correct", isAngleOK);
+    SmartDashboard.putBoolean("Heading Correct", headingOK);
+    SmartDashboard.putBoolean("Shoot", shoot);
 
-    if(isAngleOK && velocityOK && headingOK && shoot) {
+    if(isAngleOK && headingOK && shoot) {
         shooting.openShooterInput();
     }
 

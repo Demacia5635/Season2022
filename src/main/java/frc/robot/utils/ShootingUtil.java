@@ -40,7 +40,9 @@ public class ShootingUtil {
     }
 
     public static double[] distanceToVelocityAndAngle(double distance) {
-        return distanceToVelocityAndAngle.get(distance);
+        double[] shoot = distanceToVelocityAndAngle.get(distance); 
+        shoot[1] += SmartDashboard.getNumber("Angle Change", 0);
+        return shoot;
     }
 
     public static double distanceToVelocity(double distance) {
