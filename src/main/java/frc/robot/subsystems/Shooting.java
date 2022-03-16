@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.commands.AngleForLow;
-import frc.robot.commands.ShootingCalibration;
 import frc.robot.utils.ShootingUtil;
 
 public class Shooting extends SubsystemBase {
@@ -28,8 +27,8 @@ public class Shooting extends SubsystemBase {
   private final SimpleMotorFeedforward shooterAff;
   private final WPI_TalonSRX inputWheel;
   private final WPI_TalonSRX turner;
-  private final DigitalInput limitSwitch;
-  private final ShootingCalibration calibration;
+  private final DigitalInput upperLimitSwitch;
+  private final DigitalInput lowerLimitSwitch;
   private final Chassis chassis;
 
   public Shooting(Chassis chassis) {
@@ -41,14 +40,13 @@ public class Shooting extends SubsystemBase {
     shooterSecondary = new WPI_TalonFX(Constants.SHOOTER_PORT_SECONDARY);
     inputWheel = new WPI_TalonSRX(Constants.INPUT_WHEEL_PORT);
     shooterSecondary.setInverted(true);
-    limitSwitch = new DigitalInput(Constants.LIMIT_SWITCH_PORT);
+    upperLimitSwitch = new DigitalInput(Constants.UPPER_LIMIT_SWITCH_PORT);
+    lowerLimitSwitch = new DigitalInput(Constants.LOWER_LIMIT_SWITCH_PORT);
     shooterMain.config_kP(0, Constants.SHOOTER_KP);
     shooterSecondary.config_kP(0, Constants.SHOOTER_KP);
     inputWheel.setInverted(false);
     inputWheel.setSensorPhase(true);
     inputWheel.setSelectedSensorPosition(0);
-
-    calibration = new ShootingCalibration(this, chassis);
   }
 
   /**
@@ -65,7 +63,7 @@ public class Shooting extends SubsystemBase {
    * @param power between 1 and -1
    */
   public void setTurnerPower(double power){
-    if (getLimitSwitch() && power < 0){
+    if ((getUpperLimitSwitch() && power < 0) || (getLowerLimitSwitch() && power > 0)){
       turner.set(ControlMode.PercentOutput, 0);
     }
     else turner.set(ControlMode.PercentOutput, power);
@@ -105,23 +103,15 @@ public class Shooting extends SubsystemBase {
   }
 
   /**
-   * gets the turner angle
-   * @return in degrees
-   */
-  public double getTurnerAngle() {
-    return inputWheel.getSelectedSensorPosition() * Constants.PULSE_TO_ANGLE;
-  }
-
-  public void setTurnerAngle() {
-    inputWheel.setSelectedSensorPosition(56.0 / Constants.PULSE_TO_ANGLE);
-  }
-
-  /**
    * returns the limit switch state
    * @return true if the limit switch is closed
    */
-  public boolean getLimitSwitch(){
-    return limitSwitch.get();
+  public boolean getUpperLimitSwitch() {
+    return !upperLimitSwitch.get();
+  }
+
+  public boolean getLowerLimitSwitch() {
+    return !lowerLimitSwitch.get();
   }
 
   /**
@@ -173,19 +163,13 @@ public class Shooting extends SubsystemBase {
   @Override
   public void initSendable(SendableBuilder builder) {
     builder.addDoubleProperty("Shooter Velocity", this::getShooterVelocity, this::setShooterVelocity);
-    builder.addDoubleProperty("Angle", this::getTurnerAngle, null);
-    builder.addDoubleProperty("encoder", this::getShooterEncoder, null);
-    builder.addBooleanProperty("limit switch", this::getLimitSwitch, null);
-    builder.addBooleanProperty("Viusion OK", this::visionOK, null);
+    builder.addBooleanProperty("upper limit switch", this::getUpperLimitSwitch, null);
+    builder.addBooleanProperty("lower limit switch", this::getLowerLimitSwitch, null);
     builder.addDoubleProperty("target direction", this::getTargetDirection, null);
     builder.addDoubleProperty("target distance", this::getTargetDistance, null);
     builder.addDoubleProperty("shoot velocity", this::getShootingVelocity, null);
     builder.addDoubleProperty("Shooting Velocity 2", this::getShooterVelocity2, null);
-    builder.addDoubleProperty("shoot angle", this::getShootingAngle, null);
 
-    
-
-    SmartDashboard.putData("Start Calibration", calibration);
     SmartDashboard.putNumber("Distance Change", SmartDashboard.getNumber("Distance Change", 0));
     SmartDashboard.putNumber("Angle Change", SmartDashboard.getNumber("Angle Change", 0));
     SmartDashboard.putData("Set Low Angle", new AngleForLow(this));

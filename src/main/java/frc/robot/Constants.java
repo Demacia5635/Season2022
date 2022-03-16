@@ -22,7 +22,8 @@ public final class Constants {
     public static final int TURNER_PORT = 11;
     public static final int TURNER_GYRO_PORT = 13;
     public static final int INPUT_WHEEL_PORT = 9;
-    public static final int LIMIT_SWITCH_PORT = 1;
+    public static final int UPPER_LIMIT_SWITCH_PORT = 1;
+    public static final int LOWER_LIMIT_SWITCH_PORT = 0;
     public static final double PULSE_TO_ANGLE = 360./4000;
     public static final double INPUT_WHEEL_POWER = -0.65;
     public static final double SHOOTER_PULSE_TO_METER = 0.1 * Math.PI / 2048;

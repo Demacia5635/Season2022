@@ -22,7 +22,6 @@ import frc.robot.commands.MoveShackle;
 import frc.robot.commands.SetArm;
 import frc.robot.commands.SetTurnerDown;
 import frc.robot.commands.SetArm.Destination;
-import frc.robot.commands.Shoot;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ElivatorInside;
 import frc.robot.subsystems.Pickup;
@@ -158,14 +157,14 @@ public class RobotContainer {
     backButtonSecondary.whileHeld(new StartEndCommand(shooting::freeInput, shooting::closeShooterInput, shooting));
   }
 
-  public Command getSimpleAutoCommand() {
+  /*public Command getSimpleAutoCommand() {
     return new SetArm(pickup, Destination.DOWN).
       andThen(pickup.getIntakeCommand().
       raceWith(new MoveForward(chassis, 2))).
       andThen(new Shoot(shooting, chassis, Constants.SHOOTING_AUTO_VELOCITY, Constants.SHOOTING_AUTO_ANGLE));
-  }
+  }*/
 
-  public Command getAuto1Command() {
+  /*public Command getAuto1Command() {
     Command start = new InstantCommand(chassis::setPosition1).andThen(
         new InstantCommand(() -> {chassis.setNeutralMode(true);}),
         new MoveForward(chassis, 0.7),
@@ -176,7 +175,7 @@ public class RobotContainer {
           .alongWith(pickup.getIntakeCommand()));
 //      (pickup.getIntakeCommand().raceWith(new MoveForward(chassis, 0.3))),
 //      (new Shoot(shooting, chassis).withTimeout(3)));
-  }
+  }*/
 
   public Command getAutoLowShootCommand() {
     return new InstantCommand(() -> {
@@ -187,12 +186,12 @@ public class RobotContainer {
         new MoveForward(chassis, -1.85), new LowShoot(shooting).withTimeout(4), new MoveForward(chassis, 1.85));
   }
 
-  public Command getAuto2Command() {
+  /*public Command getAuto2Command() {
     return (new MoveForward(chassis, 0.6).alongWith(new SetArm(pickup, Destination.DOWN))).andThen(
       (new Shoot(shooting, chassis).withTimeout(3)),
       (pickup.getIntakeCommand().raceWith(new MoveForward(chassis, 0.6))),
       (new Shoot(shooting, chassis).withTimeout(3)));
-  }
+  }*/
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

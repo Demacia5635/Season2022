@@ -45,7 +45,7 @@ public class Pickup extends SubsystemBase {
    * @return true if the limit switch is pressed
    */
   public boolean getUpperLimit(){
-    return arm.isFwdLimitSwitchClosed() != 1;
+    return arm.isRevLimitSwitchClosed() != 0;
   }
 
   /**
@@ -53,7 +53,7 @@ public class Pickup extends SubsystemBase {
    * @return true if the limit switch is pressed
    */
   public boolean getLowerLimit(){
-    return arm.isRevLimitSwitchClosed() != 1;
+    return arm.isFwdLimitSwitchClosed() != 0;
   }
 
   public boolean isDown(){
