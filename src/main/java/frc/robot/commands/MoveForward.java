@@ -24,7 +24,7 @@ public class MoveForward extends CommandBase {
   @Override
   public void initialize() {
     startingPosition = chassis.getAverageEncoderDistance();
-    chassis.setPower(Constants.MOVE_POWER, Constants.MOVE_POWER);
+    chassis.setPower(Constants.MOVE_POWER * Math.signum(meters), Constants.MOVE_POWER * Math.signum(meters));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -40,6 +40,9 @@ public class MoveForward extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if (meters < 0) {
+      return chassis.getAverageEncoderDistance() < startingPosition + meters;
+    }
     return chassis.getAverageEncoderDistance() > startingPosition + meters;
   }
 }

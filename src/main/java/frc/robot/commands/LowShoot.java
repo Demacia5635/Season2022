@@ -4,14 +4,14 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Shooting;
 
-public class SetTurnerDown extends CommandBase {
-  /** Creates a new SetTurnerAngle. */
+public class LowShoot extends CommandBase {
+  /** Creates a new LowShoot. */
   private final Shooting shooting;
-  public SetTurnerDown(Shooting shooting) {
+  private static final double SHOOTING_VELOCITY = 6;
+  public LowShoot(Shooting shooting) {
     this.shooting = shooting;
     addRequirements(shooting);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -20,21 +20,22 @@ public class SetTurnerDown extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooting.setTurnerPower(0.4);
+    shooting.setShooterVelocity(SHOOTING_VELOCITY);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putBoolean("Going down", true);
-    if (shooting.getTurnerAngle() < 1) shooting.setTurnerPower(0);
-    else shooting.setTurnerPower(0.4);
+    if (shooting.getShooterVelocity2() >= SHOOTING_VELOCITY - 1) {
+      shooting.openShooterInput();
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    SmartDashboard.putBoolean("Going down", false);
+    shooting.setShooterPower(0);
+    shooting.closeShooterInput();
   }
 
   // Returns true when the command should end.

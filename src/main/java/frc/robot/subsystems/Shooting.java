@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.commands.AngleForLow;
 import frc.robot.commands.ShootingCalibration;
 import frc.robot.utils.ShootingUtil;
 
@@ -181,11 +182,13 @@ public class Shooting extends SubsystemBase {
     builder.addDoubleProperty("shoot velocity", this::getShootingVelocity, null);
     builder.addDoubleProperty("Shooting Velocity 2", this::getShooterVelocity2, null);
     builder.addDoubleProperty("shoot angle", this::getShootingAngle, null);
+
     
 
     SmartDashboard.putData("Start Calibration", calibration);
     SmartDashboard.putNumber("Distance Change", SmartDashboard.getNumber("Distance Change", 0));
     SmartDashboard.putNumber("Angle Change", SmartDashboard.getNumber("Angle Change", 0));
+    SmartDashboard.putData("Set Low Angle", new AngleForLow(this));
   }
 
   public boolean visionOK() {

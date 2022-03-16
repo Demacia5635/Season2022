@@ -14,7 +14,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.AngleForLow;
 import frc.robot.commands.Drive;
+import frc.robot.commands.LowShoot;
 import frc.robot.commands.MoveForward;
 import frc.robot.commands.MoveShackle;
 import frc.robot.commands.SetArm;
@@ -58,9 +60,9 @@ public class RobotContainer {
   private final MoveShackle openShackle;
   private final MoveShackle closeShackle;
 //  private final AutoShoot autoShoot;
-  private final SetArm armUp;
   private final Command intake;
   private final Command shoot;
+  private final Command shoot2;
   private final Command throwOut;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -89,9 +91,9 @@ public class RobotContainer {
     openShackle = new MoveShackle(elivatorInside, MoveShackle.Destination.OPEN);
     closeShackle = new MoveShackle(elivatorInside, MoveShackle.Destination.CLOSE);
 //    autoShoot = new AutoShoot(shooting, chassis);
-    armUp = new SetArm(pickup, Destination.UP);
     intake = pickup.getIntakeCommand();
-    shoot = new Shoot(shooting, chassis).alongWith(pickup.getIntakeCommand());
+    shoot2 = new LowShoot(shooting).alongWith(pickup.getIntakeCommand());
+    shoot = new StartEndCommand(() -> {chassis.setNeutralMode(true);}, () -> {chassis.setNeutralMode(false);}).alongWith(new MoveForward(chassis, 0.3).andThen(new LowShoot(shooting).alongWith(pickup.getIntakeCommand())));//new Shoot(shooting, chassis).alongWith(pickup.getIntakeCommand());
     throwOut = new StartEndCommand(() -> {
       shooting.setShooterVelocity(6);
       shooting.openShooterInput();
@@ -101,7 +103,7 @@ public class RobotContainer {
     }, shooting);
 
     chassis.setDefaultCommand(new Drive(chassis, mainController));
-    shooting.setDefaultCommand(new SetTurnerDown(shooting));
+    //shooting.setDefaultCommand(new SetTurnerDown(shooting));
     pickup.setDefaultCommand(new SetArm(pickup, Destination.UP).andThen(new StartEndCommand(() -> {}, () -> {}, pickup)));
     
     // Configure the button bindings
@@ -128,7 +130,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     aButtonMain.whenHeld(intake);
       
-    yButtonMain.whenPressed(armUp);
+    yButtonMain.whileHeld(shoot2);
 
     aButtonSecondary.whenPressed(new InstantCommand(() -> {
       NetworkTableInstance nt = NetworkTableInstance.getDefault();
@@ -147,7 +149,7 @@ public class RobotContainer {
     backButtonMain.whenPressed(new InstantCommand(() -> {chassis.reverse(!chassis.isReversed());}));
 
     startButtonSecondary.whenPressed(new InstantCommand(() -> {
-      new SetArm(pickup, SetArm.Destination.DOWN).andThen(new StartEndCommand(() -> {}, () -> {}, pickup)).schedule();
+      new SetArm(pickup, SetArm.Destination.DOWN).andThen(new StartEndCommand(() -> {}, () -> {}, pickup)).alongWith(new SetTurnerDown(shooting)).schedule();
       elivatorInside.changeClimbingMode();
     }).andThen(new InstantCommand(() -> {chassis.setNeutralMode(elivatorInside.isClimbingMode());})));
 
@@ -175,6 +177,16 @@ public class RobotContainer {
 //      (pickup.getIntakeCommand().raceWith(new MoveForward(chassis, 0.3))),
 //      (new Shoot(shooting, chassis).withTimeout(3)));
   }
+
+  public Command getAutoLowShootCommand() {
+    return new InstantCommand(() -> {
+      chassis.setNeutralMode(true);
+      chassis.setPosition2();
+      new AngleForLow(shooting).schedule();
+    }).andThen(new SetArm(pickup, Destination.DOWN), pickup.getIntakeCommand().raceWith(new MoveForward(chassis, 1.2)),
+        new MoveForward(chassis, -1.85), new LowShoot(shooting).withTimeout(4), new MoveForward(chassis, 1.85));
+  }
+
   public Command getAuto2Command() {
     return (new MoveForward(chassis, 0.6).alongWith(new SetArm(pickup, Destination.DOWN))).andThen(
       (new Shoot(shooting, chassis).withTimeout(3)),
@@ -189,7 +201,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     //return chassis.getAutoCommand("test1.wpilib.json");
-    return getAuto1Command();
+    return getAutoLowShootCommand();
   }
 
   public void onDisable() {
@@ -197,6 +209,7 @@ public class RobotContainer {
   }
 
   public void onTeleop() {
+    chassis.setNeutralMode(false);
     if (elivatorInside.isClimbingMode()) elivatorInside.changeClimbingMode();
   }
 

@@ -69,7 +69,9 @@ public class ShootingUtil {
     }
 
     public static double getDistance(Translation2d t) {
-        return t.getNorm() - 0.61;
+        double distance = t.getNorm() - 0.61;
+        SmartDashboard.putBoolean("Is In Range", distance <= 1.25 && distance >= 0.4);
+        return distance;
     }
 
     public static Rotation2d getRotation(Translation2d t, Pose2d pose) {
@@ -80,6 +82,7 @@ public class ShootingUtil {
         } else if(rot > 180) {
             rot -= 360;
         }
-        return Rotation2d.fromDegrees(rot);        
+        SmartDashboard.putBoolean("Angle In Range", Math.abs(rot) <= 10);
+        return Rotation2d.fromDegrees(rot);
     }
 }
