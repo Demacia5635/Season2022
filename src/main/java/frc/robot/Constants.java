@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj.drive.Vector2d;
  */
 public final class Constants {
     //#region Shooting
+    public static final int LED1_COUNT = 20;
+    public static final int LED1_PORT = 0;
     public static final int SHOOTER_PORT_MAIN = 5;
     public static final int SHOOTER_PORT_SECONDARY = 6;
     public static final int TURNER_PORT = 11;
@@ -63,7 +65,7 @@ public final class Constants {
 
     public static final int GYRO_PORT = 14;
 
-    public static final double ANGLE_KP = 0.1;
+    public static final double TURN_VELOCITY = 1.5;
     public static final int ANGLE_KI = -1;
     public static final int ANGLE_KD = -1;
 
@@ -129,7 +131,7 @@ public final class Constants {
     public static final double PICKUP_POWER = 1;
 
     //Velocity
-    public static final double ARM_UP_POWER = 0.8;
-    public static final double ARM_DOWN_POWER = -0.45;
+    public static final double ARM_UP_POWER = -0.8;
+    public static final double ARM_DOWN_POWER = 0.45;
     //#endregion
 }

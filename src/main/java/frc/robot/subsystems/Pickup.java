@@ -25,7 +25,7 @@ public class Pickup extends SubsystemBase {
   public Pickup() {
     intake = new WPI_TalonSRX(Constants.INTAKE_PORT);
     arm = new WPI_TalonSRX(Constants.ARM_PORT);
-    arm.setInverted(false);
+    arm.setInverted(true);
     isDown = false;
 
     //armFeedforward = new ArmFeedforward(Constants.GRIPPER_KS, Constants.GRIPPER_KCOS, Constants.GRIPPER_KV);

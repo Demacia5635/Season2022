@@ -122,7 +122,7 @@ public class Chassis extends SubsystemBase{
   public void reverse(boolean toReverse){
     isReversed = toReverse;
     left.invertMotors(isReversed);
-    right.invertMotors(isReversed);
+    right.invertMotors(!isReversed);
   }
 
   public boolean isReversed() {
@@ -133,7 +133,7 @@ public class Chassis extends SubsystemBase{
    * returns gyros position
    * @return
    */
-  private double _getFusedHeading(){
+  public double _getFusedHeading(){
     return gyro.getFusedHeading();
   } 
 

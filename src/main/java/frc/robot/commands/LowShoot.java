@@ -10,11 +10,11 @@ import frc.robot.subsystems.Shooting;
 public class LowShoot extends CommandBase {
   /** Creates a new LowShoot. */
   private final Shooting shooting;
-  private static final double SHOOTING_VELOCITY = 6;
+  private static final double SHOOTING_VELOCITY = 8;
   public LowShoot(Shooting shooting) {
     this.shooting = shooting;
     addRequirements(shooting);
-    // Use addRequirements() here to declare subsystem dependencies.
+    // Use addRequirements() here to declare subsystem depen\dencies.
   }
 
   // Called when the command is initially scheduled.
@@ -29,6 +29,11 @@ public class LowShoot extends CommandBase {
     if (shooting.getShooterVelocity2() >= SHOOTING_VELOCITY - 1) {
       shooting.openShooterInput();
     }
+    if (!shooting.getUpperLimitSwitch()) {
+      shooting.setTurnerPower(-0.3);
+    } else {
+      shooting.setTurnerPower(0);
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -36,6 +41,7 @@ public class LowShoot extends CommandBase {
   public void end(boolean interrupted) {
     shooting.setShooterPower(0);
     shooting.closeShooterInput();
+    shooting.setTurnerPower(0);
   }
 
   // Returns true when the command should end.
