@@ -5,13 +5,16 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.utils.LedHandler;
+import frc.robot.subsystems.LedHandler;
 
 public class Rainbow extends CommandBase {
   /** Creates a new Rainbow. */
   private double currentH = 0;
-  public Rainbow() {
-    // Use addRequirements() here to declare subsystem dependencies.
+  private final LedHandler ledHandler;
+
+  public Rainbow(LedHandler ledHandler) {
+    this.ledHandler = ledHandler;
+    addRequirements(ledHandler);
   }
 
   // Called when the command is initially scheduled.
@@ -23,14 +26,14 @@ public class Rainbow extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    LedHandler.setColorWithOffset(currentH, 255, 128, 5);
+    ledHandler.setColorWithOffset(currentH, 255, 128, 5);
     currentH += 3;
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    LedHandler.setColor(135, 45, 255);
+    ledHandler.setDefaultColor();
   }
 
   // Returns true when the command should end.

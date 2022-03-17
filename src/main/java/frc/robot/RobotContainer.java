@@ -20,15 +20,16 @@ import frc.robot.commands.Drive;
 import frc.robot.commands.LowShoot;
 import frc.robot.commands.MoveForward;
 import frc.robot.commands.MoveShackle;
+import frc.robot.commands.Rainbow;
 import frc.robot.commands.SetArm;
 import frc.robot.commands.SetTurnerDown;
 import frc.robot.commands.Turn;
 import frc.robot.commands.SetArm.Destination;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ElivatorInside;
+import frc.robot.subsystems.LedHandler;
 import frc.robot.subsystems.Pickup;
 import frc.robot.subsystems.Shooting;
-import frc.robot.utils.LedHandler;
 import frc.robot.utils.ShootingUtil;
 
 /**
@@ -43,6 +44,7 @@ public class RobotContainer {
   private final ElivatorInside elivatorInside;
   private final Chassis chassis;
   private final Shooting shooting;
+  private final LedHandler ledHandler;
   
   private final XboxController secondaryController;
   private final XboxController mainController;
@@ -70,7 +72,6 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
 
   public RobotContainer() {
-    LedHandler.init();
 
     secondaryController = new XboxController(1);
     mainController = new XboxController(0);
@@ -79,6 +80,7 @@ public class RobotContainer {
     pickup = new Pickup();
     elivatorInside = new ElivatorInside(secondaryController);
     shooting = new Shooting(chassis);
+    ledHandler = new LedHandler();
 
     bButtonSecondary = new JoystickButton(secondaryController, 2);
     xButtonSecondary = new JoystickButton(secondaryController, 3);
@@ -96,8 +98,8 @@ public class RobotContainer {
     closeShackle = new MoveShackle(elivatorInside, MoveShackle.Destination.CLOSE);
 //    autoShoot = new AutoShoot(shooting, chassis);
     intake = pickup.getIntakeCommand();
-    shoot2 = new LowShoot(shooting).alongWith(pickup.getIntakeCommand());
-    shoot = new StartEndCommand(() -> {chassis.setNeutralMode(true);}, () -> {chassis.setNeutralMode(false);}).alongWith(new MoveForward(chassis, 0.3).andThen(new LowShoot(shooting).alongWith(pickup.getIntakeCommand())));//new Shoot(shooting, chassis).alongWith(pickup.getIntakeCommand());
+    shoot2 = new LowShoot(shooting, ledHandler).alongWith(pickup.getIntakeCommand());
+    shoot = new StartEndCommand(() -> {chassis.setNeutralMode(true);}, () -> {chassis.setNeutralMode(false);}).alongWith(new MoveForward(chassis, 0.3).andThen(new LowShoot(shooting, ledHandler).alongWith(pickup.getIntakeCommand())));//new Shoot(shooting, chassis).alongWith(pickup.getIntakeCommand());
     throwOut = new StartEndCommand(() -> {
       shooting.setShooterVelocity(6);
       shooting.openShooterInput();
@@ -155,6 +157,7 @@ public class RobotContainer {
     startButtonSecondary.whenPressed(new InstantCommand(() -> {
       new SetArm(pickup, SetArm.Destination.DOWN).andThen(new StartEndCommand(() -> {}, () -> {}, pickup)).alongWith(new SetTurnerDown(shooting)).schedule();
       elivatorInside.changeClimbingMode();
+      new Rainbow(ledHandler).schedule();
     }).andThen(new InstantCommand(() -> {chassis.setNeutralMode(elivatorInside.isClimbingMode());})));
 
     bButtonSecondary.whileHeld(throwOut);
@@ -187,20 +190,20 @@ public class RobotContainer {
       chassis.setNeutralMode(true);
       chassis.setPosition2();
     }).andThen(new AngleForLow(shooting).alongWith(new SetArm(pickup, Destination.DOWN)), 
-        pickup.getIntakeCommand().raceWith(new LowShoot(shooting).withTimeout(3).andThen(
+        pickup.getIntakeCommand().raceWith(new LowShoot(shooting, ledHandler).withTimeout(3).andThen(
           new MoveForward(chassis, 0.8), new WaitCommand(1), new MoveForward(chassis, -1),
-          new LowShoot(shooting).withTimeout(3)
+          new LowShoot(shooting, ledHandler).withTimeout(3)
         )), new MoveForward(chassis, 1.3).alongWith(new SetArm(pickup, Destination.UP)));
   }
 
   public Command getAutoSpecial(){
     return new InstantCommand(() -> {chassis.setNeutralMode(true);}).andThen(
       new AngleForLow(shooting).alongWith(new SetArm(pickup, Destination.DOWN)), 
-    pickup.getIntakeCommand().raceWith(new LowShoot(shooting).withTimeout(1.5).andThen(
+    pickup.getIntakeCommand().raceWith(new LowShoot(shooting, ledHandler).withTimeout(1.5).andThen(
       new Turn(chassis, -25), new MoveForward(chassis, 1.3), 
       new WaitCommand(1), new MoveForward(chassis, -1.3),
       new Turn(chassis, 25),
-      new LowShoot(shooting).withTimeout(1.5)
+      new LowShoot(shooting, ledHandler).withTimeout(1.5)
     )), new MoveForward(chassis, 1.3).alongWith(new SetArm(pickup, Destination.UP)));
   }
 

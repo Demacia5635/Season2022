@@ -5,25 +5,29 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.LedHandler;
 import frc.robot.subsystems.Shooting;
 
 public class LowShoot extends CommandBase {
-  /** Creates a new LowShoot. */
+
   private final Shooting shooting;
+  private final LedHandler ledHandler;
   private static final double SHOOTING_VELOCITY = 8;
-  public LowShoot(Shooting shooting) {
+  private int time;
+
+  public LowShoot(Shooting shooting, LedHandler ledHandler) {
     this.shooting = shooting;
-    addRequirements(shooting);
-    // Use addRequirements() here to declare subsystem depen\dencies.
+    this.ledHandler = ledHandler;
+    addRequirements(shooting, ledHandler);
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     shooting.setShooterVelocity(SHOOTING_VELOCITY);
+    ledHandler.setColor(255, 255, 0);
+    time = 0;
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if (shooting.getShooterVelocity2() >= SHOOTING_VELOCITY - 1) {
@@ -34,9 +38,10 @@ public class LowShoot extends CommandBase {
     } else {
       shooting.setTurnerPower(0);
     }
+    ledHandler.setColor(time / 2, 0, 255, 0);
+    time++;
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     shooting.setShooterPower(0);
@@ -44,7 +49,6 @@ public class LowShoot extends CommandBase {
     shooting.setTurnerPower(0);
   }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;

@@ -8,19 +8,21 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.utils.LedHandler;
+import frc.robot.subsystems.LedHandler;
 
 public class LedTransition extends CommandBase {
   /** Creates a new LedTransition. */
   private final Supplier<double[]> hsvSupplier;
   private final DoubleSupplier durationSupplier;
   private double targetH, targetS, targetV, duration, startH, startS, startV;
+  private final LedHandler ledHandler;
   private int time = 0;
 
-  public LedTransition(Supplier<double[]> hsvSupplier, DoubleSupplier durationSupplier) {
-    // Use addRequirements() here to declare subsystem dependencies.
+  public LedTransition(Supplier<double[]> hsvSupplier, DoubleSupplier durationSupplier, LedHandler ledHandler) {
     this.hsvSupplier = hsvSupplier;
     this.durationSupplier = durationSupplier;
+    this.ledHandler = ledHandler;
+    addRequirements(ledHandler);
   }
 
   // Called when the command is initially scheduled.
@@ -30,7 +32,7 @@ public class LedTransition extends CommandBase {
     targetH = hsv[0];
     targetS = hsv[1];
     targetV = hsv[2];
-    hsv = LedHandler.getHsv();
+    hsv = ledHandler.getHsv();
     startH = hsv[0];
     startS = hsv[1];
     startV = hsv[2];
@@ -45,14 +47,14 @@ public class LedTransition extends CommandBase {
     double currentHue = (startH + (targetH - startH) * time / duration);
     double currentSaturation = (startS + (targetS - startS) * time / duration);
     double currentValue = (startV + (targetV - startV) * time / duration);
-    LedHandler.setHsv(currentHue, currentSaturation, currentValue);
+    ledHandler.setHsv(currentHue, currentSaturation, currentValue);
     time += 20;
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    LedHandler.setHsv(targetH, targetS, targetV);
+    ledHandler.setHsv(targetH, targetS, targetV);
   }
 
   // Returns true when the command should end.
