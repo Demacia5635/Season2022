@@ -134,7 +134,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     aButtonMain.whenHeld(intake);
       
-    yButtonMain.whileHeld(shoot2);
+    yButtonMain.whileHeld(shoot);
 
     aButtonSecondary.whenPressed(new InstantCommand(() -> {
       NetworkTableInstance nt = NetworkTableInstance.getDefault();
@@ -144,7 +144,7 @@ public class RobotContainer {
       chassis.setPose(new Pose2d(location.getX(), location.getY(), Rotation2d.fromDegrees(isRed ? 180 : 0)));
     }));
     
-    xButtonMain.whenHeld(shoot); //autoShoot
+    xButtonMain.whenHeld(shoot2); //autoShoot
 
     xButtonSecondary.whileHeld(openShackle);
 
@@ -218,7 +218,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     //return chassis.getAutoCommand("test1.wpilib.json");
-    return getAutoSpecial();
+    return getAutoLowShootCommand();
   }
 
   public void onDisable() {

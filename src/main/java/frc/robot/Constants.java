@@ -17,8 +17,9 @@ import edu.wpi.first.wpilibj.drive.Vector2d;
  */
 public final class Constants {
     //#region Shooting
-    public static final int LED1_COUNT = 20;
-    public static final int LED1_PORT = 0;
+    public static final int LED_COUNT = 20;
+    public static final int LED1_PORT = 2;
+    public static final int LED2_PORT = 4;
     public static final int SHOOTER_PORT_MAIN = 5;
     public static final int SHOOTER_PORT_SECONDARY = 6;
     public static final int TURNER_PORT = 11;
@@ -44,7 +45,7 @@ public final class Constants {
     public static final double MAX_ANGLE_ERROR_CHASSIS = 3;
     public static final double DRIVE_POWER_FACTOR = 0.75;
     public static final double CAMERA_ANGLE = 0;
-    public static final double SPIN_PERCENTAGE = 0.1;
+    public static final double SPIN_PERCENTAGE = 0;
 
     public static final Vector2d[] SHOOTING_VALUES = {
         new Vector2d(11, 52)
