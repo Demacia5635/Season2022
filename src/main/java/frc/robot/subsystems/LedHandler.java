@@ -18,15 +18,15 @@ import frc.robot.commands.MoveBetweenColors;
 import frc.robot.commands.Rainbow;
 
 public class LedHandler extends SubsystemBase {
-  private final AddressableLED led1, led2;
+  private final AddressableLED led1/*, led2*/;
   private final AddressableLEDBuffer buffer;
 
   public LedHandler() {
     led1 = new AddressableLED(Constants.LED1_PORT);
-    led2 = new AddressableLED(Constants.LED2_PORT);
+    // led2 = new AddressableLED(Constants.LED2_PORT);
     buffer = new AddressableLEDBuffer(Constants.LED_COUNT);
     led1.setLength(Constants.LED_COUNT);
-    led2.setLength(Constants.LED_COUNT);
+    // led2.setLength(Constants.LED_COUNT);
     setDefaultColor();
 
     setDefaultCommand(NetworkTableInstance.getDefault().getEntry("FMSInfo/IsRedAlliance").getBoolean(true) ?

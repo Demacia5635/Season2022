@@ -81,6 +81,7 @@ public class RobotContainer {
     elivatorInside = new ElivatorInside(secondaryController);
     shooting = new Shooting(chassis);
     ledHandler = new LedHandler();
+    // ledHandler.getDefaultCommand().schedule();
 
     bButtonSecondary = new JoystickButton(secondaryController, 2);
     xButtonSecondary = new JoystickButton(secondaryController, 3);
