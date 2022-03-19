@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.AngleForLow;
 import frc.robot.commands.Drive;
+import frc.robot.commands.LimitSwitchLeds;
 import frc.robot.commands.LowShoot;
 import frc.robot.commands.MoveForward;
 import frc.robot.commands.MoveShackle;
@@ -69,6 +71,8 @@ public class RobotContainer {
   private final Command shoot2;
   private final Command throwOut;
 
+  private final SendableChooser<Autonomouses> autonomousChooser;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
 
   public RobotContainer() {
@@ -81,7 +85,7 @@ public class RobotContainer {
     elivatorInside = new ElivatorInside(secondaryController);
     shooting = new Shooting(chassis);
     ledHandler = new LedHandler();
-    // ledHandler.getDefaultCommand().schedule();
+    new LimitSwitchLeds(ledHandler, pickup, shooting).schedule();
 
     bButtonSecondary = new JoystickButton(secondaryController, 2);
     xButtonSecondary = new JoystickButton(secondaryController, 3);
@@ -114,7 +118,21 @@ public class RobotContainer {
     pickup.setDefaultCommand(new SetArm(pickup, Destination.UP).andThen(new StartEndCommand(() -> {}, () -> {}, pickup)));
     
     // Configure the button bindings
+
+    autonomousChooser = new SendableChooser<>();
+    autonomousChooser.setDefaultOption("Normal", Autonomouses.Normal);
+    autonomousChooser.addOption("Wall", Autonomouses.Wall);
+    autonomousChooser.addOption("Turn", Autonomouses.Turn);
+
+    SmartDashboard.putData("Autonomous", autonomousChooser);
+
     configureButtonBindings();
+  }
+
+  public enum Autonomouses {
+    Wall,
+    Normal,
+    Turn
   }
 
   /**
@@ -187,12 +205,12 @@ public class RobotContainer {
   }*/
 
   public Command getAutoLowShootCommand() {
-    return new InstantCommand(() -> {
-      chassis.setNeutralMode(true);
-      chassis.setPosition2();
-    }).andThen(new AngleForLow(shooting).alongWith(new SetArm(pickup, Destination.DOWN)), 
-        pickup.getIntakeCommand().raceWith(new LowShoot(shooting, ledHandler).withTimeout(3).andThen(
-          new MoveForward(chassis, 0.8), new WaitCommand(1), new MoveForward(chassis, -1),
+    return new AngleForLow(shooting).alongWith(new SetArm(pickup, Destination.DOWN)).andThen(
+       pickup.getIntakeCommand().raceWith(
+          new LowShoot(shooting, ledHandler).withTimeout(3).andThen(
+          new MoveForward(chassis, 0.8),
+          new WaitCommand(1),
+          new MoveForward(chassis, -1),
           new LowShoot(shooting, ledHandler).withTimeout(3)
         )), new MoveForward(chassis, 1.3).alongWith(new SetArm(pickup, Destination.UP)));
   }
@@ -222,7 +240,19 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     //return chassis.getAutoCommand("test1.wpilib.json");
-    return getAutoLowShootCommand();
+    switch (autonomousChooser.getSelected()) {
+      case Wall:
+        System.out.println("Wall");
+        return getAutoLowShootCommand();
+      case Normal:
+        System.out.println("Normal");
+        return new InstantCommand(chassis::setPosition1).alongWith(getAutoLowShootCommand());
+      case Turn:
+        System.out.println("Turn");
+        return new InstantCommand(chassis::setPosition2).alongWith(getAutoSpecial());
+      default:
+        return null;
+    }
   }
 
   public void onDisable() {
@@ -231,10 +261,12 @@ public class RobotContainer {
 
   public void onTeleop() {
     chassis.setNeutralMode(false);
+    ledHandler.getDefaultCommand().schedule();
     if (elivatorInside.isClimbingMode()) elivatorInside.changeClimbingMode();
   }
 
   public void onAuto() {
-
+    ledHandler.getDefaultCommand().schedule();
+    chassis.setNeutralMode(true);
   }
 }

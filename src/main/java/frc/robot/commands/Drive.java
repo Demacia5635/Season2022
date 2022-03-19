@@ -34,6 +34,7 @@ public class Drive extends CommandBase {
     double value = deadband((chassis.isReversed() ? -1 : 1) * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
     double angle = deadband(controller.getLeftX());
 
+    if (value == 0 && angle == 0) chassis.setPower(0, 0);
     chassis.setAngularVelocity(value, -angle);
   }
 

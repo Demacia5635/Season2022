@@ -17,9 +17,8 @@ import edu.wpi.first.wpilibj.drive.Vector2d;
  */
 public final class Constants {
     //#region Shooting
-    public static final int LED_COUNT = 20;
-    public static final int LED1_PORT = 2;
-    public static final int LED2_PORT = 4;
+    public static final int LED_COUNT = 40;
+    public static final int LED_PORT = 2;
     public static final int SHOOTER_PORT_MAIN = 5;
     public static final int SHOOTER_PORT_SECONDARY = 6;
     public static final int TURNER_PORT = 11;
@@ -30,7 +29,7 @@ public final class Constants {
     public static final double PULSE_TO_ANGLE = 360./4000;
     public static final double INPUT_WHEEL_POWER = -0.65;
     public static final double SHOOTER_PULSE_TO_METER = 0.1 * Math.PI / 2048;
-    public static final double SHOOTER_KS = 0.048;
+    public static final double SHOOTER_KS = 0.02;
     public static final double SHOOTER_KV = 0.03;
     public static final double SHOOTER_KP = 0;//0.05 / (1 / (SHOOTER_PULSE_TO_METER * 10));
     public static final double SHOOTER_KI = 0;//SHOOTER_KP / 10;
@@ -55,8 +54,8 @@ public final class Constants {
     //#endregion
 
     //#region Chassis
-    public static final double MAX_VELOCITY = 3;
-    public static final double MAX_ANGULAR_VELOCITY = Math.PI;
+    public static final double MAX_VELOCITY = 3;//3;
+    public static final double MAX_ANGULAR_VELOCITY = Math.PI * 3 / 2;
     public static final double PULSES_PER_METER = 12.0*2048/(6.0*25.4*Math.PI/1000.0);
 
     public static final int LEFT_FRONT_PORT = 3; 
@@ -73,13 +72,13 @@ public final class Constants {
     public static final int STOP_ANGLE = 5;
     public static final double SCALE_VELOCITY_ON_PICKUP = 0.5;
 
-    public static final double KS = 0.041444097583536 * 12;
-    public static final double KV = 0.237394390650743 * 12;
-    public static final double KP = 0.015574;
+    public static final double KS = 0.03698 * 12;
+    public static final double KV = 0.2386 * 12;
+    public static final double KP = 0.0001;
     public static final double TURN_SCALE_SAGI = 1.175;
     public static final double TURN_SCALE_GUY = 1.2;
     public static final double ZERO_TURN_SAGI = 0.9;
-    public static final double LOW_TURN_SAGI = 0.35;
+    public static final double LOW_TURN_SAGI = 0.05;
     public static final double KA = 0;
     public static final double TRACK_WIDTH = 0.56;
     public static final DifferentialDriveKinematics KINEMATICS = new DifferentialDriveKinematics(TRACK_WIDTH);

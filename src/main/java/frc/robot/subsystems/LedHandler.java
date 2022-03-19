@@ -16,17 +16,17 @@ import frc.robot.commands.InstantCommandInDisable;
 import frc.robot.commands.LedTransition;
 import frc.robot.commands.MoveBetweenColors;
 import frc.robot.commands.Rainbow;
-
+import frc.robot.commands.StartEndCommandOnDisable;
+ 
 public class LedHandler extends SubsystemBase {
-  private final AddressableLED led1/*, led2*/;
+  private final AddressableLED led;
   private final AddressableLEDBuffer buffer;
 
   public LedHandler() {
-    led1 = new AddressableLED(Constants.LED1_PORT);
-    // led2 = new AddressableLED(Constants.LED2_PORT);
+    led = new AddressableLED(Constants.LED_PORT);
     buffer = new AddressableLEDBuffer(Constants.LED_COUNT);
-    led1.setLength(Constants.LED_COUNT);
-    // led2.setLength(Constants.LED_COUNT);
+    led.setLength(Constants.LED_COUNT);
+    led.start();
     setDefaultColor();
 
     setDefaultCommand(NetworkTableInstance.getDefault().getEntry("FMSInfo/IsRedAlliance").getBoolean(true) ?
@@ -35,7 +35,8 @@ public class LedHandler extends SubsystemBase {
   }
 
   public void setColor(int index, int red, int green, int blue) {
-    buffer.setRGB(Math.min(index, Constants.LED_COUNT - 1), red, green, blue);
+    buffer.setRGB(Math.min(index, Constants.LED_COUNT / 2 - 1), red, green, blue);
+    buffer.setRGB(Constants.LED_COUNT - 1 - index, red, green, blue);
     updateLeds();
   }
 
@@ -52,21 +53,26 @@ public class LedHandler extends SubsystemBase {
   }
 
   public void setColorWithOffset(double h, double s, double v, double offset) {
-      for (int i = 0; i < Constants.LED_COUNT; i++) {
-          buffer.setHSV(i, (int) ((h + i * offset) % 180), (int) s, (int) v);
+      for (int i = 0; i < Constants.LED_COUNT / 2; i++) {
+          double hue = (h + i * offset) % 180;
+          buffer.setHSV(i, (int) hue, (int) s, (int) v);
+          buffer.setHSV(Constants.LED_COUNT - 1 - i, (int) hue, (int) s, (int) v);
       }
       updateLeds();
   }
 
   public void setColorWithOffsetAndRoofs(double h, double s, double v, double offset, double max, double min) {
-      for (int i = 0; i < Constants.LED_COUNT; i++) {
-          buffer.setHSV(i, (int) Math.min(Math.max((h + i * offset), min), max) % 180, (int) s, (int) v);
+      for (int i = 0; i < Constants.LED_COUNT / 2; i++) {
+          double hue = Math.min(Math.max((h + i * offset), min), max) % 180;
+          buffer.setHSV(i, (int) hue, (int) s, (int) v);
+          buffer.setHSV(Constants.LED_COUNT - 1 - i, (int) hue, (int) s, (int) v);
       }
       updateLeds();
   }
 
   public void setHsv(int index, double hue, double saturation, double value) {
       buffer.setHSV(index, (int) hue, (int) saturation, (int) value);
+      buffer.setHSV(Constants.LED_COUNT - 1 - index, (int) hue, (int) saturation, (int) value);
       updateLeds();
   }
 
@@ -77,6 +83,22 @@ public class LedHandler extends SubsystemBase {
       updateLeds();
       updateSmartDashboard(buffer.getLED(0).red * 255, buffer.getLED(0).green * 255, buffer.getLED(0).blue * 255);
   }
+
+  public void setRangeHSV(int lower, int upper, double hue, double saturation, double value) {
+      for (int i = lower; i < upper; i++) {
+          buffer.setHSV(i, (int) hue, (int) saturation, (int) value);
+          buffer.setHSV(Constants.LED_COUNT - 1 - i, (int) hue, (int) saturation, (int) value);
+      }
+      updateLeds();
+  }
+
+  public void setRangeColor(int lower, int upper, double red, double green, double blue) {
+    for (int i = lower; i < upper; i++) {
+        buffer.setRGB(i, (int) red, (int) green, (int) blue);
+        buffer.setRGB(Constants.LED_COUNT - 1 - i, (int) red, (int) green, (int) blue);
+    }
+    updateLeds();
+}
 
   public double[] getHsv() {
       return bgrToHsv(buffer.getLED(0));
@@ -116,8 +138,7 @@ public class LedHandler extends SubsystemBase {
   }
 
   private void updateLeds() {
-    led1.setData(buffer);
-    // led2.setData(buffer);
+    led.setData(buffer);
   }
 
   private void updateSmartDashboard(double red, double green, double blue) {
@@ -147,9 +168,6 @@ public class LedHandler extends SubsystemBase {
         }));
         SmartDashboard.putData("Leds/Rainbow", new Rainbow(this));
 
-        SmartDashboard.putData("Leds/Default",
-            NetworkTableInstance.getDefault().getEntry("FMSInfo/IsRedAlliance").getBoolean(true) ?
-            new MoveBetweenColors(142, 180, this) :
-            new MoveBetweenColors(120, 142, this));
+        SmartDashboard.putData("Leds/Default", new StartEndCommandOnDisable(this::setDefaultColor, () -> {}, this));
   }
 }

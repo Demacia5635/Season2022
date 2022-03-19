@@ -67,20 +67,28 @@ public class Calibrate extends CommandBase {
   public void end(boolean interrupted) {
       // analyze the data
       // get the velocities - v1 = Power1/Power1 v2 = Power2/Power2, v1h = high of Power1/MinPower1 etc.
-    double v1 = (cmds[0].lVelocity - cmds[1].lVelocity + cmds[0].rVelocity - cmds[1].rVelocity)/4;
-    double v2 = (cmds[4].lVelocity - cmds[5].lVelocity + cmds[4].rVelocity - cmds[5].rVelocity)/4;
+    double v1left = (cmds[0].lVelocity - cmds[1].lVelocity)/2;
+    double v2left = (cmds[4].lVelocity - cmds[5].lVelocity)/2;
+    double v1right = (cmds[0].rVelocity - cmds[1].rVelocity)/2;
+    double v2right = (cmds[4].rVelocity - cmds[5].rVelocity)/2;
     double v1h = (cmds[2].lVelocity - cmds[3].lVelocity)/2;
     double v1l = (cmds[2].rVelocity - cmds[3].rVelocity)/2;
  
     // calculate the constants
-    double kv = (Power1 - Power2) / (v1 - v2);
-    double ks = Power1 - v1*kv;
+    double kvl = (Power1 - Power2) / (v1left - v2left);
+    double ksl = Power1 - v1left*kvl;
+    double kvr = (Power1 - Power2) / (v1right - v2right);
+    double ksr = Power1 - v1right*kvr;
+    double ks = (ksl + ksr)/2;
+    double kv = (kvl + kvr)/2;
     double hr = (Power1 - ks - kv * v1h)/(v1h - v1l); 
     double lr = (MinPower-ks-kv*v1l)/(v1h - v1l);
     // set up the global parameters - for the test
     FeedForward ff = new FeedForward();
-    ff.K_S = ks;
-    ff.K_V = kv;
+    ff.K_S_L = ksl;
+    ff.K_V_L = kvl;
+    ff.K_S_R = ksr;
+    ff.K_V_R = kvr;
     ff.K_H = hr;
     ff.K_L = lr;
     // check all values
@@ -90,6 +98,10 @@ public class Calibrate extends CommandBase {
       error = Math.abs(ff.leftP - c.lPower) + Math.abs(ff.rightP - c.rPower);
     }
     // put all data into the network table
+    SmartDashboard.putNumber("Calibrate KS-L", ksl);
+    SmartDashboard.putNumber("Calibrate KV-L", kvl);
+    SmartDashboard.putNumber("Calibrate KS-R", ksr);
+    SmartDashboard.putNumber("Calibrate KV-R", kvr);
     SmartDashboard.putNumber("Calibrate KS", ks);
     SmartDashboard.putNumber("Calibrate KV", kv);
     SmartDashboard.putNumber("Calibrate KH", hr);

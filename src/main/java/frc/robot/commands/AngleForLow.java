@@ -10,6 +10,7 @@ import frc.robot.subsystems.Shooting;
 public class AngleForLow extends CommandBase {
   /** Creates a new AngleForLow. */
   private final Shooting shooting;
+  private int time;
   public AngleForLow(Shooting shooting) {
     this.shooting = shooting;
     addRequirements(shooting);
@@ -19,12 +20,15 @@ public class AngleForLow extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooting.setTurnerPower(-0.3);
+    shooting.setTurnerPower(-0.5);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (shooting.getUpperLimitSwitch()) {
+      time++;
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -36,6 +40,6 @@ public class AngleForLow extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return shooting.getUpperLimitSwitch();
+    return shooting.getUpperLimitSwitch() && time > 50;
   }
 }

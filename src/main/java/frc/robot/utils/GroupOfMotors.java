@@ -50,6 +50,11 @@ public class GroupOfMotors {
         setVelocity(vel * Constants.MAX_VELOCITY, aff);
     }
 
+    public void setRamp(double secondsFromZeroToFull) {
+        lead.configOpenloopRamp(secondsFromZeroToFull);
+        lead.configClosedloopRamp(secondsFromZeroToFull);
+    }
+
     public double getVelocity() {
         return lead.getSelectedSensorVelocity() / Constants.PULSES_PER_METER * 10;
     }
@@ -110,15 +115,15 @@ public class GroupOfMotors {
     }
 
     public void setK_P(double k_p) {
-        lead.config_kP(0, k_p);
+        lead.config_kP(0, k_p * 1023);
     }
 
     public void setK_I(double k_i) {
-        lead.config_kI(0, k_i);
+        lead.config_kI(0, k_i * 1023);
     }
 
     public void setK_D(double k_d) {
-        lead.config_kD(0, k_d);
+        lead.config_kD(0, k_d * 1023);
     }
 
     public void invertMotors(boolean isInverted) {

@@ -12,7 +12,8 @@ public class LowShoot extends CommandBase {
 
   private final Shooting shooting;
   private final LedHandler ledHandler;
-  private static final double SHOOTING_VELOCITY = 8;
+  private static final double SHOOTING_VELOCITY = 9.5;
+  private int time;
 
   public LowShoot(Shooting shooting, LedHandler ledHandler) {
     this.shooting = shooting;
@@ -24,6 +25,7 @@ public class LowShoot extends CommandBase {
   public void initialize() {
     shooting.setShooterVelocity(SHOOTING_VELOCITY);
     ledHandler.setColor(255, 255, 0);
+    time = 0;
   }
 
   @Override
@@ -33,12 +35,16 @@ public class LowShoot extends CommandBase {
       shooting.openShooterInput();
     }
     if (!shooting.getUpperLimitSwitch()) {
-      shooting.setTurnerPower(-0.3);
+      shooting.setTurnerPower(-0.5);
     } else {
       shooting.setTurnerPower(0);
     }
-    ledHandler.setColor((int) (vel / SHOOTING_VELOCITY * 20), 0, 255, 0);
-    if (vel >= SHOOTING_VELOCITY) {
+    if (vel >= SHOOTING_VELOCITY - 1 || time > 0) {
+      time++;
+    }
+    if (time < 10)
+      ledHandler.setRangeColor((int) (20 - (Math.min((vel / SHOOTING_VELOCITY * 20), 20))), 20, 0, 255, 0);
+    else {
       ledHandler.setColor(255, 0, 0);
     }
   }

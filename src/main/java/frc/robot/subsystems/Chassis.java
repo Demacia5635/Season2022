@@ -64,6 +64,9 @@ public class Chassis extends SubsystemBase{
     left.invertMotors(false);
     right.invertMotors(true);
 
+    left.setRamp(0.1);
+    right.setRamp(0.1);
+
     left.setK_P(Constants.KP);
     right.setK_P(Constants.KP);
   }
@@ -106,7 +109,7 @@ public class Chassis extends SubsystemBase{
   }
 
   public void setVelocityOurFF(double left, double right){
-    feedForward.calculate(left, right); 
+    feedForward.calculate(left, right);
     this.left.setVelocity(left, feedForward.leftP);
     this.right.setVelocity(right, feedForward.rightP);
   }

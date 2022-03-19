@@ -28,6 +28,7 @@ public class Rainbow extends CommandBase {
   public void execute() {
     ledHandler.setColorWithOffset(currentH, 255, 128, 5);
     currentH += 3;
+    currentH %= 180;
   }
 
   // Called once the command ends or is interrupted.
