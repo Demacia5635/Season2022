@@ -30,8 +30,8 @@ public class LedHandler extends SubsystemBase {
     setDefaultColor();
 
     setDefaultCommand(NetworkTableInstance.getDefault().getEntry("FMSInfo/IsRedAlliance").getBoolean(true) ?
-        new MoveBetweenColors(142, 180, this) :
-        new MoveBetweenColors(120, 142, this));
+        new MoveBetweenColors(120, 142, this) :
+        new MoveBetweenColors(142, 180, this));
   }
 
   public void setColor(int index, int red, int green, int blue) {

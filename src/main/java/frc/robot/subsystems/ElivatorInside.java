@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -27,6 +28,8 @@ public class ElivatorInside extends SubsystemBase {
   public ElivatorInside(XboxController controller) {
     this.telescopicMotor = new WPI_TalonFX(Constants.TELESCOPIC_MOTOR);
     this.shackleOpenner = new WPI_TalonSRX(Constants.SHACKLE_OPENNER);
+
+    telescopicMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 40, 0.1));
     command = new MoveElivator(this, controller);
     setDefaultCommand(command);
 
