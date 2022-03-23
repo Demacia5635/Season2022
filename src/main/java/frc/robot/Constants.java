@@ -54,7 +54,7 @@ public final class Constants {
     //#endregion
 
     //#region Chassis
-    public static final double MAX_VELOCITY = 3;//3;
+    public static final double MAX_VELOCITY = 2.5;//3;
     public static final double MAX_ANGULAR_VELOCITY = Math.PI;
     public static final double PULSES_PER_METER = 12.0*2048/(6.0*25.4*Math.PI/1000.0);
 
@@ -74,7 +74,7 @@ public final class Constants {
 
     public static final double KS = 0.03698 * 12;
     public static final double KV = 0.2386 * 12;
-    public static final double KP = 0.0001;
+    public static final double KP = 0.00005;
     public static final double TURN_SCALE_SAGI = 1.175;
     public static final double TURN_SCALE_GUY = 1.2;
     public static final double ZERO_TURN_SAGI = 0.9;
@@ -132,6 +132,6 @@ public final class Constants {
 
     //Velocity
     public static final double ARM_UP_POWER = -0.8;
-    public static final double ARM_DOWN_POWER = 0.45;
+    public static final double ARM_DOWN_POWER = 0.6;
     //#endregion
 }

@@ -25,7 +25,6 @@ public class Drive extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    chassis.setNeutralMode(false);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -35,7 +34,7 @@ public class Drive extends CommandBase {
     double angle = deadband(controller.getLeftX());
 
     if (value == 0 && angle == 0) chassis.setPower(0, 0);
-    chassis.setAngularVelocity(value, -angle);
+    else chassis.setAngularVelocity(value, -angle);
   }
 
   private double deadband(double value){

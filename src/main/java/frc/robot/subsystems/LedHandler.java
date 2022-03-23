@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
@@ -14,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.commands.InstantCommandInDisable;
 import frc.robot.commands.LedTransition;
-import frc.robot.commands.MoveBetweenColors;
 import frc.robot.commands.Rainbow;
 import frc.robot.commands.StartEndCommandOnDisable;
  
@@ -28,10 +26,6 @@ public class LedHandler extends SubsystemBase {
     led.setLength(Constants.LED_COUNT);
     led.start();
     setDefaultColor();
-
-    setDefaultCommand(NetworkTableInstance.getDefault().getEntry("FMSInfo/IsRedAlliance").getBoolean(true) ?
-        new MoveBetweenColors(120, 142, this) :
-        new MoveBetweenColors(142, 180, this));
   }
 
   public void setColor(int index, int red, int green, int blue) {

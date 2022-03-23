@@ -20,11 +20,13 @@ import frc.robot.commands.AngleForLow;
 import frc.robot.commands.Drive;
 import frc.robot.commands.LimitSwitchLeds;
 import frc.robot.commands.LowShoot;
+import frc.robot.commands.MoveBetweenColors;
 import frc.robot.commands.MoveForward;
 import frc.robot.commands.MoveShackle;
 import frc.robot.commands.Rainbow;
 import frc.robot.commands.SetArm;
 import frc.robot.commands.SetTurnerDown;
+import frc.robot.commands.StartEndCommandOnDisable;
 import frc.robot.commands.Turn;
 import frc.robot.commands.SetArm.Destination;
 import frc.robot.subsystems.Chassis;
@@ -85,7 +87,7 @@ public class RobotContainer {
     elivatorInside = new ElivatorInside(secondaryController);
     shooting = new Shooting(chassis);
     ledHandler = new LedHandler();
-    new LimitSwitchLeds(ledHandler, pickup, shooting).schedule();
+    SmartDashboard.putData("Limit Switch Leds", new LimitSwitchLeds(ledHandler, pickup, shooting));
 
     bButtonSecondary = new JoystickButton(secondaryController, 2);
     xButtonSecondary = new JoystickButton(secondaryController, 3);
@@ -106,7 +108,7 @@ public class RobotContainer {
     shoot2 = new LowShoot(shooting, ledHandler).alongWith(pickup.getIntakeCommand());
     shoot = new StartEndCommand(() -> {chassis.setNeutralMode(true);}, () -> {chassis.setNeutralMode(false);}).alongWith(new MoveForward(chassis, 0.3).andThen(new LowShoot(shooting, ledHandler).alongWith(pickup.getIntakeCommand())));//new Shoot(shooting, chassis).alongWith(pickup.getIntakeCommand());
     throwOut = new StartEndCommand(() -> {
-      shooting.setShooterVelocity(6);
+      shooting.setShooterVelocity(5);
       shooting.openShooterInput();
     }, () -> {
       shooting.setShooterPower(0);
@@ -257,6 +259,8 @@ public class RobotContainer {
 
   public void onDisable() {
     chassis.setNeutralMode(false);
+    new StartEndCommandOnDisable(() -> {}, () -> {}, ledHandler).schedule();
+    ledHandler.setDefaultColor();
   }
 
   public void onTeleop() {
@@ -266,6 +270,9 @@ public class RobotContainer {
   }
 
   public void onAuto() {
+    ledHandler.setDefaultCommand(NetworkTableInstance.getDefault().getEntry("FMSInfo/IsRedAlliance").getBoolean(true) ?
+        new MoveBetweenColors(142, 180, ledHandler) :
+        new MoveBetweenColors(120, 142, ledHandler));
     ledHandler.getDefaultCommand().schedule();
     chassis.setNeutralMode(true);
   }

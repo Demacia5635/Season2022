@@ -4,11 +4,13 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.LedHandler;
 
 public class Rainbow extends CommandBase {
   /** Creates a new Rainbow. */
+  private double rainbowSpeed = 1.;
   private double currentH = 0;
   private final LedHandler ledHandler;
 
@@ -20,14 +22,16 @@ public class Rainbow extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    SmartDashboard.putNumber("Leds/Rainbow Speed", rainbowSpeed);
     currentH = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    ledHandler.setColorWithOffset(currentH, 255, 128, 5);
-    currentH += 3;
+    rainbowSpeed = SmartDashboard.getNumber("Leds/Rainbow Speed", 1.0);
+    ledHandler.setColorWithOffset(currentH, 255, 128, 5 * rainbowSpeed);
+    currentH += 3 * rainbowSpeed;
     currentH %= 180;
   }
 

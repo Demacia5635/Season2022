@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.subsystems.LedHandler;
 import frc.robot.subsystems.Shooting;
 
@@ -12,7 +13,7 @@ public class LowShoot extends CommandBase {
 
   private final Shooting shooting;
   private final LedHandler ledHandler;
-  private static final double SHOOTING_VELOCITY = 9.5;
+  private static final double SHOOTING_VELOCITY = 9;
   private int time;
 
   public LowShoot(Shooting shooting, LedHandler ledHandler) {
@@ -34,11 +35,7 @@ public class LowShoot extends CommandBase {
     if (vel >= SHOOTING_VELOCITY - 1) {
       shooting.openShooterInput();
     }
-    if (!shooting.getUpperLimitSwitch()) {
-      shooting.setTurnerPower(-0.5);
-    } else {
-      shooting.setTurnerPower(0);
-    }
+    shooting.setTurnerPower(-0.5);
     if (vel >= SHOOTING_VELOCITY - 1 || time > 0) {
       time++;
     }
@@ -53,7 +50,11 @@ public class LowShoot extends CommandBase {
   public void end(boolean interrupted) {
     shooting.setShooterPower(0);
     shooting.closeShooterInput();
-    shooting.setTurnerPower(0);
+    new StartEndCommand(() -> {
+      shooting.setTurnerPower(0.5);
+    }, () -> {
+      shooting.setTurnerPower(0);
+    }).withTimeout(0.15).schedule();
   }
 
   @Override

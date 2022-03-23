@@ -30,11 +30,13 @@ import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstrai
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.commands.Calibrate;
 import frc.robot.commands.InstantCommandInDisable;
+import frc.robot.commands.MoveForward;
 import frc.robot.utils.FeedForward;
 import frc.robot.utils.GroupOfMotors;
 
@@ -60,7 +62,7 @@ public class Chassis extends SubsystemBase{
     setPosition1();
     field2d = new Field2d();
 
-    setNeutralMode(false);
+    // setNeutralMode(false);
     left.invertMotors(false);
     right.invertMotors(true);
 
@@ -384,5 +386,10 @@ public class Chassis extends SubsystemBase{
 
     SmartDashboard.putData("Change Driver", new InstantCommandInDisable(() -> {isSagi = !isSagi;}));
     builder.addBooleanProperty("Is Sage", () -> {return isSagi;}, null);
+
+    SmartDashboard.putNumber("MoveForward/meters", 1);
+    SmartDashboard.putData("MoveForward/set", new InstantCommand(() -> {
+      new MoveForward(this, SmartDashboard.getNumber("MoveForward/meters", 1)).schedule();
+    }));
   }
 }
