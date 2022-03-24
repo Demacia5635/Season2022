@@ -13,7 +13,7 @@ public class LowShoot extends CommandBase {
 
   private final Shooting shooting;
   private final LedHandler ledHandler;
-  private static final double SHOOTING_VELOCITY = 9;
+  private static final double SHOOTING_VELOCITY = 8.7;
   private int time;
 
   public LowShoot(Shooting shooting, LedHandler ledHandler) {

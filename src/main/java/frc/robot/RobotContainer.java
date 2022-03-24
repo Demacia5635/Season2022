@@ -125,6 +125,7 @@ public class RobotContainer {
     autonomousChooser.setDefaultOption("Normal", Autonomouses.Normal);
     autonomousChooser.addOption("Wall", Autonomouses.Wall);
     autonomousChooser.addOption("Turn", Autonomouses.Turn);
+    autonomousChooser.addOption("Quick", Autonomouses.Quick);
 
     SmartDashboard.putData("Autonomous", autonomousChooser);
 
@@ -134,7 +135,8 @@ public class RobotContainer {
   public enum Autonomouses {
     Wall,
     Normal,
-    Turn
+    Turn,
+    Quick
   }
 
   /**
@@ -173,7 +175,7 @@ public class RobotContainer {
 
     yButtonSecondary.whileHeld(closeShackle);
 
-    backButtonMain.whenPressed(new InstantCommand(() -> {chassis.reverse(!chassis.isReversed());}));
+    backButtonMain.whileHeld(new StartEndCommand(() -> {shooting.openShooterInput();}, () -> {shooting.closeShooterInput();}, shooting));
 
     startButtonSecondary.whenPressed(new InstantCommand(() -> {
       new SetArm(pickup, SetArm.Destination.DOWN).andThen(new StartEndCommand(() -> {}, () -> {}, pickup)).alongWith(new SetTurnerDown(shooting)).schedule();
@@ -206,13 +208,32 @@ public class RobotContainer {
 //      (new Shoot(shooting, chassis).withTimeout(3)));
   }*/
 
+  public Command getQuickShootCommand() {
+    return new AngleForLow(shooting).andThen(new LowShoot(shooting, ledHandler).withTimeout(3),
+      new MoveForward(chassis, 1)
+    );
+ }
+
   public Command getAutoLowShootCommand() {
     return new AngleForLow(shooting).alongWith(new SetArm(pickup, Destination.DOWN)).andThen(
        pickup.getIntakeCommand().raceWith(
-          new LowShoot(shooting, ledHandler).withTimeout(3).andThen(
+          new LowShoot(shooting, ledHandler).withTimeout(2).andThen(
           new MoveForward(chassis, 0.8),
           new WaitCommand(1),
+          new MoveForward(chassis, -0.8),
+          new WaitCommand(1),
+          new LowShoot(shooting, ledHandler).withTimeout(3)
+        )), new MoveForward(chassis, 1.3).alongWith(new SetArm(pickup, Destination.UP)));
+  }
+
+  public Command getAutoLowShootCommand2() {
+    return new AngleForLow(shooting).alongWith(new SetArm(pickup, Destination.DOWN)).andThen(
+       pickup.getIntakeCommand().raceWith(
+          new LowShoot(shooting, ledHandler).withTimeout(2).andThen(
+          new MoveForward(chassis, 1),
+          new WaitCommand(1),
           new MoveForward(chassis, -1),
+          new WaitCommand(1),
           new LowShoot(shooting, ledHandler).withTimeout(3)
         )), new MoveForward(chassis, 1.3).alongWith(new SetArm(pickup, Destination.UP)));
   }
@@ -221,9 +242,9 @@ public class RobotContainer {
     return new InstantCommand(() -> {chassis.setNeutralMode(true);}).andThen(
       new AngleForLow(shooting).alongWith(new SetArm(pickup, Destination.DOWN)), 
     pickup.getIntakeCommand().raceWith(new LowShoot(shooting, ledHandler).withTimeout(1.5).andThen(
-      new Turn(chassis, -25), new MoveForward(chassis, 1.3), 
+      new Turn(chassis, -21), new MoveForward(chassis, 1.3), 
       new WaitCommand(1), new MoveForward(chassis, -1.3),
-      new Turn(chassis, 25),
+      new Turn(chassis, 21),
       new LowShoot(shooting, ledHandler).withTimeout(1.5)
     )), new MoveForward(chassis, 1.3).alongWith(new SetArm(pickup, Destination.UP)));
   }
@@ -248,10 +269,12 @@ public class RobotContainer {
         return getAutoLowShootCommand();
       case Normal:
         System.out.println("Normal");
-        return new InstantCommand(chassis::setPosition1).alongWith(getAutoLowShootCommand());
+        return new InstantCommand(chassis::setPosition1).alongWith(getAutoLowShootCommand2());
       case Turn:
         System.out.println("Turn");
         return new InstantCommand(chassis::setPosition2).alongWith(getAutoSpecial());
+      case Quick:
+        return getQuickShootCommand();
       default:
         return null;
     }
@@ -264,6 +287,9 @@ public class RobotContainer {
   }
 
   public void onTeleop() {
+    ledHandler.setDefaultCommand(NetworkTableInstance.getDefault().getEntry("FMSInfo/IsRedAlliance").getBoolean(true) ?
+        new MoveBetweenColors(142, 180, ledHandler) :
+        new MoveBetweenColors(120, 142, ledHandler));
     chassis.setNeutralMode(false);
     ledHandler.getDefaultCommand().schedule();
     if (elivatorInside.isClimbingMode()) elivatorInside.changeClimbingMode();

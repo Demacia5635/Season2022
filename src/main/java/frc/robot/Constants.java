@@ -17,8 +17,8 @@ import edu.wpi.first.wpilibj.drive.Vector2d;
  */
 public final class Constants {
     //#region Shooting
-    public static final int LED_COUNT = 40;
-    public static final int LED_PORT = 2;
+    public static final int LED_COUNT = 38;
+    public static final int LED_PORT = 5;
     public static final int SHOOTER_PORT_MAIN = 5;
     public static final int SHOOTER_PORT_SECONDARY = 6;
     public static final int TURNER_PORT = 11;
