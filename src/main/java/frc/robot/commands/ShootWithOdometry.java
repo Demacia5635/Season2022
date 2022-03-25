@@ -27,6 +27,7 @@ public class ShootWithOdometry extends CommandBase {
 
   @Override
   public void initialize() {
+    chassis.setNeutralMode(true);
     ledHandler.setColor(255, 255, 0);
     time = 0;
   }
@@ -65,6 +66,7 @@ public class ShootWithOdometry extends CommandBase {
     }, () -> {
       shooting.setTurnerPower(0);
     }).withTimeout(0.15).schedule();
+    chassis.setNeutralMode(false);
   }
 
   @Override
