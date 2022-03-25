@@ -8,6 +8,7 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
@@ -360,6 +361,16 @@ public class Chassis extends SubsystemBase{
       SmartDashboard.getNumber("Set Heading", 0));
   }
 
+  public double getAngleToHub() {
+    Translation2d diff = odometry.getPoseMeters().getTranslation().minus(Constants.HUB_POSITION);
+    double angle = Math.toDegrees(Math.atan2(diff.getY(), diff.getX())) + odometry.getPoseMeters().getRotation().getDegrees();
+    return angle > 180 ? angle - 360 : (angle < -180 ? angle + 360 : angle);
+  }
+
+  public double getDistanceToHub() {
+    return odometry.getPoseMeters().getTranslation().getDistance(Constants.HUB_POSITION);
+  }
+
   @Override
   public void periodic() {
     odometry.update(Rotation2d.fromDegrees(_getFusedHeading()), left.getDistance(), right.getDistance());
@@ -391,5 +402,22 @@ public class Chassis extends SubsystemBase{
     SmartDashboard.putData("MoveForward/set", new InstantCommand(() -> {
       new MoveForward(this, SmartDashboard.getNumber("MoveForward/meters", 1)).schedule();
     }));
+
+    SmartDashboard.putData("Set Position Red Left",
+        new InstantCommandInDisable(() -> {
+          setPose(Constants.RED_LEFT_POSE);
+        }));
+    SmartDashboard.putData("Set Position Blue Left",
+        new InstantCommandInDisable(() -> {
+          setPose(Constants.BLUE_LEFT_POSE);
+        }));
+    SmartDashboard.putData("Set Position Red Right",
+        new InstantCommandInDisable(() -> {
+          setPose(Constants.RED_RIGHT_POSE);
+        }));
+    SmartDashboard.putData("Set Position Blue Right",
+        new InstantCommandInDisable(() -> {
+          setPose(Constants.BLUE_RIGHT_POSE);
+        }));
   }
 }

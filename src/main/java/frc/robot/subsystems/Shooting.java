@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.commands.AngleForLow;
-import frc.robot.utils.ShootingUtil;
+import frc.robot.utils.LookUpTable;
 
 public class Shooting extends SubsystemBase {
   /** Creates a new Shooting. */
@@ -29,10 +29,16 @@ public class Shooting extends SubsystemBase {
   private final WPI_TalonSRX turner;
   private final DigitalInput upperLimitSwitch;
   private final DigitalInput lowerLimitSwitch;
-  private final Chassis chassis;
+  private static final LookUpTable distanceToVelocity = new LookUpTable(new double[][] {
+    {0.3, 7.5},
+    {0.9, 8.1},
+    {1.1, 8.2},
+    {1.3, 8.6},
+    {1.5, 8.8},
+    {1.65, 9.1}
+  });
 
-  public Shooting(Chassis chassis) {
-    this.chassis = chassis;
+  public Shooting() {
     shooterMain = new WPI_TalonFX(Constants.SHOOTER_PORT_MAIN);
     turner = new WPI_TalonSRX(Constants.TURNER_PORT);
     turner.setNeutralMode(NeutralMode.Brake);
@@ -98,10 +104,6 @@ public class Shooting extends SubsystemBase {
     return shooterMain.getSelectedSensorPosition();
   }
 
-  public double[] getShoot(){
-    return ShootingUtil.distanceToVelocityAndAngle(getTargetDistance());
-  }
-
   /**
    * returns the limit switch state
    * @return true if the limit switch is closed
@@ -140,18 +142,6 @@ public class Shooting extends SubsystemBase {
     inputWheel.set(ControlMode.PercentOutput, -Constants.INPUT_WHEEL_POWER);
   }
 
-  /**
-   * gets the angle from the vision
-   * @return the angle value from vision
-   */
-  public double getVisionAngle(){
-    return ShootingUtil.yToAngle(SmartDashboard.getNumber("vision_tower_y", Double.NaN) * 544 / 360.);
-  }
-
-  public double getVisionDistance(){
-    return Constants.CAMERA_TOWER_DIFF / Math.tan(Math.toRadians(getVisionAngle() + Constants.CAMERA_ANGLE));
-  }
-
   public double getTurnerPower(){
     return turner.get();
   }
@@ -165,9 +155,7 @@ public class Shooting extends SubsystemBase {
     builder.addDoubleProperty("Shooter Velocity", this::getShooterVelocity, this::setShooterVelocity);
     builder.addBooleanProperty("upper limit switch", this::getUpperLimitSwitch, null);
     builder.addBooleanProperty("lower limit switch", this::getLowerLimitSwitch, null);
-    builder.addDoubleProperty("target direction", this::getTargetDirection, null);
-    builder.addDoubleProperty("target distance", this::getTargetDistance, null);
-    builder.addDoubleProperty("shoot velocity", this::getShootingVelocity, null);
+    // builder.addDoubleProperty("target direction", this::getTargetDirection, null);
     builder.addDoubleProperty("Shooting Velocity 2", this::getShooterVelocity2, null);
 
     SmartDashboard.putNumber("Distance Change", SmartDashboard.getNumber("Distance Change", 0));
@@ -179,28 +167,8 @@ public class Shooting extends SubsystemBase {
     return SmartDashboard.getBoolean("vision_found", false);
   }
 
-  public double getTargetDistance() {
-    if(visionOK()) {
-      return ShootingUtil.VisionXtoDistance(getVisionX());
-    } else {
-      return ShootingUtil.getDistance(ShootingUtil.getTargetPosition(chassis.getPose()));
-    }
+  public double getShootingVelocity(double distance) {
+    distance -= Constants.DISTANCE_FRON_HUB_TO_FENDER + Constants.ROBOT_LENGTH / 2;
+    return distanceToVelocity.get(distance)[0];
   }
-  public double getTargetDirection() {
-    if(visionOK()) {
-      return getVisionAngle();
-    } else {
-      return ShootingUtil.getRotation(
-        ShootingUtil.getTargetPosition(chassis.getPose())
-        , chassis.getPose()).getDegrees();
-    }
-  }
-  public double getShootingVelocity() {
-    return ShootingUtil.distanceToVelocity(getTargetDistance());
-  }
-  public double getShootingAngle() {
-    return ShootingUtil.distanceToAngle(getTargetDistance());
-  }
-
-
 }

@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.drive.Vector2d;
 
@@ -54,6 +57,14 @@ public final class Constants {
     //#endregion
 
     //#region Chassis
+    public static final Pose2d RED_LEFT_POSE = new Pose2d(9.465, 3.803, Rotation2d.fromDegrees(-30));
+    public static final Pose2d RED_RIGHT_POSE = new Pose2d(8.634, 5.242, Rotation2d.fromDegrees(60));
+    public static final Pose2d BLUE_LEFT_POSE = new Pose2d(7.195, 4.411, Rotation2d.fromDegrees(150));
+    public static final Pose2d BLUE_RIGHT_POSE = new Pose2d(8.026, 2.972, Rotation2d.fromDegrees(-120));
+    public static final Translation2d HUB_POSITION = new Translation2d(8.33, 4.107);
+    public static final double ROBOT_LENGTH = 0.79;
+    public static final double DISTANCE_FRON_HUB_TO_FENDER = 0.78;
+
     public static final double MAX_VELOCITY = 2.5;//3;
     public static final double MAX_ANGULAR_VELOCITY = Math.PI;
     public static final double PULSES_PER_METER = 12.0*2048/(6.0*25.4*Math.PI/1000.0);
@@ -134,4 +145,5 @@ public final class Constants {
     public static final double ARM_UP_POWER = -0.8;
     public static final double ARM_DOWN_POWER = 0.6;
     //#endregion
+    public static final double ANGLE_KP = 0.1;
 }

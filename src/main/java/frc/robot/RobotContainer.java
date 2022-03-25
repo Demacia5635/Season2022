@@ -4,10 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,6 +22,7 @@ import frc.robot.commands.MoveShackle;
 import frc.robot.commands.Rainbow;
 import frc.robot.commands.SetArm;
 import frc.robot.commands.SetTurnerDown;
+import frc.robot.commands.ShootWithOdometry;
 import frc.robot.commands.StartEndCommandOnDisable;
 import frc.robot.commands.Turn;
 import frc.robot.commands.SetArm.Destination;
@@ -34,7 +31,6 @@ import frc.robot.subsystems.ElivatorInside;
 import frc.robot.subsystems.LedHandler;
 import frc.robot.subsystems.Pickup;
 import frc.robot.subsystems.Shooting;
-import frc.robot.utils.ShootingUtil;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -85,7 +81,7 @@ public class RobotContainer {
     chassis = new Chassis();
     pickup = new Pickup();
     elivatorInside = new ElivatorInside(secondaryController);
-    shooting = new Shooting(chassis);
+    shooting = new Shooting();
     ledHandler = new LedHandler();
     SmartDashboard.putData("Limit Switch Leds", new LimitSwitchLeds(ledHandler, pickup, shooting));
 
@@ -106,7 +102,7 @@ public class RobotContainer {
 //    autoShoot = new AutoShoot(shooting, chassis);
     intake = pickup.getIntakeCommand();
     shoot2 = new LowShoot(shooting, ledHandler).alongWith(pickup.getIntakeCommand());
-    shoot = new StartEndCommand(() -> {chassis.setNeutralMode(true);}, () -> {chassis.setNeutralMode(false);}).alongWith(new MoveForward(chassis, 0.3).andThen(new LowShoot(shooting, ledHandler).alongWith(pickup.getIntakeCommand())));//new Shoot(shooting, chassis).alongWith(pickup.getIntakeCommand());
+    shoot = new ShootWithOdometry(shooting, ledHandler, chassis);
     throwOut = new StartEndCommand(() -> {
       shooting.setShooterVelocity(5);
       shooting.openShooterInput();
@@ -160,14 +156,6 @@ public class RobotContainer {
     aButtonMain.whenHeld(intake);
       
     yButtonMain.whileHeld(shoot);
-
-    aButtonSecondary.whenPressed(new InstantCommand(() -> {
-      NetworkTableInstance nt = NetworkTableInstance.getDefault();
-      boolean isRed = nt.getEntry("FMSInfo/IsRedAlliance").getBoolean(true);
-      SmartDashboard.putBoolean("isRed", isRed);
-      Translation2d location = isRed ? ShootingUtil.RED_LAUNCH_LOCATION : ShootingUtil.BLUE_LAUNCH_LOCATION;
-      chassis.setPose(new Pose2d(location.getX(), location.getY(), Rotation2d.fromDegrees(isRed ? 180 : 0)));
-    }));
     
     xButtonMain.whenHeld(shoot2); //autoShoot
 
@@ -265,14 +253,11 @@ public class RobotContainer {
     //return chassis.getAutoCommand("test1.wpilib.json");
     switch (autonomousChooser.getSelected()) {
       case Wall:
-        System.out.println("Wall");
         return getAutoLowShootCommand();
       case Normal:
-        System.out.println("Normal");
-        return new InstantCommand(chassis::setPosition1).alongWith(getAutoLowShootCommand2());
+        return getAutoLowShootCommand2();
       case Turn:
-        System.out.println("Turn");
-        return new InstantCommand(chassis::setPosition2).alongWith(getAutoSpecial());
+        return getAutoSpecial();
       case Quick:
         return getQuickShootCommand();
       default:
@@ -287,7 +272,7 @@ public class RobotContainer {
   }
 
   public void onTeleop() {
-    ledHandler.setDefaultCommand(NetworkTableInstance.getDefault().getEntry("FMSInfo/IsRedAlliance").getBoolean(true) ?
+    ledHandler.setDefaultCommand(Robot.isRedAlliance() ?
         new MoveBetweenColors(142, 180, ledHandler) :
         new MoveBetweenColors(120, 142, ledHandler));
     chassis.setNeutralMode(false);
@@ -296,7 +281,7 @@ public class RobotContainer {
   }
 
   public void onAuto() {
-    ledHandler.setDefaultCommand(NetworkTableInstance.getDefault().getEntry("FMSInfo/IsRedAlliance").getBoolean(true) ?
+    ledHandler.setDefaultCommand(Robot.isRedAlliance() ?
         new MoveBetweenColors(142, 180, ledHandler) :
         new MoveBetweenColors(120, 142, ledHandler));
     ledHandler.getDefaultCommand().schedule();
