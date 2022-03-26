@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.Constants;
@@ -36,6 +37,7 @@ public class ShootWithOdometry extends CommandBase {
   public void execute() {
     double wantedVelocity = shooting.getShootingVelocity(chassis.getDistanceToHub());
     double velocity = shooting.getShooterVelocity2();
+    shooting.setShooterVelocity(wantedVelocity);
 
     if (velocity >= wantedVelocity - 1) {
       shooting.openShooterInput();
@@ -53,8 +55,10 @@ public class ShootWithOdometry extends CommandBase {
     double heading = chassis.getAngleToHub();
     velocity = heading * Constants.ANGLE_KP;
     velocity = Math.signum(velocity) * Math.max(Math.abs(velocity), 0.5);
+    SmartDashboard.putNumber("Angle Velocity", velocity);
     if(Math.abs(heading) > Constants.MAX_ANGLE_ERROR_CHASSIS)
         chassis.setVelocity(-velocity, velocity);
+    else chassis.setVelocity(0, 0);
   }
 
   @Override

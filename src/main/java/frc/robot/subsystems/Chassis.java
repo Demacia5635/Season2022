@@ -183,6 +183,7 @@ public class Chassis extends SubsystemBase{
   }
 
   public void setPose(Pose2d pose){
+    resetEncoders();
     odometry.resetPosition(pose, Rotation2d.fromDegrees(_getFusedHeading()));
   }
 
@@ -363,7 +364,11 @@ public class Chassis extends SubsystemBase{
 
   public double getAngleToHub() {
     Translation2d diff = odometry.getPoseMeters().getTranslation().minus(Constants.HUB_POSITION);
-    double angle = Math.toDegrees(Math.atan2(diff.getY(), diff.getX())) + odometry.getPoseMeters().getRotation().getDegrees();
+    double tangent = Math.toDegrees(Math.atan2(diff.getY(), diff.getX()));
+    double odometryDegrees = odometry.getPoseMeters().getRotation().getDegrees();
+    SmartDashboard.putNumber("Tangent", tangent);
+    SmartDashboard.putNumber("Odometry Degrees", odometryDegrees);
+    double angle = tangent - odometryDegrees;
     return angle > 180 ? angle - 360 : (angle < -180 ? angle + 360 : angle);
   }
 
@@ -383,6 +388,8 @@ public class Chassis extends SubsystemBase{
     builder.addDoubleProperty("left encoder", left::getEncoder, null);
     builder.addDoubleProperty("right encoder", right::getEncoder, null);
     builder.addDoubleProperty("angle", this::getAngle, null);
+    builder.addDoubleProperty("Angle To Hub", this::getAngleToHub, null);
+    builder.addDoubleProperty("Distance To Hub", this::getDistanceToHub, null);
     SmartDashboard.putData("Robot Position", field2d);
     double x = SmartDashboard.getNumber("Set X Position", 4);
     SmartDashboard.putNumber("Set X Position", x);

@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.drive.Vector2d;
 public final class Constants {
     //#region Shooting
     public static final int LED_COUNT = 38;
-    public static final int LED_PORT = 5;
+    public static final int LED_PORT = 2;
     public static final int SHOOTER_PORT_MAIN = 5;
     public static final int SHOOTER_PORT_SECONDARY = 6;
     public static final int TURNER_PORT = 11;
@@ -57,10 +57,10 @@ public final class Constants {
     //#endregion
 
     //#region Chassis
-    public static final Pose2d RED_LEFT_POSE = new Pose2d(9.465, 3.803, Rotation2d.fromDegrees(-30));
-    public static final Pose2d RED_RIGHT_POSE = new Pose2d(8.634, 5.242, Rotation2d.fromDegrees(60));
-    public static final Pose2d BLUE_LEFT_POSE = new Pose2d(7.195, 4.411, Rotation2d.fromDegrees(150));
-    public static final Pose2d BLUE_RIGHT_POSE = new Pose2d(8.026, 2.972, Rotation2d.fromDegrees(-120));
+    public static final Pose2d RED_LEFT_POSE = new Pose2d(9.348, 3.519, Rotation2d.fromDegrees(-30));
+    public static final Pose2d RED_RIGHT_POSE = new Pose2d(8.918, 5.125, Rotation2d.fromDegrees(60));
+    public static final Pose2d BLUE_LEFT_POSE = new Pose2d(7.312, 4.694, Rotation2d.fromDegrees(150));
+    public static final Pose2d BLUE_RIGHT_POSE = new Pose2d(7.742, 3.089, Rotation2d.fromDegrees(-120));
     public static final Translation2d HUB_POSITION = new Translation2d(8.33, 4.107);
     public static final double ROBOT_LENGTH = 0.79;
     public static final double DISTANCE_FRON_HUB_TO_FENDER = 0.78;

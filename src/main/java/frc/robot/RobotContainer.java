@@ -102,7 +102,7 @@ public class RobotContainer {
 //    autoShoot = new AutoShoot(shooting, chassis);
     intake = pickup.getIntakeCommand();
     shoot2 = new LowShoot(shooting, ledHandler).alongWith(pickup.getIntakeCommand());
-    shoot = new ShootWithOdometry(shooting, ledHandler, chassis);
+    shoot = new ShootWithOdometry(shooting, ledHandler, chassis).alongWith(pickup.getIntakeCommand());
     throwOut = new StartEndCommand(() -> {
       shooting.setShooterVelocity(5);
       shooting.openShooterInput();
@@ -155,7 +155,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     aButtonMain.whenHeld(intake);
       
-    yButtonMain.whileHeld(shoot);
+    yButtonMain.whileHeld(shoot); 
     
     xButtonMain.whenHeld(shoot2); //autoShoot
 
