@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -12,9 +13,9 @@ import frc.robot.subsystems.Chassis;
 public class Drive extends CommandBase {
 
   private final Chassis chassis;
-  private final XboxController controller;
+  private final Joystick controller;
 
-  public Drive(Chassis chassis, XboxController controller) {
+  public Drive(Chassis chassis, Joystick controller) {
     this.chassis = chassis;
     this.controller = controller;
 
@@ -30,8 +31,8 @@ public class Drive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double value = deadband((chassis.isReversed() ? -1 : 1) * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
-    double angle = deadband(controller.getLeftX());
+    double value = deadband((chassis.isReversed() ? -1 : 1) * controller.getY());
+    double angle = deadband(controller.getX());
 
     if (value == 0 && angle == 0) chassis.setPower(0, 0);
     else chassis.setAngularVelocity(value, -angle);

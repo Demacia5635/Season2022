@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -47,19 +48,19 @@ public class RobotContainer {
   private final LedHandler ledHandler;
   
   private final XboxController secondaryController;
-  private final XboxController mainController;
+  private final Joystick mainController;
   
-  private final JoystickButton aButtonMain;
-  private final JoystickButton yButtonMain;
-  private final JoystickButton xButtonMain;
-  private final JoystickButton startButtonSecondary;
-  private final JoystickButton backButtonMain;
+  // private final JoystickButton aButtonMain;
+  // private final JoystickButton yButtonMain;
+  // private final JoystickButton xButtonMain;
+  // private final JoystickButton startButtonSecondary;
+  // private final JoystickButton backButtonMain;
 
-  private final JoystickButton xButtonSecondary;
-  private final JoystickButton bButtonSecondary;
-  private final JoystickButton yButtonSecondary;
-  private final JoystickButton aButtonSecondary;
-  private final JoystickButton backButtonSecondary;
+  // private final JoystickButton xButtonSecondary;
+  // private final JoystickButton bButtonSecondary;
+  // private final JoystickButton yButtonSecondary;
+  // private final JoystickButton aButtonSecondary;
+  // private final JoystickButton backButtonSecondary;
   
   private final MoveShackle openShackle;
   private final MoveShackle closeShackle;
@@ -76,7 +77,7 @@ public class RobotContainer {
   public RobotContainer() {
 
     secondaryController = new XboxController(1);
-    mainController = new XboxController(0);
+    mainController = new Joystick(0);
 
     chassis = new Chassis();
     pickup = new Pickup();
@@ -85,17 +86,17 @@ public class RobotContainer {
     ledHandler = new LedHandler();
     SmartDashboard.putData("Limit Switch Leds", new LimitSwitchLeds(ledHandler, pickup, shooting));
 
-    bButtonSecondary = new JoystickButton(secondaryController, 2);
-    xButtonSecondary = new JoystickButton(secondaryController, 3);
-    yButtonSecondary = new JoystickButton(secondaryController, 4);
-    aButtonSecondary = new JoystickButton(secondaryController, 1);
-    backButtonSecondary = new JoystickButton(secondaryController, 7);
-    startButtonSecondary = new JoystickButton(secondaryController, 8);
+    // bButtonSecondary = new JoystickButton(secondaryController, 2);
+    // xButtonSecondary = new JoystickButton(secondaryController, 3);
+    // yButtonSecondary = new JoystickButton(secondaryController, 4);
+    // aButtonSecondary = new JoystickButton(secondaryController, 1);
+    // backButtonSecondary = new JoystickButton(secondaryController, 7);
+    // startButtonSecondary = new JoystickButton(secondaryController, 8);
     
-    aButtonMain = new JoystickButton(mainController, 1);
-    xButtonMain = new JoystickButton(mainController, 3);
-    yButtonMain = new JoystickButton(mainController, 4);
-    backButtonMain = new JoystickButton(mainController, 7);
+    // aButtonMain = new JoystickButton(mainController, 1);
+    // xButtonMain = new JoystickButton(mainController, 3);
+    // yButtonMain = new JoystickButton(mainController, 4);
+    // backButtonMain = new JoystickButton(mainController, 7);
 
     openShackle = new MoveShackle(elivatorInside, MoveShackle.Destination.OPEN);
     closeShackle = new MoveShackle(elivatorInside, MoveShackle.Destination.CLOSE);
@@ -153,27 +154,27 @@ public class RobotContainer {
    * A button secondary -> reset position
    */
   private void configureButtonBindings() {
-    aButtonMain.whenHeld(intake);
+    // aButtonMain.whenHeld(intake);
       
-    yButtonMain.whileHeld(shoot); 
+    // yButtonMain.whileHeld(shoot); 
     
-    xButtonMain.whenHeld(shoot2); //autoShoot
+    // xButtonMain.whenHeld(shoot2); //autoShoot
 
-    xButtonSecondary.whileHeld(openShackle);
+    // xButtonSecondary.whileHeld(openShackle);
 
-    yButtonSecondary.whileHeld(closeShackle);
+    // yButtonSecondary.whileHeld(closeShackle);
 
-    backButtonMain.whileHeld(new StartEndCommand(() -> {shooting.openShooterInput();}, () -> {shooting.closeShooterInput();}, shooting));
+    // backButtonMain.whileHeld(new StartEndCommand(() -> {shooting.openShooterInput();}, () -> {shooting.closeShooterInput();}, shooting));
 
-    startButtonSecondary.whenPressed(new InstantCommand(() -> {
-      new SetArm(pickup, SetArm.Destination.DOWN).andThen(new StartEndCommand(() -> {}, () -> {}, pickup)).alongWith(new SetTurnerDown(shooting)).schedule();
-      elivatorInside.changeClimbingMode();
-      new Rainbow(ledHandler).schedule();
-    }).andThen(new InstantCommand(() -> {chassis.setNeutralMode(elivatorInside.isClimbingMode());})));
+    // startButtonSecondary.whenPressed(new InstantCommand(() -> {
+    //   new SetArm(pickup, SetArm.Destination.DOWN).andThen(new StartEndCommand(() -> {}, () -> {}, pickup)).alongWith(new SetTurnerDown(shooting)).schedule();
+    //   elivatorInside.changeClimbingMode();
+    //   new Rainbow(ledHandler).schedule();
+    // }).andThen(new InstantCommand(() -> {chassis.setNeutralMode(elivatorInside.isClimbingMode());})));
 
-    bButtonSecondary.whileHeld(throwOut);
+    // bButtonSecondary.whileHeld(throwOut);
 
-    backButtonSecondary.whileHeld(new StartEndCommand(shooting::freeInput, shooting::closeShooterInput, shooting));
+    // backButtonSecondary.whileHeld(new StartEndCommand(shooting::freeInput, shooting::closeShooterInput, shooting));
   }
 
   /*public Command getSimpleAutoCommand() {
