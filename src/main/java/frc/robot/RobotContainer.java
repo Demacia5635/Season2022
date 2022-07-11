@@ -50,9 +50,9 @@ public class RobotContainer {
   private final XboxController secondaryController;
   private final Joystick mainController;
   
-  // private final JoystickButton aButtonMain;
+  private final JoystickButton aButtonMain;
   // private final JoystickButton yButtonMain;
-  // private final JoystickButton xButtonMain;
+  private final JoystickButton bButtonMain;
   // private final JoystickButton startButtonSecondary;
   // private final JoystickButton backButtonMain;
 
@@ -93,8 +93,8 @@ public class RobotContainer {
     // backButtonSecondary = new JoystickButton(secondaryController, 7);
     // startButtonSecondary = new JoystickButton(secondaryController, 8);
     
-    // aButtonMain = new JoystickButton(mainController, 1);
-    // xButtonMain = new JoystickButton(mainController, 3);
+    aButtonMain = new JoystickButton(mainController, 1);
+    bButtonMain = new JoystickButton(mainController, 2);
     // yButtonMain = new JoystickButton(mainController, 4);
     // backButtonMain = new JoystickButton(mainController, 7);
 
@@ -154,9 +154,9 @@ public class RobotContainer {
    * A button secondary -> reset position
    */
   private void configureButtonBindings() {
-    // aButtonMain.whenHeld(intake);
+    aButtonMain.whenHeld(intake);
       
-    // yButtonMain.whileHeld(shoot); 
+    bButtonMain.whileHeld(shoot); 
     
     // xButtonMain.whenHeld(shoot2); //autoShoot
 
