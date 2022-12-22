@@ -64,14 +64,20 @@ public class Chassis extends SubsystemBase{
     field2d = new Field2d();
 
     // setNeutralMode(false);
-    left.invertMotors(false);
-    right.invertMotors(true);
+    left.invertMotors(true);
+    right.invertMotors(false);
 
     left.setRamp(0.1);
     right.setRamp(0.1);
 
     left.setK_P(Constants.KP);
     right.setK_P(Constants.KP);
+
+    SmartDashboard.putNumber("Chassis/min turn", 0.7);
+    SmartDashboard.putNumber("Chassis/low turn", 0.2);
+    SmartDashboard.putNumber("Chassis/max angular velocity", 0.7 * Math.PI);
+    SmartDashboard.putNumber("Chassis/max velocity", 2.0);
+    SmartDashboard.putNumber("Chassis/sensitivity", 1);
   }
 
   public void setPosition1() {
@@ -97,15 +103,20 @@ public class Chassis extends SubsystemBase{
   }
 
   public void setAngularVelocity(double velocity, double turns){
+    velocity = Math.signum(velocity) * Math.pow(Math.abs(velocity), SmartDashboard.getNumber("Chassis/sensitivity", 1));
     double absVel = Math.abs(velocity);
-    if (isSagi) {
-      turns *= (absVel == 0 ? Constants.ZERO_TURN_SAGI : Math.max(absVel, Constants.LOW_TURN_SAGI)) + Constants.TURN_SCALE_SAGI;
-    }
-    else
-      turns *= absVel + Constants.TURN_SCALE_GUY;
+    double minTurn = SmartDashboard.getNumber("Chassis/min turn", 0.7);
+    double lowTurn = SmartDashboard.getNumber("Chassis/low turn", 0.2);
+    double maxAngVel = SmartDashboard.getNumber("Chassis/max angular velocity", 0.7 * Math.PI);
+    double maxVel = SmartDashboard.getNumber("Chassis/max velocity", 2.0);
+    turns *= -(absVel == 0 ? minTurn : lowTurn);
+    // if (isSagi) {
+    // }
+    // else
+    //   turns *= absVel + Constants.TURN_SCALE_GUY;
 
-    if (isPicking) velocity *= Constants.SCALE_VELOCITY_ON_PICKUP;
-    ChassisSpeeds speeds = new ChassisSpeeds(velocity * Constants.MAX_VELOCITY, 0, turns * Constants.MAX_ANGULAR_VELOCITY);
+    // if (isPicking) velocity *= Constants.SCALE_VELOCITY_ON_PICKUP;
+    ChassisSpeeds speeds = new ChassisSpeeds(velocity * maxVel, 0, turns * maxAngVel);
 
     DifferentialDriveWheelSpeeds wheelSpeeds = Constants.KINEMATICS.toWheelSpeeds(speeds);
     setVelocityOurFF(wheelSpeeds.leftMetersPerSecond, wheelSpeeds.rightMetersPerSecond);

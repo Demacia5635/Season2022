@@ -65,7 +65,7 @@ public final class Constants {
     public static final double ROBOT_LENGTH = 0.79;
     public static final double DISTANCE_FRON_HUB_TO_FENDER = 0.78;
 
-    public static final double MAX_VELOCITY = 2.5;//3;
+    public static final double MAX_VELOCITY = 1;//3;
     public static final double MAX_ANGULAR_VELOCITY = Math.PI;
     public static final double PULSES_PER_METER = 12.0*2048/(6.0*25.4*Math.PI/1000.0);
 
@@ -83,19 +83,19 @@ public final class Constants {
     public static final int STOP_ANGLE = 5;
     public static final double SCALE_VELOCITY_ON_PICKUP = 0.5;
 
-    public static final double KS = 0.03698 * 12;
-    public static final double KV = 0.2386 * 12;
-    public static final double KP = 0.00005;
-    public static final double TURN_SCALE_SAGI = 1.175;
+    public static final double KS = 0.59316 / 12;
+    public static final double KV = 2.6475 / 12;
+    public static final double KP = 1. / 10000;
+    public static final double TURN_SCALE_SAGI = 0.9;
     public static final double TURN_SCALE_GUY = 1.2;
-    public static final double ZERO_TURN_SAGI = 0.9;
-    public static final double LOW_TURN_SAGI = 0.35;
+    public static final double ZERO_TURN_SAGI = 0.7;
+    public static final double LOW_TURN_SAGI = 0.20;
     public static final double KA = 0;
     public static final double TRACK_WIDTH = 0.56;
     public static final DifferentialDriveKinematics KINEMATICS = new DifferentialDriveKinematics(TRACK_WIDTH);
 
     public static final double MAX_VELOCITY_AUTO = 2;
-    public static final double MAX_ACCELERATION_AUTO = 1;
+    public static final double MAX_ACCELERATION_AUTO = 1.5;
 
     public static final double MOVE_POWER = 0.3;
     public static final double TURN_POWER = 0.3;

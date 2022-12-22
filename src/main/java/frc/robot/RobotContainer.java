@@ -34,25 +34,29 @@ import frc.robot.subsystems.Pickup;
 import frc.robot.subsystems.Shooting;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final Pickup pickup;
-  private final ElivatorInside elivatorInside;
+  // private final Pickup pickup;
+  // private final ElivatorInside elivatorInside;
   private final Chassis chassis;
-  private final Shooting shooting;
-  private final LedHandler ledHandler;
-  
+  // private final Shooting shooting;
+  // private final LedHandler ledHandler;
+
   private final XboxController secondaryController;
-  private final Joystick mainController;
-  
+  private final XboxController mainController;
+
   private final JoystickButton aButtonMain;
   // private final JoystickButton yButtonMain;
   private final JoystickButton bButtonMain;
+  private final JoystickButton yButtonMain; 
   // private final JoystickButton startButtonSecondary;
   // private final JoystickButton backButtonMain;
 
@@ -61,30 +65,33 @@ public class RobotContainer {
   // private final JoystickButton yButtonSecondary;
   // private final JoystickButton aButtonSecondary;
   // private final JoystickButton backButtonSecondary;
-  
-  private final MoveShackle openShackle;
-  private final MoveShackle closeShackle;
-//  private final AutoShoot autoShoot;
-  private final Command intake;
-  private final Command shoot;
-  private final Command shoot2;
-  private final Command throwOut;
 
-  private final SendableChooser<Autonomouses> autonomousChooser;
+  // private final MoveShackle openShackle;
+  // private final MoveShackle closeShackle;
+  // private final AutoShoot autoShoot;
+  // private final Command intake;
+  // private final Command shoot;
+  // private final Command shoot2;
+  // private final Command throwOut;
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  // private final SendableChooser<Autonomouses> autonomousChooser;
+
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
 
   public RobotContainer() {
 
     secondaryController = new XboxController(1);
-    mainController = new Joystick(0);
+    mainController = new XboxController(0);
 
     chassis = new Chassis();
-    pickup = new Pickup();
-    elivatorInside = new ElivatorInside(secondaryController);
-    shooting = new Shooting();
-    ledHandler = new LedHandler();
-    SmartDashboard.putData("Limit Switch Leds", new LimitSwitchLeds(ledHandler, pickup, shooting));
+    // pickup = new Pickup();
+    // elivatorInside = new ElivatorInside(secondaryController);
+    // shooting = new Shooting();
+    // ledHandler = new LedHandler();
+    // SmartDashboard.putData("Limit Switch Leds", new LimitSwitchLeds(ledHandler,
+    // pickup, shooting));
 
     // bButtonSecondary = new JoystickButton(secondaryController, 2);
     // xButtonSecondary = new JoystickButton(secondaryController, 3);
@@ -92,54 +99,64 @@ public class RobotContainer {
     // aButtonSecondary = new JoystickButton(secondaryController, 1);
     // backButtonSecondary = new JoystickButton(secondaryController, 7);
     // startButtonSecondary = new JoystickButton(secondaryController, 8);
-    
+
     aButtonMain = new JoystickButton(mainController, 1);
     bButtonMain = new JoystickButton(mainController, 2);
+    yButtonMain = new JoystickButton(mainController, 4);
     // yButtonMain = new JoystickButton(mainController, 4);
     // backButtonMain = new JoystickButton(mainController, 7);
 
-    openShackle = new MoveShackle(elivatorInside, MoveShackle.Destination.OPEN);
-    closeShackle = new MoveShackle(elivatorInside, MoveShackle.Destination.CLOSE);
-//    autoShoot = new AutoShoot(shooting, chassis);
-    intake = pickup.getIntakeCommand();
-    shoot2 = new LowShoot(shooting, ledHandler).alongWith(pickup.getIntakeCommand());
-    shoot = new ShootWithOdometry(shooting, ledHandler, chassis).alongWith(pickup.getIntakeCommand());
-    throwOut = new StartEndCommand(() -> {
-      shooting.setShooterVelocity(5);
-      shooting.openShooterInput();
-    }, () -> {
-      shooting.setShooterPower(0);
-      shooting.closeShooterInput();
-    }, shooting);
+    // openShackle = new MoveShackle(elivatorInside, MoveShackle.Destination.OPEN);
+    // closeShackle = new MoveShackle(elivatorInside,
+    // MoveShackle.Destination.CLOSE);
+    // autoShoot = new AutoShoot(shooting, chassis);
+    // intake = pickup.getIntakeCommand();
+    // shoot2 = new LowShoot(shooting,
+    // ledHandler).alongWith(pickup.getIntakeCommand());
+    // shoot = new ShootWithOdometry(shooting, ledHandler,
+    // chassis).alongWith(pickup.getIntakeCommand());
+    // throwOut = new StartEndCommand(() -> {
+    // shooting.setShooterVelocity(5);
+    // shooting.openShooterInput();
+    // }, () -> {
+    // shooting.setShooterPower(0);
+    // shooting.closeShooterInput();
+    // }, shooting);
 
     chassis.setDefaultCommand(new Drive(chassis, mainController));
-    //shooting.setDefaultCommand(new SetTurnerDown(shooting));
-    pickup.setDefaultCommand(new SetArm(pickup, Destination.UP).andThen(new StartEndCommand(() -> {}, () -> {}, pickup)));
-    
+    // shooting.setDefaultCommand(new SetTurnerDown(shooting));
+    // pickup.setDefaultCommand(new SetArm(pickup, Destination.UP).andThen(new
+    // StartEndCommand(() -> {
+    // }, () -> {
+    // }, pickup)));
+
     // Configure the button bindings
 
-    autonomousChooser = new SendableChooser<>();
-    autonomousChooser.setDefaultOption("Normal", Autonomouses.Normal);
-    autonomousChooser.addOption("Wall", Autonomouses.Wall);
-    autonomousChooser.addOption("Turn", Autonomouses.Turn);
-    autonomousChooser.addOption("Quick", Autonomouses.Quick);
+    // autonomousChooser = new SendableChooser<>();
+    // autonomousChooser.setDefaultOption("Normal", Autonomouses.Normal);
+    // autonomousChooser.addOption("Wall", Autonomouses.Wall);
+    // autonomousChooser.addOption("Turn", Autonomouses.Turn);
+    // autonomousChooser.addOption("Quick", Autonomouses.Quick);
 
-    SmartDashboard.putData("Autonomous", autonomousChooser);
+    // SmartDashboard.putData("Autonomous", autonomousChooser);
 
     configureButtonBindings();
   }
 
-  public enum Autonomouses {
-    Wall,
-    Normal,
-    Turn,
-    Quick
-  }
+  // public enum Autonomouses {
+  // Wall,
+  // Normal,
+  // Turn,
+  // Quick
+  // }
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link edu.wpi.first.wpilibj.GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
+   * Use this method to define your button->command mappings. Buttons can be
+   * created by
+   * instantiating a {@link edu.wpi.first.wpilibj.GenericHID} or one of its
+   * subclasses ({@link
+   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
+   * it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    * A button main -> pickup balls
    * Y buttom main -> arm up
@@ -154,96 +171,120 @@ public class RobotContainer {
    * A button secondary -> reset position
    */
   private void configureButtonBindings() {
-    aButtonMain.whenHeld(intake);
-      
-    bButtonMain.whileHeld(shoot); 
-    
+    // aButtonMain.whenHeld(intake);
+
+    // bButtonMain.whenHeld(shoot2);
+
     // xButtonMain.whenHeld(shoot2); //autoShoot
 
     // xButtonSecondary.whileHeld(openShackle);
 
     // yButtonSecondary.whileHeld(closeShackle);
 
-    // backButtonMain.whileHeld(new StartEndCommand(() -> {shooting.openShooterInput();}, () -> {shooting.closeShooterInput();}, shooting));
+    // backButtonMain.whileHeld(new StartEndCommand(() ->
+    // {shooting.openShooterInput();}, () -> {shooting.closeShooterInput();},
+    // shooting));
 
     // startButtonSecondary.whenPressed(new InstantCommand(() -> {
-    //   new SetArm(pickup, SetArm.Destination.DOWN).andThen(new StartEndCommand(() -> {}, () -> {}, pickup)).alongWith(new SetTurnerDown(shooting)).schedule();
-    //   elivatorInside.changeClimbingMode();
-    //   new Rainbow(ledHandler).schedule();
-    // }).andThen(new InstantCommand(() -> {chassis.setNeutralMode(elivatorInside.isClimbingMode());})));
+    // new SetArm(pickup, SetArm.Destination.DOWN).andThen(new StartEndCommand(() ->
+    // {}, () -> {}, pickup)).alongWith(new SetTurnerDown(shooting)).schedule();
+    // elivatorInside.changeClimbingMode();
+    // new Rainbow(ledHandler).schedule();
+    // }).andThen(new InstantCommand(() ->
+    // {chassis.setNeutralMode(elivatorInside.isClimbingMode());})));
 
     // bButtonSecondary.whileHeld(throwOut);
 
-    // backButtonSecondary.whileHeld(new StartEndCommand(shooting::freeInput, shooting::closeShooterInput, shooting));
+    // backButtonSecondary.whileHeld(new StartEndCommand(shooting::freeInput,
+    // shooting::closeShooterInput, shooting));
+
+    yButtonMain.whenHeld(new StartEndCommand(() -> {
+      SmartDashboard.putNumber("Chassis/max velocity", SmartDashboard.getNumber("Chassis/max velocity", 0) / 2);
+    }, () -> {
+      SmartDashboard.putNumber("Chassis/max velocity", SmartDashboard.getNumber("Chassis/max velocity", 0) * 2);
+    }));
   }
 
-  /*public Command getSimpleAutoCommand() {
-    return new SetArm(pickup, Destination.DOWN).
-      andThen(pickup.getIntakeCommand().
-      raceWith(new MoveForward(chassis, 2))).
-      andThen(new Shoot(shooting, chassis, Constants.SHOOTING_AUTO_VELOCITY, Constants.SHOOTING_AUTO_ANGLE));
-  }*/
+  /*
+   * public Command getSimpleAutoCommand() {
+   * return new SetArm(pickup, Destination.DOWN).
+   * andThen(pickup.getIntakeCommand().
+   * raceWith(new MoveForward(chassis, 2))).
+   * andThen(new Shoot(shooting, chassis, Constants.SHOOTING_AUTO_VELOCITY,
+   * Constants.SHOOTING_AUTO_ANGLE));
+   * }
+   */
 
-  /*public Command getAuto1Command() {
-    Command start = new InstantCommand(chassis::setPosition1).andThen(
-        new InstantCommand(() -> {chassis.setNeutralMode(true);}),
-        new MoveForward(chassis, 0.7),
-        (new Shoot(shooting, chassis).withTimeout(3)),
-        new SetArm(pickup, Destination.DOWN));
-    return start.andThen(
-        (new MoveForward(chassis, 0.3).andThen(new Shoot(shooting, chassis)))
-          .alongWith(pickup.getIntakeCommand()));
-//      (pickup.getIntakeCommand().raceWith(new MoveForward(chassis, 0.3))),
-//      (new Shoot(shooting, chassis).withTimeout(3)));
-  }*/
+  /*
+   * public Command getAuto1Command() {
+   * Command start = new InstantCommand(chassis::setPosition1).andThen(
+   * new InstantCommand(() -> {chassis.setNeutralMode(true);}),
+   * new MoveForward(chassis, 0.7),
+   * (new Shoot(shooting, chassis).withTimeout(3)),
+   * new SetArm(pickup, Destination.DOWN));
+   * return start.andThen(
+   * (new MoveForward(chassis, 0.3).andThen(new Shoot(shooting, chassis)))
+   * .alongWith(pickup.getIntakeCommand()));
+   * // (pickup.getIntakeCommand().raceWith(new MoveForward(chassis, 0.3))),
+   * // (new Shoot(shooting, chassis).withTimeout(3)));
+   * }
+   */
 
-  public Command getQuickShootCommand() {
-    return new AngleForLow(shooting).andThen(new LowShoot(shooting, ledHandler).withTimeout(3),
-      new MoveForward(chassis, 1)
-    );
- }
+  // public Command getQuickShootCommand() {
+  // return new AngleForLow(shooting).andThen(new LowShoot(shooting,
+  // ledHandler).withTimeout(3),
+  // new MoveForward(chassis, 1));
+  // }
 
-  public Command getAutoLowShootCommand() {
-    return new AngleForLow(shooting).alongWith(new SetArm(pickup, Destination.DOWN)).andThen(
-       pickup.getIntakeCommand().raceWith(
-          new LowShoot(shooting, ledHandler).withTimeout(2).andThen(
-          new MoveForward(chassis, 0.8),
-          new WaitCommand(1),
-          new MoveForward(chassis, -0.8),
-          new WaitCommand(1),
-          new LowShoot(shooting, ledHandler).withTimeout(3)
-        )), new MoveForward(chassis, 1.3).alongWith(new SetArm(pickup, Destination.UP)));
-  }
+  // public Command getAutoLowShootCommand() {
+  // return new AngleForLow(shooting).alongWith(new SetArm(pickup,
+  // Destination.DOWN)).andThen(
+  // pickup.getIntakeCommand().raceWith(
+  // new LowShoot(shooting, ledHandler).withTimeout(2).andThen(
+  // new MoveForward(chassis, 0.8),
+  // new WaitCommand(1),
+  // new MoveForward(chassis, -0.8),
+  // new WaitCommand(1),
+  // new LowShoot(shooting, ledHandler).withTimeout(3))),
+  // new MoveForward(chassis, 1.3).alongWith(new SetArm(pickup, Destination.UP)));
+  // }
 
-  public Command getAutoLowShootCommand2() {
-    return new AngleForLow(shooting).alongWith(new SetArm(pickup, Destination.DOWN)).andThen(
-       pickup.getIntakeCommand().raceWith(
-          new LowShoot(shooting, ledHandler).withTimeout(2).andThen(
-          new MoveForward(chassis, 1),
-          new WaitCommand(1),
-          new MoveForward(chassis, -1),
-          new WaitCommand(1),
-          new LowShoot(shooting, ledHandler).withTimeout(3)
-        )), new MoveForward(chassis, 1.3).alongWith(new SetArm(pickup, Destination.UP)));
-  }
+  // public Command getAutoLowShootCommand2() {
+  // return new AngleForLow(shooting).alongWith(new SetArm(pickup,
+  // Destination.DOWN)).andThen(
+  // pickup.getIntakeCommand().raceWith(
+  // new LowShoot(shooting, ledHandler).withTimeout(2).andThen(
+  // new MoveForward(chassis, 1),
+  // new WaitCommand(1),
+  // new MoveForward(chassis, -1),
+  // new WaitCommand(1),
+  // new LowShoot(shooting, ledHandler).withTimeout(3))),
+  // new MoveForward(chassis, 1.3).alongWith(new SetArm(pickup, Destination.UP)));
+  // }
 
-  public Command getAutoSpecial(){
-    return new InstantCommand(() -> {chassis.setNeutralMode(true);}).andThen(
-      new AngleForLow(shooting).alongWith(new SetArm(pickup, Destination.DOWN)), 
-    pickup.getIntakeCommand().raceWith(new LowShoot(shooting, ledHandler).withTimeout(1.5).andThen(
-      new Turn(chassis, -21), new MoveForward(chassis, 1.3), 
-      new WaitCommand(1), new MoveForward(chassis, -1.3),
-      new Turn(chassis, 21),
-      new LowShoot(shooting, ledHandler).withTimeout(1.5)
-    )), new MoveForward(chassis, 1.3).alongWith(new SetArm(pickup, Destination.UP)));
-  }
+  // public Command getAutoSpecial() {
+  // return new InstantCommand(() -> {
+  // chassis.setNeutralMode(true);
+  // }).andThen(
+  // new AngleForLow(shooting).alongWith(new SetArm(pickup, Destination.DOWN)),
+  // pickup.getIntakeCommand().raceWith(new LowShoot(shooting,
+  // ledHandler).withTimeout(1.5).andThen(
+  // new Turn(chassis, -21), new MoveForward(chassis, 1.3),
+  // new WaitCommand(1), new MoveForward(chassis, -1.3),
+  // new Turn(chassis, 21),
+  // new LowShoot(shooting, ledHandler).withTimeout(1.5))),
+  // new MoveForward(chassis, 1.3).alongWith(new SetArm(pickup, Destination.UP)));
+  // }
 
-  /*public Command getAuto2Command() {
-    return (new MoveForward(chassis, 0.6).alongWith(new SetArm(pickup, Destination.DOWN))).andThen(
-      (new Shoot(shooting, chassis).withTimeout(3)),
-      (pickup.getIntakeCommand().raceWith(new MoveForward(chassis, 0.6))),
-      (new Shoot(shooting, chassis).withTimeout(3)));
-  }*/
+  /*
+   * public Command getAuto2Command() {
+   * return (new MoveForward(chassis, 0.6).alongWith(new SetArm(pickup,
+   * Destination.DOWN))).andThen(
+   * (new Shoot(shooting, chassis).withTimeout(3)),
+   * (pickup.getIntakeCommand().raceWith(new MoveForward(chassis, 0.6))),
+   * (new Shoot(shooting, chassis).withTimeout(3)));
+   * }
+   */
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -251,41 +292,46 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    //return chassis.getAutoCommand("test1.wpilib.json");
-    switch (autonomousChooser.getSelected()) {
-      case Wall:
-        return getAutoLowShootCommand();
-      case Normal:
-        return getAutoLowShootCommand2();
-      case Turn:
-        return getAutoSpecial();
-      case Quick:
-        return getQuickShootCommand();
-      default:
-        return null;
-    }
+    return null;
+
+    // return chassis.getAutoCommand("test1.wpilib.json");
+    // switch (autonomousChooser.getSelected()) {
+    // case Wall:
+    // return getAutoLowShootCommand();
+    // case Normal:
+    // return getAutoLowShootCommand2();
+    // case Turn:
+    // return getAutoSpecial();
+    // case Quick:
+    // return getQuickShootCommand();
+    // default:
+    // return null;
   }
+  // }
 
   public void onDisable() {
-    chassis.setNeutralMode(false);
-    new StartEndCommandOnDisable(() -> {}, () -> {}, ledHandler).schedule();
-    ledHandler.setDefaultColor();
+    chassis.setNeutralMode(true);
+    // new StartEndCommandOnDisable(() -> {
+    // }, () -> {
+    // }, ledHandler).schedule();
+    // ledHandler.setDefaultColor();
   }
 
   public void onTeleop() {
-    ledHandler.setDefaultCommand(Robot.isRedAlliance() ?
-        new MoveBetweenColors(142, 180, ledHandler) :
-        new MoveBetweenColors(120, 142, ledHandler));
-    chassis.setNeutralMode(false);
-    ledHandler.getDefaultCommand().schedule();
-    if (elivatorInside.isClimbingMode()) elivatorInside.changeClimbingMode();
+    // ledHandler.setDefaultCommand(Robot.isRedAlliance() ? new
+    // MoveBetweenColors(142, 180, ledHandler)
+    // : new MoveBetweenColors(120, 142, ledHandler));
+    chassis.setNeutralMode(true);
+    // ledHandler.getDefaultCommand().schedule();
+    // if (elivatorInside.isClimbingMode())
+    // elivatorInside.changeClimbingMode();
   }
 
   public void onAuto() {
-    ledHandler.setDefaultCommand(Robot.isRedAlliance() ?
-        new MoveBetweenColors(142, 180, ledHandler) :
-        new MoveBetweenColors(120, 142, ledHandler));
-    ledHandler.getDefaultCommand().schedule();
+    // ledHandler.setDefaultCommand(Robot.isRedAlliance() ? new
+    // MoveBetweenColors(142, 180, ledHandler)
+    // : new MoveBetweenColors(120, 142, ledHandler));
+    // ledHandler.getDefaultCommand().schedule();
     chassis.setNeutralMode(true);
   }
 }

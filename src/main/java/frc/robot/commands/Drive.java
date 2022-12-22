@@ -13,9 +13,9 @@ import frc.robot.subsystems.Chassis;
 public class Drive extends CommandBase {
 
   private final Chassis chassis;
-  private final Joystick controller;
+  private final XboxController controller;
 
-  public Drive(Chassis chassis, Joystick controller) {
+  public Drive(Chassis chassis, XboxController controller) {
     this.chassis = chassis;
     this.controller = controller;
 
@@ -31,11 +31,11 @@ public class Drive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double value = deadband((chassis.isReversed() ? -1 : 1) * controller.getY());
-    double angle = deadband(controller.getX());
+    double value = deadband((chassis.isReversed() ? -1 : 1) * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
+    double angle = deadband(controller.getLeftX());
 
     if (value == 0 && angle == 0) chassis.setPower(0, 0);
-    else chassis.setAngularVelocity(value, -angle);
+    else chassis.setAngularVelocity(-value, -angle);
   }
 
   private double deadband(double value){
