@@ -55,6 +55,12 @@ public class GroupOfMotors {
         lead.configClosedloopRamp(secondsFromZeroToFull);
     }
 
+    public void configDefault() {
+        for (TalonFX motor : motors) {
+            motor.configFactoryDefault();
+        }
+    }
+
     public double getVelocity() {
         return lead.getSelectedSensorVelocity() / Constants.PULSES_PER_METER * 10;
     }

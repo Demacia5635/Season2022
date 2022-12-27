@@ -63,21 +63,21 @@ public class Chassis extends SubsystemBase{
     setPosition1();
     field2d = new Field2d();
 
+    left.configDefault();
+    right.configDefault();
     // setNeutralMode(false);
     left.invertMotors(true);
     right.invertMotors(false);
 
-    left.setRamp(0.1);
-    right.setRamp(0.1);
 
     left.setK_P(Constants.KP);
     right.setK_P(Constants.KP);
 
-    SmartDashboard.putNumber("Chassis/min turn", 0.7);
-    SmartDashboard.putNumber("Chassis/low turn", 0.2);
-    SmartDashboard.putNumber("Chassis/max angular velocity", 0.7 * Math.PI);
-    SmartDashboard.putNumber("Chassis/max velocity", 2.0);
-    SmartDashboard.putNumber("Chassis/sensitivity", 1);
+    SmartDashboard.putNumber("Chassis/min turn", 1.5);
+    SmartDashboard.putNumber("Chassis/low turn", 0.7);
+    SmartDashboard.putNumber("Chassis/max angular velocity", 5);
+    SmartDashboard.putNumber("Chassis/max velocity", 3.5);
+    SmartDashboard.putNumber("Chassis/sensitivity", 2);
   }
 
   public void setPosition1() {
@@ -103,12 +103,12 @@ public class Chassis extends SubsystemBase{
   }
 
   public void setAngularVelocity(double velocity, double turns){
-    velocity = Math.signum(velocity) * Math.pow(Math.abs(velocity), SmartDashboard.getNumber("Chassis/sensitivity", 1));
+    velocity = Math.signum(velocity) * Math.pow(Math.abs(velocity), SmartDashboard.getNumber("Chassis/sensitivity", 2));
     double absVel = Math.abs(velocity);
-    double minTurn = SmartDashboard.getNumber("Chassis/min turn", 0.7);
-    double lowTurn = SmartDashboard.getNumber("Chassis/low turn", 0.2);
-    double maxAngVel = SmartDashboard.getNumber("Chassis/max angular velocity", 0.7 * Math.PI);
-    double maxVel = SmartDashboard.getNumber("Chassis/max velocity", 2.0);
+    double minTurn = SmartDashboard.getNumber("Chassis/min turn", 1.5);
+    double lowTurn = SmartDashboard.getNumber("Chassis/low turn", 0.7);
+    double maxAngVel = SmartDashboard.getNumber("Chassis/max angular velocity", 5);
+    double maxVel = SmartDashboard.getNumber("Chassis/max velocity", 3.5);
     turns *= -(absVel == 0 ? minTurn : lowTurn);
     // if (isSagi) {
     // }
